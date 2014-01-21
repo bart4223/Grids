@@ -1,0 +1,12 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.canvas.Canvas?>
+<AnchorPane id="MainPane" fx:controller="Grids.GridStageController" xmlns:fx="http://javafx.com/fxml" >
+    <AnchorPane id="BottomPane" prefHeight="500" minWidth="500" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
+        <Canvas id="Layer0" height="500" width="500" AnchorPane.topAnchor="0" fx:id="Layer0" />
+        <Canvas id="Layer1" height="500" width="500" AnchorPane.topAnchor="0" fx:id="Layer1" />
+    </AnchorPane>
+</AnchorPane>
