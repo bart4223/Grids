@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FGrid = new Grid(20,Color.DARKGREY);
+        FGrid = new Grid(20,Color.LIGHTGRAY);
         FGrid.Initialize();
         primaryStage = FGrid.getStage();
         FGrid.AddLayer("LAYER01","", Color.BLACK);

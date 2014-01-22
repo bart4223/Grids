@@ -95,7 +95,7 @@ public class GridStageController implements Initializable {
     protected void Initialize() {
         RenderLayer0();
         RenderLayer1();
-        Layer1.addEventHandler(MouseEvent.MOUSE_CLICKED,
+        Layer0.addEventHandler(MouseEvent.MOUSE_CLICKED,
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent t) {

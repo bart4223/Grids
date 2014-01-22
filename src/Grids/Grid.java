@@ -44,7 +44,7 @@ public class Grid implements LayerEventListener {
     }
 
     public Grid() {
-        this(10,Color.DARKGRAY);
+        this(10,Color.LIGHTGRAY);
     }
 
     public Grid(int aGridDistance, Color aColor) {
