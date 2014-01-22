@@ -14,11 +14,10 @@ public class Main extends Application {
         FGrid.Initialize();
         primaryStage = FGrid.getStage();
         FGrid.AddLayer("LAYER01","", Color.BLACK);
+        FGrid.AddLayer("LAYER02","", Color.BLUE);
         FGrid.SetCurrentLayer("LAYER01");
         FGrid.DrawCircle(12,12,8);
-        FGrid.AddLayer("LAYER02","", Color.BLUE);
-        Layer Layer = FGrid.SetCurrentLayer("LAYER02");
-        Layer.AddPoint(12,12);
+        FGrid.SetCurrentLayer("LAYER02");
         FGrid.ShowStage();
     }
 

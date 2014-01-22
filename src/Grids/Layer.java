@@ -27,9 +27,14 @@ public class Layer {
         }
     }
 
-    protected void AddPoint(Point2D aPoint) {
-        FPoints.add(aPoint);
-        RaiseAddPointEvent(aPoint);
+    protected synchronized void RaiseDeletePointEvent(Point2D aPoint) {
+        LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
+        lEvent.LayerName = FName;
+        lEvent.Point = aPoint;
+        Iterator lItr = FEventListeners.iterator();
+        while(lItr.hasNext())  {
+            ((LayerEventListener)lItr.next()).handleAddPoint(lEvent);
+        }
     }
 
     protected String getIDFromPoints(double aX, double aY) {
@@ -51,15 +56,25 @@ public class Layer {
         FPointColor = aColor;
     }
 
+    public void AddPoint(Point2D aPoint) {
+        aPoint.setID(getIDFromPoints(aPoint.getX(),aPoint.getY()));
+        FPoints.add(aPoint);
+        RaiseAddPointEvent(aPoint);
+    }
+
     public Point2D AddPoint(double aX, double aY) {
         Point2D Point = getPointInLayer(aX, aY);
         if (Point == null ) {
             Point = new Point2D(aX, aY);
-            Point.setID(getIDFromPoints(aX,aY));
-            //System.out.println(Point.getID());
             AddPoint(Point);
+            //System.out.println(Point.getID());
         }
         return Point;
+    }
+
+    public void DeletePoint(Point2D aPoint) {
+        FPoints.remove(aPoint);
+        RaiseDeletePointEvent(aPoint);
     }
 
     public Point2D getPointInLayer(double aX, double aY) {

@@ -128,4 +128,9 @@ public class Grid implements LayerEventListener {
     public void handleAddPoint(LayerAddPointEvent e) {
         UpdateStage(e.LayerName);
     }
+
+    @Override
+    public void handleDeletePoint(LayerDeletePointEvent e) {
+        UpdateStage(e.LayerName);
+    }
 }

@@ -1,15 +1,20 @@
 package Grids;
 
 import Uniwork.Graphics.Point2D;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+
+import static java.lang.StrictMath.round;
 
 public class GridStageController implements Initializable {
 
@@ -47,6 +52,7 @@ public class GridStageController implements Initializable {
     protected void RenderLayer1() {
         int PX;
         int PY;
+        gc1.clearRect(0,0,Layer1.getWidth(),Layer1.getHeight());
         ArrayList<Layer> Layers = Grid.getLayers();
         Iterator lILayer = Layers.iterator();
         while(lILayer.hasNext())  {
@@ -63,6 +69,21 @@ public class GridStageController implements Initializable {
         }
     }
 
+    protected void HandleMouseClicked(MouseEvent t) {
+        if (t.getButton() == MouseButton.PRIMARY ) {
+            Layer Layer = Grid.GetCurrentLayer();
+            int PX = (int)(t.getX() / Grid.getGridDistance()) + 1;
+            int PY = (int)(t.getY() / Grid.getGridDistance()) + 1;
+            Point2D Point = Layer.getPointInLayer(PX, PY);
+            if (Point == null) {
+                Layer.AddPoint(PX, PY);
+            }
+            else {
+                Layer.DeletePoint(Point);
+            }
+        }
+    }
+
     public Grid Grid;
 
     @Override
@@ -74,6 +95,13 @@ public class GridStageController implements Initializable {
     protected void Initialize() {
         RenderLayer0();
         RenderLayer1();
+        Layer1.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent t) {
+                        HandleMouseClicked(t);
+                    }
+                });
     }
 
     public void RenderScene(Boolean aComplete) {
