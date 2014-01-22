@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
@@ -46,9 +47,10 @@ public class GridStageController implements Initializable {
     protected void RenderLayer1() {
         int PX;
         int PY;
-        Layer Layer;
-        Layer = Grid.getLayer("LAYER01");
-        if (Layer != null) {
+        ArrayList<Layer> Layers = Grid.getLayers();
+        Iterator lILayer = Layers.iterator();
+        while(lILayer.hasNext())  {
+            Layer Layer = (Layer)lILayer.next();
             //System.out.println(Layer.toString());
             gc1.setFill(Layer.GetPointColor());
             Iterator lItr = Layer.GetPoints().iterator();

@@ -10,15 +10,18 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Grid {
+import static java.lang.Math.*;
+
+public class Grid implements LayerEventListener {
 
     protected int FGridDistance;
     protected Color FGridColor;
     protected Stage FStage;
     protected GridStageController FStageController;
     protected ArrayList<Layer> FLayers;
+    protected Layer FCurrentLayer;
 
-    protected void UpdateStage() {
+    protected void UpdateStage(String aLayerName) {
         FStageController.RenderScene(false);
     }
 
@@ -48,6 +51,7 @@ public class Grid {
         FLayers = new ArrayList<Layer>();
         FGridDistance = aGridDistance;
         FGridColor = aColor;
+        FCurrentLayer = null;
 
     }
 
@@ -81,16 +85,9 @@ public class Grid {
 
     public Layer AddLayer(String aName, String aDescription, Color aColor) {
         Layer Layer = new Layer(aName, aDescription, aColor);
+        Layer.addEventListener(this);
         FLayers.add(Layer);
-        UpdateStage();
         return Layer;
-    }
-
-    public Point2D AddLayerPoint(String aLayerName, double aX, double aY) {
-        Layer Layer = getLayer(aLayerName);
-        Point2D Point = Layer.AddPoint(aX,aY);
-        UpdateStage();
-        return Point;
     }
 
     public Layer getLayer(String aName) {
@@ -102,5 +99,33 @@ public class Grid {
             }
         }
         return null;
+    }
+
+    public Layer SetCurrentLayer(String aName) {
+        FCurrentLayer = getLayer(aName);
+        return FCurrentLayer;
+    }
+
+    public ArrayList<Layer> getLayers() {
+        return FLayers;
+    }
+
+    public Layer GetCurrentLayer() {
+        return FCurrentLayer;
+    }
+
+    public void DrawCircle(double aX, double aY, double aRadius) {
+        double PX = 0.0;
+        double PY = 0.0;
+        for (int i = 0; i < 360; i = i + 1) {
+            PX = cos(i*2*PI/360) * aRadius;
+            PY = sin(i*2*PI/360) * aRadius;
+            FCurrentLayer.AddPoint(PX + aX, PY + aY);
+        }
+    }
+
+    @Override
+    public void handleAddPoint(LayerAddPointEvent e) {
+        UpdateStage(e.LayerName);
     }
 }

@@ -4,6 +4,10 @@ import Uniwork.Graphics.Point2D;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static java.lang.StrictMath.round;
 
 public class Layer {
 
@@ -11,26 +15,63 @@ public class Layer {
     protected String FDescription;
     protected ArrayList<Point2D> FPoints;
     protected Color FPointColor;
+    protected List FEventListeners;
+
+    protected synchronized void RaiseAddPointEvent(Point2D aPoint) {
+        LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
+        lEvent.LayerName = FName;
+        lEvent.Point = aPoint;
+        Iterator lItr = FEventListeners.iterator();
+        while(lItr.hasNext())  {
+            ((LayerEventListener)lItr.next()).handleAddPoint(lEvent);
+        }
+    }
+
+    protected void AddPoint(Point2D aPoint) {
+        FPoints.add(aPoint);
+        RaiseAddPointEvent(aPoint);
+    }
+
+    protected String getIDFromPoints(double aX, double aY) {
+        Integer x = (int)round(aX);
+        Integer y = (int)round(aY);
+        return x.toString() + y.toString();
+
+    }
 
     public Layer() {
         this("", "", Color.BLACK);
     }
 
     public Layer(String aName, String aDescription, Color aColor) {
+        FEventListeners= new ArrayList();
         FPoints = new ArrayList<Point2D>();
         FName = aName;
         FDescription = aDescription;
         FPointColor = aColor;
     }
 
-    public void AddPoint(Point2D aPoint) {
-        FPoints.add(aPoint);
+    public Point2D AddPoint(double aX, double aY) {
+        Point2D Point = getPointInLayer(aX, aY);
+        if (Point == null ) {
+            Point = new Point2D(aX, aY);
+            Point.setID(getIDFromPoints(aX,aY));
+            //System.out.println(Point.getID());
+            AddPoint(Point);
+        }
+        return Point;
     }
 
-    public Point2D AddPoint(double aX, double aY) {
-        Point2D Point = new Point2D(aX, aY);
-        AddPoint(Point);
-        return Point;
+    public Point2D getPointInLayer(double aX, double aY) {
+        String id = getIDFromPoints(aX, aY);
+        Iterator lItr = FPoints.iterator();
+        while(lItr.hasNext())  {
+            Point2D Point = (Point2D)lItr.next();
+            if (Point.getID().equals(id)) {
+                return Point;
+            }
+        }
+        return null;
     }
 
     public String GetName() {
@@ -43,6 +84,14 @@ public class Layer {
 
     public ArrayList<Point2D> GetPoints() {
         return FPoints;
+    }
+
+    public synchronized void addEventListener(LayerEventListener aListener)  {
+        FEventListeners.add(aListener);
+    }
+
+    public synchronized void removeEventListener(LayerEventListener aListener)   {
+        FEventListeners.remove(aListener);
     }
 
 }

@@ -13,11 +13,12 @@ public class Main extends Application {
         FGrid = new Grid(20,Color.DARKGREY);
         FGrid.Initialize();
         primaryStage = FGrid.getStage();
-        Layer Layer = FGrid.AddLayer("LAYER01","", Color.BLACK);
-        FGrid.AddLayerPoint("LAYER01",5.0,5.0);
-        FGrid.AddLayerPoint("LAYER01",6.0,3.0);
-        FGrid.AddLayerPoint("LAYER01",8.0,4.0);
-        FGrid.AddLayerPoint("LAYER01",20.0,20.0);
+        FGrid.AddLayer("LAYER01","", Color.BLACK);
+        FGrid.SetCurrentLayer("LAYER01");
+        FGrid.DrawCircle(12,12,8);
+        FGrid.AddLayer("LAYER02","", Color.BLUE);
+        Layer Layer = FGrid.SetCurrentLayer("LAYER02");
+        Layer.AddPoint(12,12);
         FGrid.ShowStage();
     }
 
