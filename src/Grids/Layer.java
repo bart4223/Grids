@@ -4,7 +4,6 @@ import Uniwork.Graphics.Point2D;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static java.lang.StrictMath.round;
@@ -21,9 +20,8 @@ public class Layer {
         LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
         lEvent.LayerName = FName;
         lEvent.Point = aPoint;
-        Iterator lItr = FEventListeners.iterator();
-        while(lItr.hasNext())  {
-            ((LayerEventListener)lItr.next()).handleAddPoint(lEvent);
+        for (Object FEventListener : FEventListeners) {
+            ((LayerEventListener)FEventListener).handleAddPoint(lEvent);
         }
     }
 
@@ -31,9 +29,8 @@ public class Layer {
         LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
         lEvent.LayerName = FName;
         lEvent.Point = aPoint;
-        Iterator lItr = FEventListeners.iterator();
-        while(lItr.hasNext())  {
-            ((LayerEventListener)lItr.next()).handleAddPoint(lEvent);
+        for (Object FEventListener : FEventListeners) {
+            ((LayerEventListener)FEventListener).handleAddPoint(lEvent);
         }
     }
 
@@ -42,10 +39,6 @@ public class Layer {
         Integer y = (int)round(aY);
         return x.toString() + y.toString();
 
-    }
-
-    public Layer() {
-        this("", "", Color.BLACK);
     }
 
     public Layer(String aName, String aDescription, Color aColor) {
@@ -79,13 +72,10 @@ public class Layer {
 
     public Point2D getPointInLayer(double aX, double aY) {
         String id = getIDFromPoints(aX, aY);
-        Iterator lItr = FPoints.iterator();
-        while(lItr.hasNext())  {
-            Point2D Point = (Point2D)lItr.next();
+        for (Point2D Point : FPoints)
             if (Point.getID().equals(id)) {
                 return Point;
             }
-        }
         return null;
     }
 

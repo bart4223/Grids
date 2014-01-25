@@ -1,6 +1,5 @@
 package Grids;
 
-import Uniwork.Graphics.Point2D;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,7 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import static java.lang.Math.*;
 
@@ -23,15 +21,16 @@ public class Grid implements LayerEventListener {
 
     protected void UpdateStage(String aLayerName) {
         FStageController.UpdateControls();
-        FStageController.RenderScene(aLayerName == "");
+        FStageController.RenderScene(aLayerName.equals(""));
     }
 
     protected void CreateStage(){
         FStage = new Stage();
-        FXMLLoader lXMLLoader = new FXMLLoader(getClass().getResource("GridStage.fxml"));
+        FXMLLoader lXMLLoader;
+        lXMLLoader = new FXMLLoader(getClass().getResource("GridStage.fxml"));
         try {
             lXMLLoader.load();
-            FStageController = (GridStageController)lXMLLoader.getController();
+            FStageController = lXMLLoader.getController();
             FStageController.Grid = this;
             Parent lRoot = lXMLLoader.getRoot();
             FStage.setTitle("Grid");
@@ -42,10 +41,6 @@ public class Grid implements LayerEventListener {
         catch( Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Grid() {
-        this(10,Color.LIGHTGRAY);
     }
 
     public Grid(int aGridDistance, Color aColor) {
@@ -97,9 +92,7 @@ public class Grid implements LayerEventListener {
     }
 
     public Layer getLayer(String aName) {
-        Iterator lItr = FLayers.iterator();
-        while(lItr.hasNext())  {
-            Layer Layer = (Layer)lItr.next();
+        for (Layer Layer : FLayers) {
             if (Layer.getName().equals(aName)) {
                 return Layer;
             }
@@ -108,7 +101,7 @@ public class Grid implements LayerEventListener {
     }
 
     public Layer setCurrentLayer(String aName) {
-        if (FCurrentLayer == null || FCurrentLayer.getName() != aName) {
+        if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
             FCurrentLayer = getLayer(aName);
             FStageController.UpdateControls();
         }
@@ -124,8 +117,8 @@ public class Grid implements LayerEventListener {
     }
 
     public void drawCircle(double aX, double aY, double aRadius) {
-        double PX = 0.0;
-        double PY = 0.0;
+        double PX;
+        double PY;
         for (int i = 0; i < 360; i = i + 1) {
             PX = cos(i*2*PI/360) * aRadius;
             PY = sin(i*2*PI/360) * aRadius;

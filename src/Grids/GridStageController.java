@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -14,13 +15,13 @@ import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import static java.lang.StrictMath.round;
-
 public class GridStageController implements Initializable {
+
+    @FXML
+    private Button btnAddLayer;
 
     @FXML
     private Canvas Layer0;
@@ -56,7 +57,7 @@ public class GridStageController implements Initializable {
     }
 
     @FXML
-    protected void handleAddLayer(ActionEvent Event){
+    protected void handleAddLayer(){
         Grid.addLayer("LAYER" + (Grid.getLayers().size() + 1), "Layer " + Grid.getLayers().size(), Color.rgb(getRandomValue(),getRandomValue(),getRandomValue()));
     }
 
@@ -87,14 +88,9 @@ public class GridStageController implements Initializable {
         int PY;
         gc1.clearRect(0,0,Layer1.getWidth(),Layer1.getHeight());
         ArrayList<Layer> Layers = Grid.getLayers();
-        Iterator lILayer = Layers.iterator();
-        while(lILayer.hasNext())  {
-            Layer Layer = (Layer)lILayer.next();
-            //System.out.println(Layer.toString());
+        for (Layer Layer : Layers) {
             gc1.setFill(Layer.getPointColor());
-            Iterator lItr = Layer.getPoints().iterator();
-            while(lItr.hasNext())  {
-                Point2D Point = (Point2D)lItr.next();
+            for (Point2D Point : Layer.getPoints()) {
                 PX = (Point.getXAsInt() - 1) * Grid.getGridDistance();
                 PY = (Point.getYAsInt() - 1) * Grid.getGridDistance();
                 gc1.fillRect(PX, PY, Grid.getGridDistance(), Grid.getGridDistance());
@@ -120,11 +116,9 @@ public class GridStageController implements Initializable {
     protected void UpdatecbLayers() {
         cbLayers.getItems().clear();
         ArrayList<Layer> Layers = Grid.getLayers();
-        Iterator lILayer = Layers.iterator();
-        while(lILayer.hasNext())  {
-            Layer Layer = (Layer)lILayer.next();
+        for (Layer Layer : Layers) {
             cbLayers.getItems().add(Layer.getName());
-            if (Grid.getCurrentLayer() != null &&  Layer.getName().equals(Grid.getCurrentLayer().getName())) {
+            if (Grid.getCurrentLayer() != null && Layer.getName().equals(Grid.getCurrentLayer().getName())) {
                 cbLayers.getSelectionModel().select(Grid.getCurrentLayer().getName());
             }
         }
