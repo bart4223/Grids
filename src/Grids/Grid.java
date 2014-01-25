@@ -14,7 +14,7 @@ import static java.lang.Math.*;
 
 public class Grid implements LayerEventListener {
 
-    protected int FGridDistance;
+    protected Integer FGridDistance;
     protected Color FGridColor;
     protected Stage FStage;
     protected GridStageController FStageController;
@@ -22,7 +22,8 @@ public class Grid implements LayerEventListener {
     protected Layer FCurrentLayer;
 
     protected void UpdateStage(String aLayerName) {
-        FStageController.RenderScene(false);
+        FStageController.UpdateControls();
+        FStageController.RenderScene(aLayerName == "");
     }
 
     protected void CreateStage(){
@@ -52,7 +53,6 @@ public class Grid implements LayerEventListener {
         FGridDistance = aGridDistance;
         FGridColor = aColor;
         FCurrentLayer = null;
-
     }
 
     public void Initialize() {
@@ -75,7 +75,12 @@ public class Grid implements LayerEventListener {
         return FStage;
     }
 
-    public int getGridDistance() {
+    public void setGridDistance(Integer aValue) {
+        FGridDistance = aValue;
+        UpdateStage("");
+    }
+
+    public Integer getGridDistance() {
         return FGridDistance;
     }
 
@@ -83,10 +88,11 @@ public class Grid implements LayerEventListener {
         return FGridColor;
     }
 
-    public Layer AddLayer(String aName, String aDescription, Color aColor) {
+    public Layer addLayer(String aName, String aDescription, Color aColor) {
         Layer Layer = new Layer(aName, aDescription, aColor);
         Layer.addEventListener(this);
         FLayers.add(Layer);
+        FStageController.UpdateControls();
         return Layer;
     }
 
@@ -94,15 +100,18 @@ public class Grid implements LayerEventListener {
         Iterator lItr = FLayers.iterator();
         while(lItr.hasNext())  {
             Layer Layer = (Layer)lItr.next();
-            if (Layer.GetName().equals(aName)) {
+            if (Layer.getName().equals(aName)) {
                 return Layer;
             }
         }
         return null;
     }
 
-    public Layer SetCurrentLayer(String aName) {
-        FCurrentLayer = getLayer(aName);
+    public Layer setCurrentLayer(String aName) {
+        if (FCurrentLayer == null || FCurrentLayer.getName() != aName) {
+            FCurrentLayer = getLayer(aName);
+            FStageController.UpdateControls();
+        }
         return FCurrentLayer;
     }
 
@@ -110,17 +119,17 @@ public class Grid implements LayerEventListener {
         return FLayers;
     }
 
-    public Layer GetCurrentLayer() {
+    public Layer getCurrentLayer() {
         return FCurrentLayer;
     }
 
-    public void DrawCircle(double aX, double aY, double aRadius) {
+    public void drawCircle(double aX, double aY, double aRadius) {
         double PX = 0.0;
         double PY = 0.0;
         for (int i = 0; i < 360; i = i + 1) {
             PX = cos(i*2*PI/360) * aRadius;
             PY = sin(i*2*PI/360) * aRadius;
-            FCurrentLayer.AddPoint(PX + aX, PY + aY);
+            FCurrentLayer.addPoint(PX + aX, PY + aY);
         }
     }
 

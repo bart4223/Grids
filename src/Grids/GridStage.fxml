@@ -1,12 +1,18 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Button?>
 <AnchorPane id="MainPane" fx:controller="Grids.GridStageController" xmlns:fx="http://javafx.com/fxml" >
-    <AnchorPane id="BottomPane" prefHeight="500" minWidth="500" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
-        <Canvas id="Layer1" height="500" width="500" AnchorPane.topAnchor="0" fx:id="Layer1" />
-        <Canvas id="Layer0" height="500" width="500" AnchorPane.topAnchor="0" fx:id="Layer0" />
+    <HBox id="ControlPane" prefHeight="50" minWidth="500" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
+        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+        <ComboBox id="cbGridsize" prefWidth="40" onAction="#handlecbGridSize" fx:id="cbGridSize" />
+        <Button id="btnAddLayer" prefWidth="100" text="AddLayer" onAction="#handleAddLayer" fx:id="btnAddLayer" />
+        <ComboBox id="cbLayers" prefWidth="200" onAction="#handlecbLayers" fx:id="cbLayers" />
+    </HBox>
+    <AnchorPane id="BottomPane" prefHeight="450" minWidth="500" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
+        <Canvas id="Layer1" height="450" width="500" AnchorPane.topAnchor="0" fx:id="Layer1" />
+        <Canvas id="Layer0" height="450" width="500" AnchorPane.topAnchor="0" fx:id="Layer0" />
     </AnchorPane>
 </AnchorPane>

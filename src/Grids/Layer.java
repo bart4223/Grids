@@ -56,23 +56,23 @@ public class Layer {
         FPointColor = aColor;
     }
 
-    public void AddPoint(Point2D aPoint) {
+    public void addPoint(Point2D aPoint) {
         aPoint.setID(getIDFromPoints(aPoint.getX(),aPoint.getY()));
         FPoints.add(aPoint);
         RaiseAddPointEvent(aPoint);
     }
 
-    public Point2D AddPoint(double aX, double aY) {
+    public Point2D addPoint(double aX, double aY) {
         Point2D Point = getPointInLayer(aX, aY);
         if (Point == null ) {
             Point = new Point2D(aX, aY);
-            AddPoint(Point);
+            addPoint(Point);
             //System.out.println(Point.getID());
         }
         return Point;
     }
 
-    public void DeletePoint(Point2D aPoint) {
+    public void deletePoint(Point2D aPoint) {
         FPoints.remove(aPoint);
         RaiseDeletePointEvent(aPoint);
     }
@@ -89,15 +89,15 @@ public class Layer {
         return null;
     }
 
-    public String GetName() {
+    public String getName() {
         return FName;
     }
 
-    public Color GetPointColor() {
+    public Color getPointColor() {
         return FPointColor;
     }
 
-    public ArrayList<Point2D> GetPoints() {
+    public ArrayList<Point2D> getPoints() {
         return FPoints;
     }
 
