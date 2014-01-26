@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static java.lang.Math.*;
 
@@ -18,10 +19,26 @@ public class Grid implements LayerEventListener {
     protected GridStageController FStageController;
     protected ArrayList<Layer> FLayers;
     protected Layer FCurrentLayer;
+    protected Integer FMaxZOrder;
 
-    protected void UpdateStage(String aLayerName) {
-        FStageController.UpdateControls();
+    protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
+        //LogLayers();
+        if (aUpdateControls) {
+            FStageController.UpdateControls();
+        }
         FStageController.RenderScene(aLayerName.equals(""));
+    }
+
+    protected void SortLayers() {
+        Collections.sort(FLayers);
+    }
+
+    protected void LogLayers() {
+        System.out.print("Begin Layer Log"+"\n");
+        for (Layer Layer : FLayers) {
+            System.out.print(Layer.toString()+"\n");
+        }
+        System.out.print("End Layer Log"+"\n");
     }
 
     protected void CreateStage(){
@@ -48,6 +65,7 @@ public class Grid implements LayerEventListener {
         FGridDistance = aGridDistance;
         FGridColor = aColor;
         FCurrentLayer = null;
+        FMaxZOrder = 0;
     }
 
     public void Initialize() {
@@ -72,7 +90,7 @@ public class Grid implements LayerEventListener {
 
     public void setGridDistance(Integer aValue) {
         FGridDistance = aValue;
-        UpdateStage("");
+        UpdateStage(false, "");
     }
 
     public Integer getGridDistance() {
@@ -85,9 +103,12 @@ public class Grid implements LayerEventListener {
 
     public Layer addLayer(String aName, String aDescription, Color aColor) {
         Layer Layer = new Layer(aName, aDescription, aColor);
+        FMaxZOrder = FMaxZOrder + 1;
+        Layer.setZOrder(FMaxZOrder);
         Layer.addEventListener(this);
         FLayers.add(Layer);
-        FStageController.UpdateControls();
+        SortLayers();
+        UpdateStage(true, "");
         return Layer;
     }
 
@@ -103,7 +124,13 @@ public class Grid implements LayerEventListener {
     public Layer setCurrentLayer(String aName) {
         if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
             FCurrentLayer = getLayer(aName);
-            FStageController.UpdateControls();
+            //System.out.println("New CurrentLayer: " + FCurrentLayer.getName());
+            if (FCurrentLayer.getZOrder() < FMaxZOrder) {
+                FMaxZOrder = FMaxZOrder + 1;
+                FCurrentLayer.setZOrder(FMaxZOrder);
+                SortLayers();
+                UpdateStage(false, "");
+            }
         }
         return FCurrentLayer;
     }
@@ -128,11 +155,11 @@ public class Grid implements LayerEventListener {
 
     @Override
     public void handleAddPoint(LayerAddPointEvent e) {
-        UpdateStage(e.LayerName);
+        UpdateStage(false, e.LayerName);
     }
 
     @Override
     public void handleDeletePoint(LayerDeletePointEvent e) {
-        UpdateStage(e.LayerName);
+        UpdateStage(false, e.LayerName);
     }
 }

@@ -8,13 +8,14 @@ import java.util.List;
 
 import static java.lang.StrictMath.round;
 
-public class Layer {
+public class Layer implements Comparable<Layer> {
 
     protected String FName;
     protected String FDescription;
     protected ArrayList<Point2D> FPoints;
     protected Color FPointColor;
     protected List FEventListeners;
+    protected Integer FZOrder;
 
     protected synchronized void RaiseAddPointEvent(Point2D aPoint) {
         LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
@@ -47,6 +48,19 @@ public class Layer {
         FName = aName;
         FDescription = aDescription;
         FPointColor = aColor;
+        FZOrder = 0;
+    }
+
+    @Override
+    public String toString() {
+        return getName() + "-" + getDescription() + "-" + getZOrder();
+    }
+
+    @Override
+    public int compareTo(Layer o) {
+        Integer myZOrder = getZOrder();
+        Integer oZOrder = o.getZOrder();
+        return myZOrder.compareTo(oZOrder);
     }
 
     public void addPoint(Point2D aPoint) {
@@ -81,6 +95,18 @@ public class Layer {
 
     public String getName() {
         return FName;
+    }
+
+    public String getDescription() {
+        return FDescription;
+    }
+
+    public Integer getZOrder() {
+        return FZOrder;
+    }
+
+    public void setZOrder(Integer aValue) {
+        FZOrder = aValue;
     }
 
     public Color getPointColor() {

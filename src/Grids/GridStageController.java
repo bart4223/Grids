@@ -38,9 +38,11 @@ public class GridStageController implements Initializable {
     protected GraphicsContext gc0;
     protected GraphicsContext gc1;
     protected Random FGenerator;
+    protected Integer FUpdateCount;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
+        if (InUpdate()) return;
         if (Event.getEventType().equals(ActionEvent.ACTION)) {
             Integer i = Integer.parseInt(cbGridSize.getValue().toString());
             Grid.setGridDistance(i);
@@ -49,6 +51,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handlecbLayers(ActionEvent Event){
+        if (InUpdate()) return;
         if (Event.getEventType().equals(ActionEvent.ACTION)) {
             if (cbLayers.getValue() != null) {
                 Grid.setCurrentLayer(cbLayers.getValue().toString());
@@ -58,7 +61,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handleAddLayer(){
-        Grid.addLayer("LAYER" + (Grid.getLayers().size() + 1), "Layer " + Grid.getLayers().size(), Color.rgb(getRandomValue(),getRandomValue(),getRandomValue()));
+        Grid.addLayer("LAYER" + (Grid.getLayers().size() + 1), "Layer " + (Grid.getLayers().size() + 1), Color.rgb(getRandomValue(),getRandomValue(),getRandomValue()));
     }
 
     protected void RenderLayer0() {
@@ -114,13 +117,15 @@ public class GridStageController implements Initializable {
     }
 
     protected void UpdatecbLayers() {
+        Layer selLayer = null;
         cbLayers.getItems().clear();
         ArrayList<Layer> Layers = Grid.getLayers();
         for (Layer Layer : Layers) {
+            selLayer = Layer;
             cbLayers.getItems().add(Layer.getName());
-            if (Grid.getCurrentLayer() != null && Layer.getName().equals(Grid.getCurrentLayer().getName())) {
-                cbLayers.getSelectionModel().select(Grid.getCurrentLayer().getName());
-            }
+        }
+        if (selLayer != null) {
+            cbLayers.getSelectionModel().select(selLayer.getName());
         }
     }
 
@@ -132,7 +137,23 @@ public class GridStageController implements Initializable {
         return FGenerator.nextInt(255);
     }
 
+    protected void BeginUpdateControls() {
+        FUpdateCount = FUpdateCount + 1;
+    }
+
+    protected void EndUpdateControls() {
+        FUpdateCount = FUpdateCount - 1;
+    }
+
+    protected Boolean InUpdate() {
+        return FUpdateCount > 1;
+    }
+
     public Grid Grid;
+
+    public GridStageController() {
+        FUpdateCount = 0;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -165,8 +186,11 @@ public class GridStageController implements Initializable {
     }
 
     public void UpdateControls() {
+        if (InUpdate()) return;
+        BeginUpdateControls();
         UpdatecbLayers();
         UpdatecbGridSize();
+        EndUpdateControls();
     }
 
 }
