@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static java.lang.Math.*;
+import static java.lang.Thread.sleep;
 
 public class Grid implements LayerEventListener {
 
@@ -39,6 +40,39 @@ public class Grid implements LayerEventListener {
             System.out.print(Layer.toString()+"\n");
         }
         System.out.print("End Layer Log"+"\n");
+    }
+
+    protected void drawCircleBresenham(int aX, int aY, int aRadius) {
+        if (FCurrentLayer == null) return;
+        int f = 1 - aRadius;
+        int ddF_x = 0;
+        int ddF_y = -2 * aRadius;
+        int x = 0;
+        int y = aRadius;
+        FCurrentLayer.addPoint(aX, aY + aRadius);
+        FCurrentLayer.addPoint(aX, aY - aRadius);
+        FCurrentLayer.addPoint(aX + aRadius, aY);
+        FCurrentLayer.addPoint(aX - aRadius, aY);
+        while(x < y)
+        {
+            if(f >= 0)
+            {
+                y--;
+                ddF_y += 2;
+                f += ddF_y;
+            }
+            x++;
+            ddF_x += 2;
+            f += ddF_x + 1;
+            FCurrentLayer.addPoint(aX + x, aY + y);
+            FCurrentLayer.addPoint(aX - x, aY + y);
+            FCurrentLayer.addPoint(aX + x, aY - y);
+            FCurrentLayer.addPoint(aX - x, aY - y);
+            FCurrentLayer.addPoint(aX + y, aY + x);
+            FCurrentLayer.addPoint(aX - y, aY + x);
+            FCurrentLayer.addPoint(aX + y, aY - x);
+            FCurrentLayer.addPoint(aX - y, aY - x);
+        }
     }
 
     protected void CreateStage(){
@@ -143,14 +177,8 @@ public class Grid implements LayerEventListener {
         return FCurrentLayer;
     }
 
-    public void drawCircle(double aX, double aY, double aRadius) {
-        double PX;
-        double PY;
-        for (int i = 0; i < 360; i = i + 1) {
-            PX = cos(i*2*PI/360) * aRadius;
-            PY = sin(i*2*PI/360) * aRadius;
-            FCurrentLayer.addPoint(PX + aX, PY + aY);
-        }
+    public void drawCircle(int aX, int aY, int aRadius) {
+        drawCircleBresenham(aX, aY, aRadius);
     }
 
     @Override

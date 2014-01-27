@@ -119,7 +119,8 @@ public class GridStageController implements Initializable {
     protected void UpdatecbLayers() {
         Layer selLayer = null;
         cbLayers.getItems().clear();
-        ArrayList<Layer> Layers = Grid.getLayers();
+        ArrayList<Layer> Layers;
+        Layers = Grid.getLayers();
         for (Layer Layer : Layers) {
             selLayer = Layer;
             cbLayers.getItems().add(Layer.getName());
@@ -160,6 +161,8 @@ public class GridStageController implements Initializable {
         gc0 = Layer0.getGraphicsContext2D();
         gc1 = Layer1.getGraphicsContext2D();
         FGenerator = new Random();
+        cbGridSize.getItems().add(1);
+        cbGridSize.getItems().add(2);
         for( int i = 5; i <= 20; i = i + 5 )
         {
             cbGridSize.getItems().add(i);
