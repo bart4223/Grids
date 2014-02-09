@@ -6,8 +6,6 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.StrictMath.round;
-
 public class Layer implements Comparable<Layer> {
 
     protected String FName;
@@ -35,13 +33,6 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    protected String getIDFromPoints(double aX, double aY) {
-        Integer x = (int)round(aX);
-        Integer y = (int)round(aY);
-        return x.toString() + y.toString();
-
-    }
-
     public Layer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
         FPoints = new ArrayList<Point2D>();
@@ -64,17 +55,15 @@ public class Layer implements Comparable<Layer> {
     }
 
     public void addPoint(Point2D aPoint) {
-        aPoint.setID(getIDFromPoints(aPoint.getX(),aPoint.getY()));
         FPoints.add(aPoint);
         RaiseAddPointEvent(aPoint);
     }
 
-    public Point2D addPoint(double aX, double aY) {
+    public Point2D addPoint(int aX, int aY) {
         Point2D Point = getPointInLayer(aX, aY);
         if (Point == null ) {
             Point = new Point2D(aX, aY);
             addPoint(Point);
-            //System.out.println(Point.getID());
         }
         return Point;
     }
@@ -84,10 +73,9 @@ public class Layer implements Comparable<Layer> {
         RaiseDeletePointEvent(aPoint);
     }
 
-    public Point2D getPointInLayer(double aX, double aY) {
-        String id = getIDFromPoints(aX, aY);
+    public Point2D getPointInLayer(int aX, int aY) {
         for (Point2D Point : FPoints)
-            if (Point.getID().equals(id)) {
+            if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {
                 return Point;
             }
         return null;

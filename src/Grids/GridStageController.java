@@ -65,24 +65,37 @@ public class GridStageController implements Initializable {
     }
 
     protected void RenderLayer0() {
+        Integer index = 0;
+        Color color;
         gc0.clearRect(0,0,Layer0.getWidth(),Layer0.getHeight());
         for(int i = 0; i <= Layer0.getWidth(); i = i + Grid.getGridDistance()) {
             gc0.beginPath();
             gc0.moveTo(i, 0);
             gc0.lineTo(i, Layer0.getHeight());
-            gc0.setStroke(Grid.getGridColor());
+            if (index%2 == 0)
+                color = Grid.getGridColor().darker();
+            else
+                color = Grid.getGridColor();
+            gc0.setStroke(color);
             gc0.setLineWidth(1);
             gc0.stroke();
             gc0.closePath();
+            index = index + 1;
         }
+        index = 0;
         for(int i = 0; i < Layer0.getHeight(); i = i + Grid.getGridDistance()) {
             gc0.beginPath();
             gc0.moveTo(0, i);
             gc0.lineTo(Layer0.getWidth(), i);
-            gc0.setStroke(Grid.getGridColor());
+            if (index%2 == 0)
+                color = Grid.getGridColor().darker();
+            else
+                color = Grid.getGridColor();
+            gc0.setStroke(color);
             gc0.setLineWidth(1);
             gc0.stroke();
             gc0.closePath();
+            index = index + 1;
         }
     }
 
