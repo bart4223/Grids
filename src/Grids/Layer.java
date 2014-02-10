@@ -73,6 +73,12 @@ public class Layer implements Comparable<Layer> {
         RaiseDeletePointEvent(aPoint);
     }
 
+    public void deletePoints() {
+        while (FPoints.size() > 0) {
+            deletePoint(FPoints.get(0));
+        }
+    }
+
     public Point2D getPointInLayer(int aX, int aY) {
         for (Point2D Point : FPoints)
             if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {

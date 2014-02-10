@@ -15,7 +15,7 @@ public class Main extends Application {
         primaryStage = FGrid.getStage();
         FGrid.addLayer("LAYER1","Layer 1", Color.BLACK);
         FGrid.setCurrentLayer("LAYER1");
-        FGrid.drawCircle(12,12,8);
+        FGrid.drawCircle(14,14,8);
         FGrid.ShowStage();
     }
 

@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Graphics.Point2D;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -85,7 +86,7 @@ public class Grid implements LayerEventListener {
             FStageController.Grid = this;
             Parent lRoot = lXMLLoader.getRoot();
             FStage.setTitle("Grid");
-            FStage.setScene(new Scene(lRoot, 500, 500, Color.WHITE));
+            FStage.setScene(new Scene(lRoot, 600, 600, Color.WHITE));
             FStage.setResizable(false);
             FStageController.Initialize();
         }
@@ -146,6 +147,32 @@ public class Grid implements LayerEventListener {
         return Layer;
     }
 
+    public void removeLayer(Layer layer) {
+        if (FLayers.size() < 2)
+            return;
+        layer.removeEventListener(this);
+        FLayers.remove(layer);
+        UpdateStage(true, "");
+    }
+
+    public void removeCurrentLayer() {
+        removeLayer(getCurrentLayer());
+    }
+
+    public void clearLayer(Layer aLayer) {
+        aLayer.deletePoints();
+    }
+
+    public void clearLayer(String aName) {
+        Layer aLayer = getLayer(aName);
+        clearLayer(aLayer);
+    }
+
+    public void clearCurrentLayer() {
+        Layer aLayer = getCurrentLayer();
+        clearLayer(aLayer);
+    }
+
     public Layer getLayer(String aName) {
         for (Layer Layer : FLayers) {
             if (Layer.getName().equals(aName)) {
@@ -179,6 +206,10 @@ public class Grid implements LayerEventListener {
 
     public void drawCircle(int aX, int aY, int aRadius) {
         drawCircleBresenham(aX, aY, aRadius);
+    }
+
+    public Point2D CoordinatesToGridCoordinates(Point2D aPoint) {
+        return new Point2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
     }
 
     @Override

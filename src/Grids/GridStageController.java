@@ -60,8 +60,18 @@ public class GridStageController implements Initializable {
     }
 
     @FXML
-    protected void handleAddLayer(){
+     protected void handleAddLayer(){
         Grid.addLayer("LAYER" + (Grid.getLayers().size() + 1), "Layer " + (Grid.getLayers().size() + 1), Color.rgb(getRandomValue(),getRandomValue(),getRandomValue()));
+    }
+
+    @FXML
+    protected void handleClearLayer(){
+        Grid.clearCurrentLayer();
+    }
+
+    @FXML
+    protected void handleRemoveLayer(){
+        Grid.removeCurrentLayer();
     }
 
     protected void RenderLayer0() {
@@ -117,14 +127,13 @@ public class GridStageController implements Initializable {
     protected void HandleMouseClicked(MouseEvent t) {
         if (t.getButton() == MouseButton.PRIMARY ) {
             Layer Layer = Grid.getCurrentLayer();
-            int PX = (int)(t.getX() / Grid.getGridDistance()) + 1;
-            int PY = (int)(t.getY() / Grid.getGridDistance()) + 1;
-            Point2D Point = Layer.getPointInLayer(PX, PY);
-            if (Point == null) {
-                Layer.addPoint(PX, PY);
+            Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
+            Point2D layerPoint = Layer.getPointInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+            if (layerPoint == null) {
+                Layer.addPoint(gridPoint.getXAsInt(), gridPoint.getYAsInt());
             }
             else {
-                Layer.deletePoint(Point);
+                Layer.deletePoint(layerPoint);
             }
         }
     }
