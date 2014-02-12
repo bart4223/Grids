@@ -35,14 +35,6 @@ public class Grid implements LayerEventListener {
         Collections.sort(FLayers);
     }
 
-    protected void LogLayers() {
-        System.out.print("Begin Layer Log"+"\n");
-        for (Layer Layer : FLayers) {
-            System.out.print(Layer.toString()+"\n");
-        }
-        System.out.print("End Layer Log"+"\n");
-    }
-
     protected void drawCircleBresenham(int aX, int aY, int aRadius) {
         if (FCurrentLayer == null) return;
         int f = 1 - aRadius;
@@ -148,8 +140,7 @@ public class Grid implements LayerEventListener {
     }
 
     public void removeLayer(Layer layer) {
-        if (FLayers.size() < 2)
-            return;
+        if (FLayers.size() < 2) return;
         layer.removeEventListener(this);
         FLayers.remove(layer);
         UpdateStage(true, "");
@@ -185,7 +176,6 @@ public class Grid implements LayerEventListener {
     public Layer setCurrentLayer(String aName) {
         if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
             FCurrentLayer = getLayer(aName);
-            //System.out.println("New CurrentLayer: " + FCurrentLayer.getName());
             if (FCurrentLayer.getZOrder() < FMaxZOrder) {
                 FMaxZOrder = FMaxZOrder + 1;
                 FCurrentLayer.setZOrder(FMaxZOrder);

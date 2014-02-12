@@ -9,6 +9,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -21,7 +23,10 @@ import java.util.ResourceBundle;
 public class GridStageController implements Initializable {
 
     @FXML
-    private Button btnAddLayer;
+    private ToggleButton btnCircle;
+
+    @FXML
+    private ToggleButton btnPoint;
 
     @FXML
     private Canvas Layer0;
@@ -57,6 +62,16 @@ public class GridStageController implements Initializable {
                 Grid.setCurrentLayer(cbLayers.getValue().toString());
             }
         }
+    }
+
+    @FXML
+    protected void handlePoint(){
+
+    }
+
+    @FXML
+    protected void handleCircle(){
+
     }
 
     @FXML
@@ -189,6 +204,10 @@ public class GridStageController implements Initializable {
         {
             cbGridSize.getItems().add(i);
         }
+        ToggleGroup group = new ToggleGroup();
+        btnPoint.setToggleGroup(group);
+        btnCircle.setToggleGroup(group);
+        btnPoint.setSelected(true);
     }
 
     public void Initialize() {
