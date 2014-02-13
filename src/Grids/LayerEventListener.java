@@ -2,8 +2,8 @@ package Grids;
 
 public interface LayerEventListener {
 
-    public void handleAddPoint(LayerAddPointEvent e);
+    public void handleAddObject(LayerAddObjectEvent e);
 
-    public void handleDeletePoint(LayerDeletePointEvent e);
+    public void handleRemoveObject(LayerRemoveObjectEvent e);
 
 }

@@ -1,5 +1,7 @@
 package Grids;
 
+import Uniwork.Graphics.Circle;
+import Uniwork.Graphics.GeometryObject2D;
 import Uniwork.Graphics.Point2D;
 import javafx.scene.paint.Color;
 
@@ -10,35 +12,35 @@ public class Layer implements Comparable<Layer> {
 
     protected String FName;
     protected String FDescription;
-    protected ArrayList<Point2D> FPoints;
-    protected Color FPointColor;
+    protected ArrayList<GeometryObject2D> FObjects;
+    protected Color FObjectColor;
     protected List FEventListeners;
     protected Integer FZOrder;
 
-    protected synchronized void RaiseAddPointEvent(Point2D aPoint) {
-        LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
+    protected synchronized void RaiseAddObjectEvent(GeometryObject2D aObject) {
+        LayerAddObjectEvent lEvent = new LayerAddObjectEvent(this);
         lEvent.LayerName = FName;
-        lEvent.Point = aPoint;
+        lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleAddPoint(lEvent);
+            ((LayerEventListener)FEventListener).handleAddObject(lEvent);
         }
     }
 
-    protected synchronized void RaiseDeletePointEvent(Point2D aPoint) {
-        LayerAddPointEvent lEvent = new LayerAddPointEvent(this);
+    protected synchronized void RaiseRemoveObjectEvent(GeometryObject2D aObject) {
+        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
-        lEvent.Point = aPoint;
+        lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleAddPoint(lEvent);
+            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
         }
     }
 
     public Layer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
-        FPoints = new ArrayList<Point2D>();
+        FObjects = new ArrayList<GeometryObject2D>();
         FName = aName;
         FDescription = aDescription;
-        FPointColor = aColor;
+        FObjectColor = aColor;
         FZOrder = 0;
     }
 
@@ -54,41 +56,58 @@ public class Layer implements Comparable<Layer> {
         return myZOrder.compareTo(oZOrder);
     }
 
-    public void addPoint(Point2D aPoint) {
-        FPoints.add(aPoint);
-        RaiseAddPointEvent(aPoint);
+    public void addObject(GeometryObject2D aObject) {
+        FObjects.add(aObject);
+        RaiseAddObjectEvent(aObject);
     }
 
     public Point2D addPoint(int aX, int aY) {
         Point2D Point = getPointInLayer(aX, aY);
         if (Point == null ) {
             Point = new Point2D(aX, aY);
-            addPoint(Point);
+            addObject(Point);
         }
         return Point;
     }
 
-    public void deletePoint(Point2D aPoint) {
-        FPoints.remove(aPoint);
-        RaiseDeletePointEvent(aPoint);
+    public Circle addCircle(int aX, int aY, int aRadius) {
+        Circle Circle = new Circle(aX, aY, aRadius);
+        addObject(Circle);
+        return Circle;
     }
 
-    public void deletePoints() {
-        while (FPoints.size() > 0) {
-            deletePoint(FPoints.get(0));
+    public void removeObject(GeometryObject2D aObject) {
+        FObjects.remove(aObject);
+        RaiseRemoveObjectEvent(aObject);
+    }
+
+    public void removeObjects() {
+        while (FObjects.size() > 0) {
+            removeObject(FObjects.get(0));
         }
     }
 
     public Point2D getPointInLayer(int aX, int aY) {
-        for (Point2D Point : FPoints)
-            if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {
-                return Point;
+        for (GeometryObject2D Object : FObjects)
+            if (Object instanceof Point2D) {
+                Point2D Point = (Point2D)Object;
+                if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {
+                    return Point;
+                }
             }
         return null;
     }
 
+    public void setName(String aName) {
+        FName = aName;
+    }
+
     public String getName() {
         return FName;
+    }
+
+    public void setDescription(String aDescription) {
+        FDescription = aDescription;
     }
 
     public String getDescription() {
@@ -103,12 +122,12 @@ public class Layer implements Comparable<Layer> {
         FZOrder = aValue;
     }
 
-    public Color getPointColor() {
-        return FPointColor;
+    public Color getObjectColor() {
+        return FObjectColor;
     }
 
-    public ArrayList<Point2D> getPoints() {
-        return FPoints;
+    public ArrayList<GeometryObject2D> getObjects() {
+        return FObjects;
     }
 
     public synchronized void addEventListener(LayerEventListener aListener)  {

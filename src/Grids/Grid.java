@@ -9,9 +9,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static java.lang.Math.*;
-import static java.lang.Thread.sleep;
+import java.util.Random;
 
 public class Grid implements LayerEventListener {
 
@@ -22,9 +20,9 @@ public class Grid implements LayerEventListener {
     protected ArrayList<Layer> FLayers;
     protected Layer FCurrentLayer;
     protected Integer FMaxZOrder;
+    protected Random FGenerator;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
-        //LogLayers();
         if (aUpdateControls) {
             FStageController.UpdateControls();
         }
@@ -35,36 +33,12 @@ public class Grid implements LayerEventListener {
         Collections.sort(FLayers);
     }
 
-    protected void drawCircleBresenham(int aX, int aY, int aRadius) {
-        if (FCurrentLayer == null) return;
-        int f = 1 - aRadius;
-        int ddF_x = 0;
-        int ddF_y = -2 * aRadius;
-        int x = 0;
-        int y = aRadius;
-        FCurrentLayer.addPoint(aX, aY + aRadius);
-        FCurrentLayer.addPoint(aX, aY - aRadius);
-        FCurrentLayer.addPoint(aX + aRadius, aY);
-        FCurrentLayer.addPoint(aX - aRadius, aY);
-        while(x < y)
-        {
-            if(f >= 0)
-            {
-                y--;
-                ddF_y += 2;
-                f += ddF_y;
-            }
-            x++;
-            ddF_x += 2;
-            f += ddF_x + 1;
-            FCurrentLayer.addPoint(aX + x, aY + y);
-            FCurrentLayer.addPoint(aX - x, aY + y);
-            FCurrentLayer.addPoint(aX + x, aY - y);
-            FCurrentLayer.addPoint(aX - x, aY - y);
-            FCurrentLayer.addPoint(aX + y, aY + x);
-            FCurrentLayer.addPoint(aX - y, aY + x);
-            FCurrentLayer.addPoint(aX + y, aY - x);
-            FCurrentLayer.addPoint(aX - y, aY - x);
+    protected void RenameLayers() {
+        int i = 1;
+        for (Layer Layer : FLayers) {
+            Layer.setName("LAYER" + i);
+            Layer.setDescription("Layer " + i);
+            i++;
         }
     }
 
@@ -87,8 +61,13 @@ public class Grid implements LayerEventListener {
         }
     }
 
+    protected int getRandomValue(int aMax) {
+        return FGenerator.nextInt(aMax);
+    }
+
     public Grid(int aGridDistance, Color aColor) {
         FLayers = new ArrayList<Layer>();
+        FGenerator = new Random();
         FGridDistance = aGridDistance;
         FGridColor = aColor;
         FCurrentLayer = null;
@@ -97,6 +76,8 @@ public class Grid implements LayerEventListener {
 
     public void Initialize() {
         CreateStage();
+        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255),getRandomValue(255),getRandomValue(255)));
+        setCurrentLayer("LAYER1");
     }
 
     public void Finalize() {
@@ -139,10 +120,15 @@ public class Grid implements LayerEventListener {
         return Layer;
     }
 
+    public Layer addLayer() {
+        return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255),getRandomValue(255),getRandomValue(255))));
+    }
+
     public void removeLayer(Layer layer) {
         if (FLayers.size() < 2) return;
         layer.removeEventListener(this);
         FLayers.remove(layer);
+        RenameLayers();
         UpdateStage(true, "");
     }
 
@@ -151,7 +137,7 @@ public class Grid implements LayerEventListener {
     }
 
     public void clearLayer(Layer aLayer) {
-        aLayer.deletePoints();
+        aLayer.removeObjects();
     }
 
     public void clearLayer(String aName) {
@@ -194,21 +180,17 @@ public class Grid implements LayerEventListener {
         return FCurrentLayer;
     }
 
-    public void drawCircle(int aX, int aY, int aRadius) {
-        drawCircleBresenham(aX, aY, aRadius);
-    }
-
     public Point2D CoordinatesToGridCoordinates(Point2D aPoint) {
         return new Point2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
     }
 
     @Override
-    public void handleAddPoint(LayerAddPointEvent e) {
+    public void handleAddObject(LayerAddObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 
     @Override
-    public void handleDeletePoint(LayerDeletePointEvent e) {
+    public void handleRemoveObject(LayerRemoveObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 }

@@ -1,5 +1,7 @@
 package Grids;
 
+import Uniwork.Graphics.Circle;
+import Uniwork.Graphics.GeometryObject;
 import Uniwork.Graphics.Point2D;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -17,7 +18,6 @@ import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 public class GridStageController implements Initializable {
@@ -42,7 +42,7 @@ public class GridStageController implements Initializable {
 
     protected GraphicsContext gc0;
     protected GraphicsContext gc1;
-    protected Random FGenerator;
+
     protected Integer FUpdateCount;
 
     @FXML
@@ -75,8 +75,8 @@ public class GridStageController implements Initializable {
     }
 
     @FXML
-     protected void handleAddLayer(){
-        Grid.addLayer("LAYER" + (Grid.getLayers().size() + 1), "Layer " + (Grid.getLayers().size() + 1), Color.rgb(getRandomValue(),getRandomValue(),getRandomValue()));
+    protected void handleAddLayer(){
+        Grid.addLayer();
     }
 
     @FXML
@@ -124,17 +124,58 @@ public class GridStageController implements Initializable {
         }
     }
 
+    protected void drawGridPixel(GraphicsContext aGC, int aX, int aY) {
+        int PX = (aX - 1) * Grid.getGridDistance();
+        int PY = (aY - 1) * Grid.getGridDistance();
+        aGC.fillRect(PX, PY, Grid.getGridDistance(), Grid.getGridDistance());
+    }
+
+    protected void drawCircleBresenham(GraphicsContext aGC, int aX, int aY, int aRadius) {
+        int f = 1 - aRadius;
+        int ddF_x = 0;
+        int ddF_y = -2 * aRadius;
+        int x = 0;
+        int y = aRadius;
+        drawGridPixel(aGC, aX, aY + aRadius);
+        drawGridPixel(aGC, aX, aY - aRadius);
+        drawGridPixel(aGC, aX + aRadius, aY);
+        drawGridPixel(aGC, aX - aRadius, aY);
+        while(x < y)
+        {
+            if(f >= 0)
+            {
+                y--;
+                ddF_y += 2;
+                f += ddF_y;
+            }
+            x++;
+            ddF_x += 2;
+            f += ddF_x + 1;
+            drawGridPixel(aGC, aX + x, aY + y);
+            drawGridPixel(aGC, aX - x, aY + y);
+            drawGridPixel(aGC, aX + x, aY - y);
+            drawGridPixel(aGC, aX - x, aY - y);
+            drawGridPixel(aGC, aX + y, aY + x);
+            drawGridPixel(aGC, aX - y, aY + x);
+            drawGridPixel(aGC, aX + y, aY - x);
+            drawGridPixel(aGC, aX - y, aY - x);
+        }
+    }
+
     protected void RenderLayer1() {
-        int PX;
-        int PY;
         gc1.clearRect(0,0,Layer1.getWidth(),Layer1.getHeight());
         ArrayList<Layer> Layers = Grid.getLayers();
         for (Layer Layer : Layers) {
-            gc1.setFill(Layer.getPointColor());
-            for (Point2D Point : Layer.getPoints()) {
-                PX = (Point.getXAsInt() - 1) * Grid.getGridDistance();
-                PY = (Point.getYAsInt() - 1) * Grid.getGridDistance();
-                gc1.fillRect(PX, PY, Grid.getGridDistance(), Grid.getGridDistance());
+            gc1.setFill(Layer.getObjectColor());
+            for (GeometryObject Object : Layer.getObjects()) {
+                if (Object instanceof Point2D) {
+                    Point2D Point = (Point2D)Object;
+                    drawGridPixel(gc1, Point.getXAsInt(), Point.getYAsInt());
+                }
+                else if (Object instanceof Circle) {
+                    Circle Circle = (Circle) Object;
+                    drawCircleBresenham(gc1, Circle.getMiddlePoint().getXAsInt(), Circle.getMiddlePoint().getYAsInt(), Circle.getRadiusAsInt());
+                }
             }
         }
     }
@@ -148,7 +189,7 @@ public class GridStageController implements Initializable {
                 Layer.addPoint(gridPoint.getXAsInt(), gridPoint.getYAsInt());
             }
             else {
-                Layer.deletePoint(layerPoint);
+                Layer.removeObject(layerPoint);
             }
         }
     }
@@ -169,10 +210,6 @@ public class GridStageController implements Initializable {
 
     protected void UpdatecbGridSize() {
         cbGridSize.getSelectionModel().select(Grid.getGridDistance().toString());
-    }
-
-    protected int getRandomValue() {
-        return FGenerator.nextInt(255);
     }
 
     protected void BeginUpdateControls() {
@@ -197,7 +234,6 @@ public class GridStageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gc0 = Layer0.getGraphicsContext2D();
         gc1 = Layer1.getGraphicsContext2D();
-        FGenerator = new Random();
         cbGridSize.getItems().add(1);
         cbGridSize.getItems().add(2);
         for( int i = 5; i <= 20; i = i + 5 )
