@@ -6,4 +6,8 @@ public interface LayerEventListener {
 
     public void handleRemoveObject(LayerRemoveObjectEvent e);
 
+    public void handleSelectObject(LayerSelectObjectEvent e);
+
+    public void handleUnselectObject(LayerUnselectObjectEvent e);
+
 }

@@ -193,4 +193,14 @@ public class Grid implements LayerEventListener {
     public void handleRemoveObject(LayerRemoveObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
+
+    @Override
+    public void handleSelectObject(LayerSelectObjectEvent e) {
+        UpdateStage(false, e.LayerName);
+    }
+
+    @Override
+    public void handleUnselectObject(LayerUnselectObjectEvent e) {
+        UpdateStage(false, e.LayerName);
+    }
 }

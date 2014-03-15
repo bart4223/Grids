@@ -21,6 +21,7 @@
         <AnchorPane prefHeight="550" minWidth="100" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0">
             <VBox prefHeight="550" minWidth="100" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: lightgray;">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                <ToggleButton id="btnSelect" prefHeight="30" prefWidth="80" text="Select" onAction="#handleSelect" fx:id="btnSelect" />
                 <ToggleButton id="btnPoint" prefHeight="30" prefWidth="80" text="Point" onAction="#handlePoint" fx:id="btnPoint" />
                 <ToggleButton id="btnCircle" prefHeight="30" prefWidth="80" text="Circle" onAction="#handleCircle" fx:id="btnCircle" />
              </VBox>

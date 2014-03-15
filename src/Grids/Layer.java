@@ -1,6 +1,7 @@
 package Grids;
 
 import Uniwork.Graphics.Circle;
+import Uniwork.Graphics.GeometryObject;
 import Uniwork.Graphics.GeometryObject2D;
 import Uniwork.Graphics.Point2D;
 import javafx.scene.paint.Color;
@@ -13,6 +14,7 @@ public class Layer implements Comparable<Layer> {
     protected String FName;
     protected String FDescription;
     protected ArrayList<GeometryObject2D> FObjects;
+    protected ArrayList<GeometryObject2D> FSelectedObjects;
     protected Color FObjectColor;
     protected List FEventListeners;
     protected Integer FZOrder;
@@ -35,9 +37,28 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
+    protected synchronized void RaiseSelectObjectEvent(GeometryObject2D aObject) {
+        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
+        lEvent.LayerName = FName;
+        lEvent.Object = aObject;
+        for (Object FEventListener : FEventListeners) {
+            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
+        }
+    }
+
+    protected synchronized void RaiseUnselectObjectEvent(GeometryObject2D aObject) {
+        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
+        lEvent.LayerName = FName;
+        lEvent.Object = aObject;
+        for (Object FEventListener : FEventListeners) {
+            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
+        }
+    }
+
     public Layer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
         FObjects = new ArrayList<GeometryObject2D>();
+        FSelectedObjects = new ArrayList<GeometryObject2D>();
         FName = aName;
         FDescription = aDescription;
         FObjectColor = aColor;
@@ -62,8 +83,9 @@ public class Layer implements Comparable<Layer> {
     }
 
     public Point2D addPoint(int aX, int aY) {
-        Point2D Point = getPointInLayer(aX, aY);
-        if (Point == null ) {
+        Point2D Point = null;
+        GeometryObject2D layerObject = getObjectInLayer(aX, aY);
+        if (!(layerObject instanceof Point2D)) {
             Point = new Point2D(aX, aY);
             addObject(Point);
         }
@@ -77,6 +99,7 @@ public class Layer implements Comparable<Layer> {
     }
 
     public void removeObject(GeometryObject2D aObject) {
+        unselectObject(aObject);
         FObjects.remove(aObject);
         RaiseRemoveObjectEvent(aObject);
     }
@@ -87,12 +110,18 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    public Point2D getPointInLayer(int aX, int aY) {
+    public GeometryObject2D getObjectInLayer(int aX, int aY) {
         for (GeometryObject2D Object : FObjects)
             if (Object instanceof Point2D) {
                 Point2D Point = (Point2D)Object;
                 if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {
                     return Point;
+                }
+            }
+            else if (Object instanceof Circle) {
+                Circle Circle = (Circle)Object;
+                if (Circle.getMiddlePoint().getXAsInt() == aX && Circle.getMiddlePoint().getYAsInt() == aY) {
+                    return Circle;
                 }
             }
         return null;
@@ -128,6 +157,57 @@ public class Layer implements Comparable<Layer> {
 
     public ArrayList<GeometryObject2D> getObjects() {
         return FObjects;
+    }
+
+    public ArrayList<GeometryObject2D> getSelected() {
+        return FSelectedObjects;
+    }
+
+    public void selectObject(GeometryObject2D aObject) {
+        for (GeometryObject2D Object : FObjects)
+            if (Object.equals(aObject))  {
+                FSelectedObjects.add(aObject);
+                RaiseSelectObjectEvent(aObject);
+                return;
+            }
+    }
+
+    public void unselectObject(GeometryObject2D aObject) {
+        for (GeometryObject2D Object : FSelectedObjects)
+            if (Object.equals(aObject))  {
+                FSelectedObjects.remove(aObject);
+                RaiseUnselectObjectEvent(aObject);
+                return;
+            }
+    }
+
+    public boolean isObjectSelected(GeometryObject2D aObject) {
+        for (GeometryObject2D Object : FSelectedObjects)
+            if (Object.equals(aObject))  {
+                return true;
+            }
+        return false;
+    }
+
+    public void toggleObjectSelected(GeometryObject2D aObject) {
+        if (isObjectSelected(aObject)) {
+            unselectObject(aObject);
+        }
+        else {
+            selectObject(aObject);
+        }
+    }
+
+    public void clearSelectedObjects() {
+        while (FSelectedObjects.size() > 0) {
+            unselectObject(FSelectedObjects.get(0));
+        }
+    }
+
+    public void removeSelectedObjects() {
+        while (FSelectedObjects.size() > 0) {
+            removeObject(FSelectedObjects.get(0));
+        }
     }
 
     public synchronized void addEventListener(LayerEventListener aListener)  {
