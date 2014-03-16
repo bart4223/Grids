@@ -7,8 +7,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ToggleButton?>
 <AnchorPane fx:controller="Grids.GridStageController" xmlns:fx="http://javafx.com/fxml" >
-    <AnchorPane prefHeight="50" minWidth="600" xmlns:fx="http://javafx.com/fxml" AnchorPane.TopAnchor="0">
-        <HBox prefHeight="50" minWidth="600" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
+    <AnchorPane prefHeight="50" minWidth="800" xmlns:fx="http://javafx.com/fxml" AnchorPane.TopAnchor="0">
+        <HBox prefHeight="50" minWidth="800" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
             <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
             <ComboBox id="cbGridsize" prefWidth="40" onAction="#handlecbGridSize" fx:id="cbGridSize" />
             <Button id="btnAddLayer" prefWidth="80" text="Add" onAction="#handleAddLayer" fx:id="btnAddLayer" />
@@ -17,9 +17,9 @@
             <ComboBox id="cbLayers" prefWidth="200" onAction="#handlecbLayers" fx:id="cbLayers" />
         </HBox>
     </AnchorPane>
-    <AnchorPane prefHeight="550" minWidth="600" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
-        <AnchorPane prefHeight="550" minWidth="100" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0">
-            <VBox prefHeight="550" minWidth="100" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: lightgray;">
+    <AnchorPane prefHeight="750" minWidth="800" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
+        <AnchorPane prefHeight="750" minWidth="100" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0">
+            <VBox prefHeight="750" minWidth="100" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: lightgray;">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <ToggleButton id="btnSelect" prefHeight="30" prefWidth="80" text="Select" onAction="#handleSelect" fx:id="btnSelect" />
                 <ToggleButton id="btnPoint" prefHeight="30" prefWidth="80" text="Point" onAction="#handlePoint" fx:id="btnPoint" />
@@ -28,9 +28,9 @@
                 <ToggleButton id="btnEllipse" prefHeight="30" prefWidth="80" text="Ellipse" onAction="#handleEllipse" fx:id="btnEllipse" />
              </VBox>
         </AnchorPane>
-        <AnchorPane prefHeight="550" minWidth="500" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0">
-            <Canvas id="Layer1" height="550" width="500" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer1" />
-            <Canvas id="Layer0" height="550" width="500" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer0" />
+        <AnchorPane prefHeight="750" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0">
+            <Canvas id="Layer1" height="750" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer1" />
+            <Canvas id="Layer0" height="750" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer0" />
         </AnchorPane>
     </AnchorPane>
 </AnchorPane>

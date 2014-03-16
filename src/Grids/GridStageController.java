@@ -161,7 +161,7 @@ public class GridStageController implements Initializable {
     }
 
     protected void RenderLayer1() {
-        gc1.clearRect(0,0,Layer1.getWidth(),Layer1.getHeight());
+        gc1.clearRect(0, 0, Layer1.getWidth(), Layer1.getHeight());
         ArrayList<Layer> Layers = Grid.getLayers();
         for (Layer Layer : Layers) {
             for (GeometryObject2D Object : Layer.getObjects()) {
@@ -192,7 +192,7 @@ public class GridStageController implements Initializable {
             int dx =  abs(aX1-aX0), sx = aX0<aX1 ? 1 : -1;
             int dy = -abs(aY1-aY0), sy = aY0<aY1 ? 1 : -1;
             int err = dx+dy, e2;
-            for(;;){  /* loop */
+            for(;;){
                 drawGridPixel(aGC, aX0, aY0, aSelected);
                 if (aX0==aX1 && aY0==aY1)
                     break;
@@ -239,22 +239,22 @@ public class GridStageController implements Initializable {
     }
 
     protected void drawEllipseBresenham(GraphicsContext aGC, int aX, int aY, int aRadiusX, int aRadiusY, Boolean aSelected) {
-        int dx = 0, dy = aRadiusY; /* im I. Quadranten von links oben nach rechts unten */
+        int dx = 0, dy = aRadiusY;
         long a2 = aRadiusX*aRadiusX, b2 = aRadiusY*aRadiusY;
-        long err = b2-(2*aRadiusY-1)*a2, e2; /* Fehler im 1. Schritt */
+        long err = b2-(2*aRadiusY-1)*a2, e2;
         do {
-            drawGridPixel(aGC, aX + dx, aY + dy, aSelected); /* I. Quadrant */
-            drawGridPixel(aGC, aX - dx, aY + dy, aSelected); /* II. Quadrant */
-            drawGridPixel(aGC, aX - dx, aY - dy, aSelected); /* III. Quadrant */
-            drawGridPixel(aGC, aX + dx, aY - dy, aSelected); /* IV. Quadrant */
+            drawGridPixel(aGC, aX + dx, aY + dy, aSelected);
+            drawGridPixel(aGC, aX - dx, aY + dy, aSelected);
+            drawGridPixel(aGC, aX - dx, aY - dy, aSelected);
+            drawGridPixel(aGC, aX + dx, aY - dy, aSelected);
 
             e2 = 2*err;
             if (e2 <  (2*dx+1)*b2) { dx++; err += (2*dx+1)*b2; }
             if (e2 > -(2*dy-1)*a2) { dy--; err -= (2*dy-1)*a2; }
         } while (dy > 0);
         dx--;
-        while (dx++ < aRadiusX) { /* fehlerhafter Abbruch bei flachen Ellipsen (b=1) */
-            drawGridPixel(aGC, aX + dx, aY, aSelected); /* -> Spitze der Ellipse vollenden */
+        while (dx++ < aRadiusX) {
+            drawGridPixel(aGC, aX + dx, aY, aSelected);
             drawGridPixel(aGC, aX - dx, aY, aSelected);
         }
     }
@@ -277,44 +277,48 @@ public class GridStageController implements Initializable {
     }
 
     protected void HandleMousePressed(MouseEvent t) {
-        if (t.getButton() == MouseButton.PRIMARY ) {
-            GeometryObject2D layerObject;
-            Layer Layer = Grid.getCurrentLayer();
-            Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
-            switch (FToolMode) {
-                case Select:
-                    layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
-                    if (layerObject != null) {
-                        if (Layer.toggleObjectSelected(layerObject)) {
-                            FCurrentGO = layerObject;
+        switch (t.getButton()) {
+            case PRIMARY:
+                GeometryObject2D layerObject;
+                Layer Layer = Grid.getCurrentLayer();
+                Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
+                switch (FToolMode) {
+                    case Select:
+                        layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                        if (layerObject != null) {
+                            if (Layer.toggleObjectSelected(layerObject)) {
+                                FCurrentGO = layerObject;
+                            }
                         }
-                    }
-                    break;
-                case Point:
-                    layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
-                    if (layerObject == null || !(layerObject instanceof Point2D)) {
-                        FCurrentGO = Layer.addPoint(gridPoint.getXAsInt(), gridPoint.getYAsInt());
-                    }
-                    else {
-                        Layer.removeObject(layerObject);
-                    }
-                    break;
-                case Line:
-                    FCurrentGO = Layer.addLine(gridPoint.getXAsInt(), gridPoint.getYAsInt(), gridPoint.getXAsInt(), gridPoint.getYAsInt());
-                    break;
-                case Circle:
-                    FCurrentGO = Layer.addCircle(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0);
-                    break;
-                case Ellipse:
-                    FCurrentGO = Layer.addEllipse(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0, 0);
-                    break;
-            }
+                        break;
+                    case Point:
+                        layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                        if (layerObject == null || !(layerObject instanceof Point2D)) {
+                            FCurrentGO = Layer.addPoint(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                        }
+                        else {
+                            Layer.removeObject(layerObject);
+                        }
+                        break;
+                    case Line:
+                        FCurrentGO = Layer.addLine(gridPoint.getXAsInt(), gridPoint.getYAsInt(), gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                        break;
+                    case Circle:
+                        FCurrentGO = Layer.addCircle(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0);
+                        break;
+                    case Ellipse:
+                        FCurrentGO = Layer.addEllipse(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0, 0);
+                        break;
+                }
+                break;
         }
     }
 
     protected void HandleMouseReleased(MouseEvent t) {
-        if (t.getButton() == MouseButton.PRIMARY && FCurrentGO != null) {
-            FCurrentGO = null;
+        switch (t.getButton()) {
+            case PRIMARY:
+                FCurrentGO = null;
+                break;
         }
     }
 
@@ -361,8 +365,10 @@ public class GridStageController implements Initializable {
     }
 
     protected void HandleMouseClicked(MouseEvent t) {
-        if (t.getButton() == MouseButton.SECONDARY) {
-            cmLayer0.show(Layer0, t.getScreenX(), t.getScreenY());
+        switch (t.getButton()) {
+            case SECONDARY:
+                cmLayer0.show(Layer0, t.getScreenX(), t.getScreenY());
+                break;
         }
     }
 

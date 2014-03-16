@@ -1,9 +1,11 @@
 package Grids;
 
 import Uniwork.Graphics.Point2D;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -29,6 +31,36 @@ public class Grid implements LayerEventListener {
         FStageController.RenderScene(aLayerName.equals(""));
     }
 
+    protected void CreateStage(){
+        FStage = new Stage();
+        FXMLLoader lXMLLoader;
+        lXMLLoader = new FXMLLoader(getClass().getResource("GridStage.fxml"));
+        try {
+            lXMLLoader.load();
+            FStageController = lXMLLoader.getController();
+            FStageController.Grid = this;
+            Parent lRoot = lXMLLoader.getRoot();
+            FStage.setTitle("Grid");
+            Scene Scene = new Scene(lRoot, 800, 800, Color.WHITE);
+            FStage.setScene(Scene);
+            FStage.setResizable(false);
+            Scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    handleKeyPressed(keyEvent);
+                    switch (keyEvent.getCode()) {
+                        case BACK_SPACE:
+                            FCurrentLayer.removeSelectedObjects();
+                    }
+                }
+            });
+            FStageController.Initialize();
+        }
+        catch( Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void SortLayers() {
         Collections.sort(FLayers);
     }
@@ -42,23 +74,12 @@ public class Grid implements LayerEventListener {
         }
     }
 
-    protected void CreateStage(){
-        FStage = new Stage();
-        FXMLLoader lXMLLoader;
-        lXMLLoader = new FXMLLoader(getClass().getResource("GridStage.fxml"));
-        try {
-            lXMLLoader.load();
-            FStageController = lXMLLoader.getController();
-            FStageController.Grid = this;
-            Parent lRoot = lXMLLoader.getRoot();
-            FStage.setTitle("Grid");
-            FStage.setScene(new Scene(lRoot, 600, 600, Color.WHITE));
-            FStage.setResizable(false);
-            FStageController.Initialize();
+    protected void handleKeyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case BACK_SPACE:
+                FCurrentLayer.removeSelectedObjects();
         }
-        catch( Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     protected int getRandomValue(int aMax) {
@@ -77,7 +98,6 @@ public class Grid implements LayerEventListener {
     public void Initialize() {
         CreateStage();
         addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255),getRandomValue(255),getRandomValue(255)));
-        setCurrentLayer("LAYER1");
     }
 
     public void Finalize() {
@@ -116,6 +136,7 @@ public class Grid implements LayerEventListener {
         Layer.addEventListener(this);
         FLayers.add(Layer);
         SortLayers();
+        setCurrentLayer(Layer);
         UpdateStage(true, "");
         return Layer;
     }
@@ -129,6 +150,7 @@ public class Grid implements LayerEventListener {
         layer.removeEventListener(this);
         FLayers.remove(layer);
         RenameLayers();
+        setCurrentLayer(FLayers.get(0));
         UpdateStage(true, "");
     }
 
@@ -161,15 +183,19 @@ public class Grid implements LayerEventListener {
 
     public Layer setCurrentLayer(String aName) {
         if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
-            FCurrentLayer = getLayer(aName);
-            if (FCurrentLayer.getZOrder() < FMaxZOrder) {
-                FMaxZOrder = FMaxZOrder + 1;
-                FCurrentLayer.setZOrder(FMaxZOrder);
-                SortLayers();
-                UpdateStage(false, "");
-            }
+            setCurrentLayer(getLayer(aName));
         }
         return FCurrentLayer;
+    }
+
+    public void setCurrentLayer(Layer aLayer) {
+        FCurrentLayer = aLayer;
+        if (FCurrentLayer.getZOrder() < FMaxZOrder) {
+            FMaxZOrder = FMaxZOrder + 1;
+            FCurrentLayer.setZOrder(FMaxZOrder);
+            SortLayers();
+            UpdateStage(false, "");
+        }
     }
 
     public ArrayList<Layer> getLayers() {
