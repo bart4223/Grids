@@ -48,10 +48,6 @@ public class Grid implements LayerEventListener {
                 @Override
                 public void handle(KeyEvent keyEvent) {
                     handleKeyPressed(keyEvent);
-                    switch (keyEvent.getCode()) {
-                        case BACK_SPACE:
-                            FCurrentLayer.removeSelectedObjects();
-                    }
                 }
             });
             FStageController.Initialize();
