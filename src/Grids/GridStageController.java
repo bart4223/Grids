@@ -1,9 +1,6 @@
 package Grids;
 
-import Uniwork.Graphics.Circle;
-import Uniwork.Graphics.GeometryObject2D;
-import Uniwork.Graphics.Line2D;
-import Uniwork.Graphics.Point2D;
+import Uniwork.Graphics.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,7 +22,7 @@ import static java.lang.Math.abs;
 
 public class GridStageController implements Initializable {
 
-    public enum ToolMode{Select, Point, Line, Circle};
+    public enum ToolMode{Select, Point, Line, Circle, Ellipse};
 
     @FXML
     private ToggleButton btnSelect;
@@ -38,6 +35,9 @@ public class GridStageController implements Initializable {
 
     @FXML
     private ToggleButton btnCircle;
+
+    @FXML
+    private ToggleButton btnEllipse;
 
     @FXML
     private Canvas Layer0;
@@ -99,6 +99,11 @@ public class GridStageController implements Initializable {
     @FXML
     protected void handleCircle(){
         setToolMode(ToolMode.Circle);
+    }
+
+    @FXML
+    protected void handleEllipse(){
+        setToolMode(ToolMode.Ellipse);
     }
 
     @FXML
@@ -170,14 +175,15 @@ public class GridStageController implements Initializable {
         if (aObject instanceof Point2D) {
             Point2D Point = (Point2D)aObject;
             drawGridPixel(aGC, Point.getXAsInt(), Point.getYAsInt(), aLayer.isObjectSelected(aObject));
-        }
-        else if (aObject instanceof Circle) {
-            Circle Circle = (Circle)aObject;
-            drawCircleBresenham(aGC, Circle.getMiddlePoint().getXAsInt(), Circle.getMiddlePoint().getYAsInt(), Circle.getRadiusAsInt(), aLayer.isObjectSelected(aObject));
-        }
-        else if (aObject instanceof Line2D) {
+        } else if (aObject instanceof Line2D) {
             Line2D Line = (Line2D)aObject;
             drawLineBresenham(aGC, Line.getA().getXAsInt(), Line.getA().getYAsInt(), Line.getB().getXAsInt(), Line.getB().getYAsInt(), aLayer.isObjectSelected(aObject));
+        } else if (aObject instanceof Circle) {
+            Circle Circle = (Circle)aObject;
+            drawCircleBresenham(aGC, Circle.getMiddlePoint().getXAsInt(), Circle.getMiddlePoint().getYAsInt(), Circle.getRadiusAsInt(), aLayer.isObjectSelected(aObject));
+        } else if (aObject instanceof Ellipse) {
+            Ellipse Ellipse = (Ellipse)aObject;
+            drawEllipseBresenham(aGC, Ellipse.getMiddlePoint().getXAsInt(), Ellipse.getMiddlePoint().getYAsInt(), Ellipse.getRadiusXAsInt(), Ellipse.getRadiusYAsInt(), aLayer.isObjectSelected(aObject));
         }
     }
 
@@ -232,6 +238,27 @@ public class GridStageController implements Initializable {
         }
     }
 
+    protected void drawEllipseBresenham(GraphicsContext aGC, int aX, int aY, int aRadiusX, int aRadiusY, Boolean aSelected) {
+        int dx = 0, dy = aRadiusY; /* im I. Quadranten von links oben nach rechts unten */
+        long a2 = aRadiusX*aRadiusX, b2 = aRadiusY*aRadiusY;
+        long err = b2-(2*aRadiusY-1)*a2, e2; /* Fehler im 1. Schritt */
+        do {
+            drawGridPixel(aGC, aX + dx, aY + dy, aSelected); /* I. Quadrant */
+            drawGridPixel(aGC, aX - dx, aY + dy, aSelected); /* II. Quadrant */
+            drawGridPixel(aGC, aX - dx, aY - dy, aSelected); /* III. Quadrant */
+            drawGridPixel(aGC, aX + dx, aY - dy, aSelected); /* IV. Quadrant */
+
+            e2 = 2*err;
+            if (e2 <  (2*dx+1)*b2) { dx++; err += (2*dx+1)*b2; }
+            if (e2 > -(2*dy-1)*a2) { dy--; err -= (2*dy-1)*a2; }
+        } while (dy > 0);
+        dx--;
+        while (dx++ < aRadiusX) { /* fehlerhafter Abbruch bei flachen Ellipsen (b=1) */
+            drawGridPixel(aGC, aX + dx, aY, aSelected); /* -> Spitze der Ellipse vollenden */
+            drawGridPixel(aGC, aX - dx, aY, aSelected);
+        }
+    }
+
     protected void drawGridPixel(GraphicsContext aGC, int aX, int aY, Boolean aSelected) {
         int PX = (aX - 1) * Grid.getGridDistance();
         int PY = (aY - 1) * Grid.getGridDistance();
@@ -278,6 +305,9 @@ public class GridStageController implements Initializable {
                 case Circle:
                     FCurrentGO = Layer.addCircle(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0);
                     break;
+                case Ellipse:
+                    FCurrentGO = Layer.addEllipse(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0, 0);
+                    break;
             }
         }
     }
@@ -289,6 +319,8 @@ public class GridStageController implements Initializable {
     }
 
     protected void HandleMouseDragged(MouseEvent t) {
+        int lXDist;
+        int lYDist;
         if (FCurrentGO != null) {
             Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
             switch (FToolMode) {
@@ -309,12 +341,19 @@ public class GridStageController implements Initializable {
                     break;
                 case Circle:
                     Circle Circle = (Circle)FCurrentGO;
-                    int lXDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
-                    int lYDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                    lXDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                    lYDist = Math.abs(Circle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
                     if (lXDist > lYDist)
                         Circle.setRadius(lXDist);
                     else
                         Circle.setRadius(lYDist);
+                    break;
+                case Ellipse:
+                    Ellipse Ellipse = (Ellipse)FCurrentGO;
+                    lXDist = Math.abs(Ellipse.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                    lYDist = Math.abs(Ellipse.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                    Ellipse.setRadiusX(lXDist);
+                    Ellipse.setRadiusY(lYDist);
                     break;
             }
             RenderLayer1();
@@ -405,6 +444,7 @@ public class GridStageController implements Initializable {
         btnPoint.setToggleGroup(group);
         btnLine.setToggleGroup(group);
         btnCircle.setToggleGroup(group);
+        btnEllipse.setToggleGroup(group);
         btnSelect.setSelected(true);
         dsContextMenu = new DropShadow();
         cmLayer0 = new ContextMenu();

@@ -25,6 +25,7 @@
                 <ToggleButton id="btnPoint" prefHeight="30" prefWidth="80" text="Point" onAction="#handlePoint" fx:id="btnPoint" />
                 <ToggleButton id="btnLine" prefHeight="30" prefWidth="80" text="Line" onAction="#handleLine" fx:id="btnLine" />
                 <ToggleButton id="btnCircle" prefHeight="30" prefWidth="80" text="Circle" onAction="#handleCircle" fx:id="btnCircle" />
+                <ToggleButton id="btnEllipse" prefHeight="30" prefWidth="80" text="Ellipse" onAction="#handleEllipse" fx:id="btnEllipse" />
              </VBox>
         </AnchorPane>
         <AnchorPane prefHeight="550" minWidth="500" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0">

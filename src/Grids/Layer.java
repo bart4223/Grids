@@ -89,16 +89,22 @@ public class Layer implements Comparable<Layer> {
         return Point;
     }
 
+    public Line2D addLine(int aAX, int aAY, int aBX, int aBY) {
+        Line2D Line = new Line2D(aAX, aAY, aBX, aBY);
+        addObject(Line);
+        return Line;
+    }
+
     public Circle addCircle(int aX, int aY, int aRadius) {
         Circle Circle = new Circle(aX, aY, aRadius);
         addObject(Circle);
         return Circle;
     }
 
-    public Line2D addLine(int aAX, int aAY, int aBX, int aBY) {
-        Line2D Line = new Line2D(aAX, aAY, aBX, aBY);
-        addObject(Line);
-        return Line;
+    public Ellipse addEllipse(int aX, int aY, int aRadiusX, int aRadiusY) {
+        Ellipse Ellipse = new Ellipse(aX, aY, aRadiusX, aRadiusY);
+        addObject(Ellipse);
+        return Ellipse;
     }
 
     public void removeObject(GeometryObject2D aObject) {
@@ -121,10 +127,10 @@ public class Layer implements Comparable<Layer> {
                     return Point;
                 }
             }
-            else if (Object instanceof Circle) {
-                Circle Circle = (Circle)Object;
-                if (Circle.getMiddlePoint().getXAsInt() == aX && Circle.getMiddlePoint().getYAsInt() == aY) {
-                    return Circle;
+            else if (Object instanceof Ellipse) {
+                Ellipse Ellipse = (Ellipse)Object;
+                if (Ellipse.getMiddlePoint().getXAsInt() == aX && Ellipse.getMiddlePoint().getYAsInt() == aY) {
+                    return Ellipse;
                 }
             }
             else if (Object instanceof Line2D) {
