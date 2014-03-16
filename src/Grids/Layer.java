@@ -189,13 +189,14 @@ public class Layer implements Comparable<Layer> {
         return false;
     }
 
-    public void toggleObjectSelected(GeometryObject2D aObject) {
+    public boolean toggleObjectSelected(GeometryObject2D aObject) {
         if (isObjectSelected(aObject)) {
             unselectObject(aObject);
         }
         else {
             selectObject(aObject);
         }
+        return isObjectSelected(aObject);
     }
 
     public void clearSelectedObjects() {

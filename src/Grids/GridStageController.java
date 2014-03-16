@@ -228,7 +228,9 @@ public class GridStageController implements Initializable {
                 case Select:
                     layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
                     if (layerObject != null) {
-                        Layer.toggleObjectSelected(layerObject);
+                        if (Layer.toggleObjectSelected(layerObject)) {
+                            FCurrentGO = layerObject;
+                        }
                     }
                     break;
                 case Point:
@@ -249,17 +251,24 @@ public class GridStageController implements Initializable {
 
     protected void HandleMouseReleased(MouseEvent t) {
         if (t.getButton() == MouseButton.PRIMARY && FCurrentGO != null) {
-            Layer Layer = Grid.getCurrentLayer();
-            Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
             FCurrentGO = null;
         }
     }
 
     protected void HandleMouseDragged(MouseEvent t) {
         if (FCurrentGO != null) {
-            Layer Layer = Grid.getCurrentLayer();
             Point2D gridPoint = Grid.CoordinatesToGridCoordinates(new Point2D(t.getX(), t.getY()));
             switch (FToolMode) {
+                case Select:
+                    if (FCurrentGO instanceof Point2D) {
+                        Point2D Point = (Point2D)FCurrentGO;
+                        Point.setX(gridPoint.getX());
+                        Point.setY(gridPoint.getY());
+                    } else if (FCurrentGO instanceof Circle) {
+                        Circle Circle = (Circle)FCurrentGO;
+                        Circle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    }
+                    break;
                 case Circle:
                     Circle Circle = (Circle)FCurrentGO;
                     int lXDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
@@ -268,6 +277,7 @@ public class GridStageController implements Initializable {
                         Circle.setRadius(lXDist);
                     else
                         Circle.setRadius(lYDist);
+                    break;
             }
             RenderLayer1();
         }
@@ -311,7 +321,6 @@ public class GridStageController implements Initializable {
 
     protected MenuItem getMenuItemForLine(String menuName, final Line line, EventHandler click) {
         Label menuLabel = new Label(menuName);
-        // apply style to occupy larger space for label
         menuLabel.setStyle("-fx-padding: 5 10 5 10");
         MenuItem mi = new MenuItem();
         mi.setGraphic(menuLabel);
