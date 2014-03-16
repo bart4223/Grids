@@ -23,6 +23,7 @@
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <ToggleButton id="btnSelect" prefHeight="30" prefWidth="80" text="Select" onAction="#handleSelect" fx:id="btnSelect" />
                 <ToggleButton id="btnPoint" prefHeight="30" prefWidth="80" text="Point" onAction="#handlePoint" fx:id="btnPoint" />
+                <ToggleButton id="btnLine" prefHeight="30" prefWidth="80" text="Line" onAction="#handleLine" fx:id="btnLine" />
                 <ToggleButton id="btnCircle" prefHeight="30" prefWidth="80" text="Circle" onAction="#handleCircle" fx:id="btnCircle" />
              </VBox>
         </AnchorPane>

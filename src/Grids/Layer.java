@@ -1,9 +1,6 @@
 package Grids;
 
-import Uniwork.Graphics.Circle;
-import Uniwork.Graphics.GeometryObject;
-import Uniwork.Graphics.GeometryObject2D;
-import Uniwork.Graphics.Point2D;
+import Uniwork.Graphics.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -98,6 +95,12 @@ public class Layer implements Comparable<Layer> {
         return Circle;
     }
 
+    public Line2D addLine(int aAX, int aAY, int aBX, int aBY) {
+        Line2D Line = new Line2D(aAX, aAY, aBX, aBY);
+        addObject(Line);
+        return Line;
+    }
+
     public void removeObject(GeometryObject2D aObject) {
         unselectObject(aObject);
         FObjects.remove(aObject);
@@ -122,6 +125,12 @@ public class Layer implements Comparable<Layer> {
                 Circle Circle = (Circle)Object;
                 if (Circle.getMiddlePoint().getXAsInt() == aX && Circle.getMiddlePoint().getYAsInt() == aY) {
                     return Circle;
+                }
+            }
+            else if (Object instanceof Line2D) {
+                Line2D Line = (Line2D)Object;
+                if ((Line.getA().getXAsInt() == aX && Line.getA().getYAsInt() == aY) || ((Line.getB().getXAsInt() == aX && Line.getB().getYAsInt() == aY))) {
+                    return Line;
                 }
             }
         return null;

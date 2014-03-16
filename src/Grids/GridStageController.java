@@ -1,8 +1,8 @@
 package Grids;
 
 import Uniwork.Graphics.Circle;
-import Uniwork.Graphics.GeometryObject;
 import Uniwork.Graphics.GeometryObject2D;
+import Uniwork.Graphics.Line2D;
 import Uniwork.Graphics.Point2D;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,15 +21,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static java.lang.Math.abs;
+
 public class GridStageController implements Initializable {
 
-    public enum ToolMode{Select, Point, Circle};
+    public enum ToolMode{Select, Point, Line, Circle};
 
     @FXML
     private ToggleButton btnSelect;
 
     @FXML
     private ToggleButton btnPoint;
+
+    @FXML
+    private ToggleButton btnLine;
 
     @FXML
     private ToggleButton btnCircle;
@@ -84,6 +89,11 @@ public class GridStageController implements Initializable {
     @FXML
     protected void handlePoint(){
         setToolMode(ToolMode.Point);
+    }
+
+    @FXML
+    protected void handleLine(){
+        setToolMode(ToolMode.Line);
     }
 
     @FXML
@@ -165,6 +175,26 @@ public class GridStageController implements Initializable {
             Circle Circle = (Circle)aObject;
             drawCircleBresenham(aGC, Circle.getMiddlePoint().getXAsInt(), Circle.getMiddlePoint().getYAsInt(), Circle.getRadiusAsInt(), aLayer.isObjectSelected(aObject));
         }
+        else if (aObject instanceof Line2D) {
+            Line2D Line = (Line2D)aObject;
+            drawLineBresenham(aGC, Line.getA().getXAsInt(), Line.getA().getYAsInt(), Line.getB().getXAsInt(), Line.getB().getYAsInt(), aLayer.isObjectSelected(aObject));
+        }
+    }
+
+    protected void drawLineBresenham(GraphicsContext aGC, int aX0, int aY0, int aX1, int aY1, Boolean aSelected) {
+        {
+            int dx =  abs(aX1-aX0), sx = aX0<aX1 ? 1 : -1;
+            int dy = -abs(aY1-aY0), sy = aY0<aY1 ? 1 : -1;
+            int err = dx+dy, e2;
+            for(;;){  /* loop */
+                drawGridPixel(aGC, aX0, aY0, aSelected);
+                if (aX0==aX1 && aY0==aY1)
+                    break;
+                e2 = 2*err;
+                if (e2 > dy) { err += dy; aX0 += sx; }
+                if (e2 < dx) { err += dx; aY0 += sy; }
+            }
+        }
     }
 
     protected void drawCircleBresenham(GraphicsContext aGC, int aX, int aY, int aRadius, Boolean aSelected) {
@@ -242,6 +272,9 @@ public class GridStageController implements Initializable {
                         Layer.removeObject(layerObject);
                     }
                     break;
+                case Line:
+                    FCurrentGO = Layer.addLine(gridPoint.getXAsInt(), gridPoint.getYAsInt(), gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                    break;
                 case Circle:
                     FCurrentGO = Layer.addCircle(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0);
                     break;
@@ -268,6 +301,11 @@ public class GridStageController implements Initializable {
                         Circle Circle = (Circle)FCurrentGO;
                         Circle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
                     }
+                    break;
+                case Line:
+                    Line2D Line = (Line2D)FCurrentGO;
+                    Line.getB().setX(gridPoint.getX());
+                    Line.getB().setY(gridPoint.getY());
                     break;
                 case Circle:
                     Circle Circle = (Circle)FCurrentGO;
@@ -365,6 +403,7 @@ public class GridStageController implements Initializable {
         ToggleGroup group = new ToggleGroup();
         btnSelect.setToggleGroup(group);
         btnPoint.setToggleGroup(group);
+        btnLine.setToggleGroup(group);
         btnCircle.setToggleGroup(group);
         btnSelect.setSelected(true);
         dsContextMenu = new DropShadow();
