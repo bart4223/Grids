@@ -9,7 +9,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -256,6 +255,9 @@ public class GridStageController implements Initializable {
         while (dx++ < aRadiusX) {
             drawGridPixel(aGC, aX + dx, aY, aSelected);
             drawGridPixel(aGC, aX - dx, aY, aSelected);
+        }
+        if (aSelected) {
+            drawGridPixel(aGC, aX, aY, aSelected);
         }
     }
 
