@@ -66,6 +66,7 @@ public class GridStageController implements Initializable {
     protected ToolMode FToolMode;
 
     protected GeometryObject2D FCurrentGO;
+    protected GeometryObject2D FCurrentGOPoint;
 
     protected ContextMenu cmLayer0;
     protected DropShadow dsContextMenu;
@@ -375,6 +376,7 @@ public class GridStageController implements Initializable {
         switch (t.getButton()) {
             case PRIMARY:
                 FCurrentGO = null;
+                FCurrentGOPoint = null;
                 break;
         }
     }
@@ -390,9 +392,36 @@ public class GridStageController implements Initializable {
                         Point2D Point = (Point2D)FCurrentGO;
                         Point.setX(gridPoint.getX());
                         Point.setY(gridPoint.getY());
-                    } else if (FCurrentGO instanceof Circle) {
-                        Circle Circle = (Circle)FCurrentGO;
-                        Circle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    } else if (FCurrentGO instanceof Ellipse) {
+                        Ellipse Ellipse = (Ellipse)FCurrentGO;
+                        Ellipse.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    } else if (FCurrentGO instanceof Rectangle) {
+                        Rectangle Rectangle = (Rectangle)FCurrentGO;
+                        Rectangle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    } else if (FCurrentGO instanceof Line2D) {
+                        Line2D Line = (Line2D) FCurrentGO;
+                        double dx;
+                        double dy;
+                        if (FCurrentGOPoint == null) {
+                            if (Line.getA().getX() == gridPoint.getX() && Line.getA().getY() == gridPoint.getY()) {
+                                FCurrentGOPoint = Line.getA();
+                            }
+                            else {
+                                FCurrentGOPoint = Line.getB();
+                            }
+                        }
+                        if (FCurrentGOPoint.equals(Line.getA())) {
+                            dx = Line.getB().getX() - Line.getA().getX();
+                            dy = Line.getB().getY() - Line.getA().getY();
+                            Line.setA(gridPoint.getX(), gridPoint.getY());
+                            Line.setB(gridPoint.getX()+dx, gridPoint.getY()+dy);
+                        }
+                        else {
+                            dx = Line.getA().getX() - Line.getB().getX();
+                            dy = Line.getA().getY() - Line.getB().getY();
+                            Line.setB(gridPoint.getX(), gridPoint.getY());
+                            Line.setA(gridPoint.getX()+dx, gridPoint.getY()+dy);
+                        }
                     }
                     break;
                 case Line:
@@ -503,6 +532,8 @@ public class GridStageController implements Initializable {
         FUpdateCount = 0;
         FToolMode = ToolMode.Select;
         FPaintGrid = true;
+        FCurrentGO = null;
+        FCurrentGOPoint = null;
     }
 
     @Override

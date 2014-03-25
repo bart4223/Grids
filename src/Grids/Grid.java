@@ -154,6 +154,12 @@ public class Grid implements LayerEventListener {
         removeLayer(getCurrentLayer());
     }
 
+    public void removeAllLayers() {
+        while (FLayers.size() > 1) {
+            removeLayer(FLayers.get(FLayers.size() - 1));
+        }
+    }
+
     public void clearLayer(Layer aLayer) {
         aLayer.removeObjects();
     }
