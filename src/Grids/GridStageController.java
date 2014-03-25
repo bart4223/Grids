@@ -21,7 +21,7 @@ import static java.lang.Math.abs;
 
 public class GridStageController implements Initializable {
 
-    public enum ToolMode{Select, Point, Line, Circle, Ellipse};
+    public enum ToolMode{Select, Point, Line, Circle, Ellipse, Quadrat, Rectangle};
 
     @FXML
     private ToggleButton btnSelect;
@@ -37,6 +37,15 @@ public class GridStageController implements Initializable {
 
     @FXML
     private ToggleButton btnEllipse;
+
+    @FXML
+    private ToggleButton btnQuadrat;
+
+    @FXML
+    private ToggleButton btnRectangle;
+
+    @FXML
+    private ToggleButton btnPaintGrid;
 
     @FXML
     private Canvas Layer0;
@@ -61,6 +70,8 @@ public class GridStageController implements Initializable {
     protected ContextMenu cmLayer0;
     protected DropShadow dsContextMenu;
 
+    protected boolean FPaintGrid;
+
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
         if (InUpdate()) return;
@@ -78,6 +89,13 @@ public class GridStageController implements Initializable {
                 Grid.setCurrentLayer(cbLayers.getValue().toString());
             }
         }
+    }
+
+
+    @FXML
+    protected void handlePaintGrid(){
+        FPaintGrid = btnPaintGrid.isSelected();
+        RenderScene(true);
     }
 
     @FXML
@@ -106,6 +124,16 @@ public class GridStageController implements Initializable {
     }
 
     @FXML
+    protected void handleQuadrat(){
+        setToolMode(ToolMode.Quadrat);
+    }
+
+    @FXML
+    protected void handleRectangle(){
+        setToolMode(ToolMode.Rectangle);
+    }
+
+    @FXML
     protected void handleAddLayer(){
         Grid.addLayer();
     }
@@ -125,9 +153,11 @@ public class GridStageController implements Initializable {
     }
 
     protected void RenderLayer0() {
+        gc0.clearRect(0,0,Layer0.getWidth(),Layer0.getHeight());
+        if (!FPaintGrid)
+            return;
         Integer index = 0;
         Color color;
-        gc0.clearRect(0,0,Layer0.getWidth(),Layer0.getHeight());
         for(int i = 0; i <= Layer0.getWidth(); i = i + Grid.getGridDistance()) {
             gc0.beginPath();
             gc0.moveTo(i, 0);
@@ -183,6 +213,25 @@ public class GridStageController implements Initializable {
         } else if (aObject instanceof Ellipse) {
             Ellipse Ellipse = (Ellipse)aObject;
             drawEllipseBresenham(aGC, Ellipse.getMiddlePoint().getXAsInt(), Ellipse.getMiddlePoint().getYAsInt(), Ellipse.getRadiusXAsInt(), Ellipse.getRadiusYAsInt(), aLayer.isObjectSelected(aObject));
+        } else if (aObject instanceof Rectangle) {
+            Rectangle Rectangle = (Rectangle)aObject;
+            drawRectangle(aGC, Rectangle.getMiddlePoint().getXAsInt(), Rectangle.getMiddlePoint().getYAsInt(), Rectangle.getAAsInt(), Rectangle.getBAsInt(), aLayer.isObjectSelected(aObject));
+        }
+    }
+
+    protected void drawRectangle(GraphicsContext aGC, int aX, int aY, int aA, int aB, Boolean aSelected) {
+        int dx = aA/2;
+        int dy = aB/2;
+        int TLX = aX-dx;
+        int TLY = aY-dy;
+        int BRX = aX+aA-dx;
+        int BRY = aY+aB-dy;
+        drawLineBresenham(aGC,TLX,TLY,BRX,TLY,aSelected);
+        drawLineBresenham(aGC,BRX,TLY,BRX,BRY,aSelected);
+        drawLineBresenham(aGC,TLX,TLY,TLX,BRY,aSelected);
+        drawLineBresenham(aGC,TLX,BRY,BRX,BRY,aSelected);
+        if (aSelected) {
+            drawGridPixel(aGC, aX, aY, aSelected);
         }
     }
 
@@ -311,6 +360,12 @@ public class GridStageController implements Initializable {
                     case Ellipse:
                         FCurrentGO = Layer.addEllipse(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0, 0);
                         break;
+                    case Quadrat:
+                        FCurrentGO = Layer.addQuadrat(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0);
+                        break;
+                    case Rectangle:
+                        FCurrentGO = Layer.addRectangle(gridPoint.getXAsInt(), gridPoint.getYAsInt(), 0, 0);
+                        break;
                 }
                 break;
         }
@@ -361,6 +416,20 @@ public class GridStageController implements Initializable {
                     Ellipse.setRadiusX(lXDist);
                     Ellipse.setRadiusY(lYDist);
                     break;
+                case Quadrat:
+                    Quadrat Quadrat = (Quadrat)FCurrentGO;
+                    lXDist = Math.abs(Quadrat.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                    lYDist = Math.abs(Quadrat.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                    if (lXDist > lYDist)
+                        Quadrat.setA(2*lXDist);
+                    else
+                        Quadrat.setA(2*lYDist);
+                case Rectangle:
+                    Rectangle Rectangle = (Rectangle)FCurrentGO;
+                    lXDist = Math.abs(Rectangle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                    lYDist = Math.abs(Rectangle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                    Rectangle.setA(2*lXDist);
+                    Rectangle.setB(2*lYDist);
             }
             RenderLayer1();
         }
@@ -433,6 +502,7 @@ public class GridStageController implements Initializable {
     public GridStageController() {
         FUpdateCount = 0;
         FToolMode = ToolMode.Select;
+        FPaintGrid = true;
     }
 
     @Override
@@ -453,6 +523,8 @@ public class GridStageController implements Initializable {
         btnLine.setToggleGroup(group);
         btnCircle.setToggleGroup(group);
         btnEllipse.setToggleGroup(group);
+        btnQuadrat.setToggleGroup(group);
+        btnRectangle.setToggleGroup(group);
         btnSelect.setSelected(true);
         dsContextMenu = new DropShadow();
         cmLayer0 = new ContextMenu();
@@ -479,6 +551,7 @@ public class GridStageController implements Initializable {
             public void handle(MouseEvent event) {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
+        btnPaintGrid.setSelected(FPaintGrid);
     }
 
     public void Initialize() {

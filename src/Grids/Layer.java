@@ -107,6 +107,18 @@ public class Layer implements Comparable<Layer> {
         return Ellipse;
     }
 
+    public Quadrat addQuadrat(int aX, int aY, int aA) {
+        Quadrat Quadrat = new Quadrat(aA, aX, aY);
+        addObject(Quadrat);
+        return Quadrat;
+    }
+
+    public Rectangle addRectangle(int aX, int aY, int aA, int aB) {
+        Rectangle Rectangle = new Rectangle(aA, aB, aX, aY);
+        addObject(Rectangle);
+        return Rectangle;
+    }
+
     public void removeObject(GeometryObject2D aObject) {
         unselectObject(aObject);
         FObjects.remove(aObject);
@@ -131,6 +143,12 @@ public class Layer implements Comparable<Layer> {
                 Ellipse Ellipse = (Ellipse)Object;
                 if (Ellipse.getMiddlePoint().getXAsInt() == aX && Ellipse.getMiddlePoint().getYAsInt() == aY) {
                     return Ellipse;
+                }
+            }
+            else if (Object instanceof Rectangle) {
+                Rectangle Rectangle = (Rectangle)Object;
+                if (Rectangle.getMiddlePoint().getXAsInt() == aX && Rectangle.getMiddlePoint().getYAsInt() == aY) {
+                    return Rectangle;
                 }
             }
             else if (Object instanceof Line2D) {
