@@ -16,6 +16,8 @@
             <Button id="btnClearLayer" prefWidth="80" text="Clear" onAction="#handleClearLayer" fx:id="btnClearLayer" />
             <Button id="btnRemoveLayer" prefWidth="80" text="Remove" onAction="#handleRemoveLayer" fx:id="btnRemoveLayer" />
             <ComboBox id="cbLayers" prefWidth="200" onAction="#handlecbLayers" fx:id="cbLayers" />
+            <Button id="btnSaveGrid" prefWidth="60" text="Save" onAction="#handleSaveGrid" fx:id="btnSaveGrid" />
+            <Button id="btnLoadGrid" prefWidth="60" text="Load" onAction="#handleLoadGrid" fx:id="btnLoadGrid" />
         </HBox>
     </AnchorPane>
     <AnchorPane prefHeight="750" minWidth="800" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">

@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -21,8 +20,8 @@ public class Grid implements LayerEventListener {
     protected GridStageController FStageController;
     protected ArrayList<Layer> FLayers;
     protected Layer FCurrentLayer;
-    protected Integer FMaxZOrder;
     protected Random FGenerator;
+    protected GridManager FGridManager;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
         if (aUpdateControls) {
@@ -57,10 +56,6 @@ public class Grid implements LayerEventListener {
         }
     }
 
-    protected void SortLayers() {
-        Collections.sort(FLayers);
-    }
-
     protected void RenameLayers() {
         int i = 1;
         for (Layer Layer : FLayers) {
@@ -82,18 +77,28 @@ public class Grid implements LayerEventListener {
         return FGenerator.nextInt(aMax);
     }
 
-    public Grid(int aGridDistance, Color aColor) {
+    protected int getMaxZOrder() {
+        int lresult = 0;
+        for (Layer Layer : FLayers) {
+            if (Layer.getZOrder() > lresult) {
+                lresult = Layer.getZOrder();
+            }
+        }
+        return lresult;
+    }
+
+    public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
         FLayers = new ArrayList<Layer>();
         FGenerator = new Random();
         FGridDistance = aGridDistance;
         FGridColor = aColor;
         FCurrentLayer = null;
-        FMaxZOrder = 0;
+        FGridManager = aGridManager;
     }
 
     public void Initialize() {
         CreateStage();
-        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255),getRandomValue(255),getRandomValue(255)));
+        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)));
     }
 
     public void Finalize() {
@@ -121,42 +126,49 @@ public class Grid implements LayerEventListener {
         return FGridDistance;
     }
 
+    public void setGridColor(Color aValue) {
+        FGridColor = aValue;
+        UpdateStage(false, "");
+    }
+
     public Color getGridColor() {
         return FGridColor;
     }
 
     public Layer addLayer(String aName, String aDescription, Color aColor) {
         Layer Layer = new Layer(aName, aDescription, aColor);
-        FMaxZOrder = FMaxZOrder + 1;
-        Layer.setZOrder(FMaxZOrder);
+        int lZOrder = getMaxZOrder() + 1;
+        Layer.setZOrder(lZOrder);
         Layer.addEventListener(this);
         FLayers.add(Layer);
-        SortLayers();
         setCurrentLayer(Layer);
-        UpdateStage(true, "");
         return Layer;
     }
 
     public Layer addLayer() {
-        return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255),getRandomValue(255),getRandomValue(255))));
+        return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255))));
     }
 
-    public void removeLayer(Layer layer) {
-        if (FLayers.size() < 2) return;
+    public void removeLayer(Layer layer, boolean force) {
+        if (!force && FLayers.size() < 2) return;
         layer.removeEventListener(this);
         FLayers.remove(layer);
-        RenameLayers();
-        setCurrentLayer(FLayers.get(0));
-        UpdateStage(true, "");
+        if (FLayers.size() > 0) {
+            RenameLayers();
+            setCurrentLayer(FLayers.get(0));
+        }
+        else {
+            FCurrentLayer = null;
+        }
     }
 
     public void removeCurrentLayer() {
-        removeLayer(getCurrentLayer());
+        removeLayer(getCurrentLayer(), false);
     }
 
     public void removeAllLayers() {
-        while (FLayers.size() > 1) {
-            removeLayer(FLayers.get(FLayers.size() - 1));
+        while (FLayers.size() > 0) {
+            removeLayer(FLayers.get(0), true);
         }
     }
 
@@ -192,12 +204,11 @@ public class Grid implements LayerEventListener {
 
     public void setCurrentLayer(Layer aLayer) {
         FCurrentLayer = aLayer;
-        if (FCurrentLayer.getZOrder() < FMaxZOrder) {
-            FMaxZOrder = FMaxZOrder + 1;
-            FCurrentLayer.setZOrder(FMaxZOrder);
-            SortLayers();
-            UpdateStage(false, "");
+        int lZOrder = getMaxZOrder();
+        if (FCurrentLayer.getZOrder() < lZOrder) {
+            FCurrentLayer.setZOrder(lZOrder + 1);
         }
+        UpdateStage(true, "");
     }
 
     public ArrayList<Layer> getLayers() {
@@ -210,6 +221,19 @@ public class Grid implements LayerEventListener {
 
     public Point2D CoordinatesToGridCoordinates(Point2D aPoint) {
         return new Point2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
+    }
+
+    public void Save() {
+        FGridManager.saveGrid(this);
+    }
+
+    public void Load() {
+        FGridManager.loadGrid(this);
+        UpdateStage(true, "");
+    }
+
+    public GridManager getManager() {
+        return FGridManager;
     }
 
     @Override

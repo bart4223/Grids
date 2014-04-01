@@ -188,6 +188,10 @@ public class Layer implements Comparable<Layer> {
         return FObjectColor;
     }
 
+    public void setObjectColor(Color aValue) {
+        FObjectColor = aValue;
+    }
+
     public ArrayList<GeometryObject2D> getObjects() {
         return FObjects;
     }

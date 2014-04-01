@@ -6,19 +6,19 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    protected Grid FGrid;
+    protected GridManager FGridManager;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FGrid = new Grid(20,Color.LIGHTGRAY);
-        FGrid.Initialize();
-        primaryStage = FGrid.getStage();
-        FGrid.ShowStage();
+        FGridManager = new GridManager();
+        FGridManager.Initialize();
+        FGridManager.addGrid(20,Color.LIGHTGRAY);
+        FGridManager.ShowStages();
     }
 
     @Override
     public void stop() throws Exception {
-        FGrid.Finalize();
+        FGridManager.Finalize();
     }
 
     public static void main(String[] args) {

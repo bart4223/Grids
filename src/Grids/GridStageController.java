@@ -15,6 +15,7 @@ import javafx.scene.shape.Line;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 import static java.lang.Math.abs;
@@ -92,11 +93,20 @@ public class GridStageController implements Initializable {
         }
     }
 
-
     @FXML
     protected void handlePaintGrid(){
         FPaintGrid = btnPaintGrid.isSelected();
         RenderScene(true);
+    }
+
+    @FXML
+    protected void handleSaveGrid(){
+        Grid.Save();
+    }
+
+    @FXML
+    protected void handleLoadGrid(){
+        Grid.Load();
     }
 
     @FXML
@@ -192,7 +202,11 @@ public class GridStageController implements Initializable {
 
     protected void RenderLayer1() {
         gc1.clearRect(0, 0, Layer1.getWidth(), Layer1.getHeight());
-        ArrayList<Layer> Layers = Grid.getLayers();
+        ArrayList<Layer> Layers = new ArrayList<Layer>();
+        for (Layer Layer : Grid.getLayers()) {
+            Layers.add(Layer);
+        }
+        Collections.sort(Layers);
         for (Layer Layer : Layers) {
             for (GeometryObject2D Object : Layer.getObjects()) {
                 drawGeometryObject(gc1, Layer, Object);
@@ -473,16 +487,12 @@ public class GridStageController implements Initializable {
     }
 
     protected void UpdatecbLayers() {
-        Layer selLayer = null;
         cbLayers.getItems().clear();
-        ArrayList<Layer> Layers;
-        Layers = Grid.getLayers();
-        for (Layer Layer : Layers) {
-            selLayer = Layer;
+        for (Layer Layer : Grid.getLayers()) {
             cbLayers.getItems().add(Layer.getName());
         }
-        if (selLayer != null) {
-            cbLayers.getSelectionModel().select(selLayer.getName());
+        if (Grid.getCurrentLayer() != null) {
+            cbLayers.getSelectionModel().select(Grid.getCurrentLayer().getName());
         }
     }
 
@@ -544,8 +554,7 @@ public class GridStageController implements Initializable {
         gc1 = Layer1.getGraphicsContext2D();
         cbGridSize.getItems().add(1);
         cbGridSize.getItems().add(2);
-        for( int i = 5; i <= 20; i = i + 5 )
-        {
+        for( int i = 5; i <= 20; i = i + 5 ) {
             cbGridSize.getItems().add(i);
         }
         ToggleGroup group = new ToggleGroup();
