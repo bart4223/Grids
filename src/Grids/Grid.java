@@ -1,5 +1,8 @@
 package Grids;
 
+import Uniwork.Base.LogEvent;
+import Uniwork.Base.LogEventListener;
+import Uniwork.Base.LogManager;
 import Uniwork.Graphics.Point2D;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class Grid implements LayerEventListener {
+public class Grid implements LayerEventListener, LogEventListener {
 
     protected Integer FGridDistance;
     protected Color FGridColor;
@@ -22,6 +25,7 @@ public class Grid implements LayerEventListener {
     protected Layer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
+    protected LogManager FLogManager;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
         if (aUpdateControls) {
@@ -94,14 +98,17 @@ public class Grid implements LayerEventListener {
         FGridColor = aColor;
         FCurrentLayer = null;
         FGridManager = aGridManager;
+        FLogManager = new LogManager();
     }
 
     public void Initialize() {
         CreateStage();
+        FLogManager.addEventListener(this);
         addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)));
     }
 
     public void Finalize() {
+        FLogManager.removeEventListener(this);
         CloseStage();
     }
 
@@ -236,6 +243,14 @@ public class Grid implements LayerEventListener {
         return FGridManager;
     }
 
+    public void writeLog(String aText) {
+        FLogManager.writeLog(aText);
+    }
+
+    public void clearLog() {
+        FLogManager.clearLog();
+    }
+
     @Override
     public void handleAddObject(LayerAddObjectEvent e) {
         UpdateStage(false, e.LayerName);
@@ -255,4 +270,15 @@ public class Grid implements LayerEventListener {
     public void handleUnselectObject(LayerUnselectObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
+
+    @Override
+    public void handleAddLog(LogEvent e) {
+        System.out.println("Log: "+e.LogEntry.GetText());
+    }
+
+    @Override
+    public void handleClearLog() {
+
+    }
+
 }

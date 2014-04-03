@@ -1,6 +1,9 @@
 package Grids;
 
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class GridManager {
@@ -37,24 +40,44 @@ public class GridManager {
     public void saveGrid(Grid aGrid) {
         try
         {
-            GridSerializer Serializer = new GridSerializer("/Users/Nils/Desktop/grid.xml", aGrid);
-            Serializer.Serialize();
-            System.out.println("Saving ok...");
+            FileChooser fileChooser = new FileChooser();
+            String userDirectoryString = System.getProperty("user.home");
+            File userDirectory = new File(userDirectoryString);
+            fileChooser.setInitialDirectory(userDirectory);
+            File chosenFile = fileChooser.showSaveDialog(aGrid.getStage().getOwner());
+            if (chosenFile != null) {
+                GridSerializer Serializer = new GridSerializer(chosenFile.getPath(), aGrid);
+                Serializer.Serialize();
+                aGrid.writeLog("Saving ok...");
+            }
+            else {
+                aGrid.writeLog("Saving aborted...");
+            }
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            aGrid.writeLog(e.getMessage());
         }
     }
 
     public void loadGrid(Grid aGrid) {
         try
         {
-            GridDeserializer Deserializer = new GridDeserializer("/Users/Nils/Desktop/grid.xml", aGrid);
-            Deserializer.Deserialize();
-            System.out.println("Loading ok...");
+            FileChooser fileChooser = new FileChooser();
+            String userDirectoryString = System.getProperty("user.home");
+            File userDirectory = new File(userDirectoryString);
+            fileChooser.setInitialDirectory(userDirectory);
+            File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
+            if (chosenFile != null) {
+                GridDeserializer Deserializer = new GridDeserializer(chosenFile.getPath(), aGrid);
+                Deserializer.Deserialize();
+                aGrid.writeLog("Loading ok...");
+            }
+            else {
+                aGrid.writeLog("Loading aborted...");
+            }
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            aGrid.writeLog(e.getMessage());
         }
     }
 
