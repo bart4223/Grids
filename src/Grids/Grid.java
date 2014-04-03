@@ -273,12 +273,12 @@ public class Grid implements LayerEventListener, LogEventListener {
 
     @Override
     public void handleAddLog(LogEvent e) {
-        System.out.println("Log: "+e.LogEntry.GetText());
+        System.out.println("Log: " + e.LogEntry.GetText());
     }
 
     @Override
     public void handleClearLog() {
-
+        System.out.println("Log: clear");
     }
 
 }
