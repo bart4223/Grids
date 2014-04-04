@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Base.LogEntry;
 import Uniwork.Graphics.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -59,6 +60,9 @@ public class GridStageController implements Initializable {
 
     @FXML
     private ComboBox cbLayers;
+
+    @FXML
+    private TextArea Log;
 
     protected GraphicsContext gc0;
     protected GraphicsContext gc1;
@@ -632,6 +636,21 @@ public class GridStageController implements Initializable {
             RenderLayer0();
         }
         RenderLayer1();
+    }
+
+    public void DisplayLogEntry(LogEntry aLogEntry) {
+        String lStr = Log.getText();
+        if (lStr.length() == 0) {
+            lStr = aLogEntry.GetFullAsString();
+        }
+        else {
+            lStr = aLogEntry.GetFullAsString() + "\n" + lStr;
+        }
+        Log.setText(lStr);
+    }
+
+    public void ClearLog() {
+        Log.clear();
     }
 
     public void UpdateControls() {

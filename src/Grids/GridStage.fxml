@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.TextArea?>
 <AnchorPane fx:controller="Grids.GridStageController" xmlns:fx="http://javafx.com/fxml" >
     <AnchorPane prefHeight="50" minWidth="800" xmlns:fx="http://javafx.com/fxml" AnchorPane.TopAnchor="0">
         <HBox prefHeight="50" minWidth="800" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
@@ -34,8 +35,13 @@
              </VBox>
         </AnchorPane>
         <AnchorPane prefHeight="750" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0">
-            <Canvas id="Layer1" height="750" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer1" />
-            <Canvas id="Layer0" height="750" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer0" />
+            <AnchorPane prefHeight="700" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.topAnchor="0">
+                <Canvas id="Layer1" height="700" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer1" />
+                <Canvas id="Layer0" height="700" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer0" />
+            </AnchorPane>
+            <AnchorPane prefHeight="100" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
+                <TextArea id="Log" minWidth="700" prefHeight="100" text="" wrapText="true" editable="false" AnchorPane.bottomAnchor="0" style="-fx-background-color: darkgray; -fx-border-color: lightgray; -fx-border-width: 3;" fx:id="Log"/>
+            </AnchorPane>
         </AnchorPane>
     </AnchorPane>
 </AnchorPane>

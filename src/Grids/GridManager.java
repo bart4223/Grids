@@ -2,7 +2,6 @@ package Grids;
 
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -28,6 +27,7 @@ public class GridManager {
         Grid grid = new Grid(this, aSize, aColor);
         FGrids.add(grid);
         grid.Initialize();
+        grid.writeLog("Welcome to Grids have fun...");
         return grid;
     }
 
@@ -48,10 +48,10 @@ public class GridManager {
             if (chosenFile != null) {
                 GridSerializer Serializer = new GridSerializer(chosenFile.getPath(), aGrid);
                 Serializer.Serialize();
-                aGrid.writeLog("Saving ok...");
+                aGrid.writeLog(String.format("Saving file %s successfully...",chosenFile.getPath()));
             }
             else {
-                aGrid.writeLog("Saving aborted...");
+                aGrid.writeLog("Saving aborted.");
             }
         }
         catch (Exception e) {
@@ -70,10 +70,10 @@ public class GridManager {
             if (chosenFile != null) {
                 GridDeserializer Deserializer = new GridDeserializer(chosenFile.getPath(), aGrid);
                 Deserializer.Deserialize();
-                aGrid.writeLog("Loading ok...");
+                aGrid.writeLog(String.format("Loading file %s successfully...",chosenFile.getPath()));
             }
             else {
-                aGrid.writeLog("Loading aborted...");
+                aGrid.writeLog("Loading aborted.");
             }
         }
         catch (Exception e) {

@@ -12,7 +12,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 public class Grid implements LayerEventListener, LogEventListener {
@@ -273,12 +272,12 @@ public class Grid implements LayerEventListener, LogEventListener {
 
     @Override
     public void handleAddLog(LogEvent e) {
-        System.out.println("Log: " + e.LogEntry.GetText());
+        FStageController.DisplayLogEntry(e.LogEntry);
     }
 
     @Override
     public void handleClearLog() {
-        System.out.println("Log: clear");
+        FStageController.ClearLog();
     }
 
 }
