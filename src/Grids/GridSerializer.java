@@ -11,7 +11,7 @@ public class GridSerializer extends ObjectSerializer{
     }
 
     @Override
-    protected void DoSerialize() {
+    protected void DoTransform() {
         XMLLayer XMLLayer;
         ArrayList<XMLLayer> XMLLayers;
         ArrayList<GeometryObject2D> XMLGeoObjects;

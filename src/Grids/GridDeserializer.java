@@ -11,7 +11,7 @@ public class GridDeserializer extends ObjectDeserializer{
     }
 
     @Override
-    protected void DoDeserialize() {
+    protected void DoTransform() {
         Layer layer;
         XMLGrid XMLGrid = (XMLGrid)FXMLObject;
         Grid lGrid = (Grid)FObject;

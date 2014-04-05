@@ -16,6 +16,7 @@ import java.util.Random;
 
 public class Grid implements LayerEventListener, LogEventListener {
 
+    protected int FUpdateCount;
     protected Integer FGridDistance;
     protected Color FGridColor;
     protected Stage FStage;
@@ -27,6 +28,7 @@ public class Grid implements LayerEventListener, LogEventListener {
     protected LogManager FLogManager;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
+        if (InUpdate()) return;
         if (aUpdateControls) {
             FStageController.UpdateControls();
         }
@@ -90,6 +92,21 @@ public class Grid implements LayerEventListener, LogEventListener {
         return lresult;
     }
 
+    protected void BeginUpdate() {
+        FUpdateCount = FUpdateCount + 1;
+    }
+
+    protected void EndUpdate() {
+        FUpdateCount = FUpdateCount - 1;
+        if (!InUpdate()) {
+            UpdateStage(true,"");
+        }
+    }
+
+    protected Boolean InUpdate() {
+        return FUpdateCount > 0;
+    }
+
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
         FLayers = new ArrayList<Layer>();
         FGenerator = new Random();
@@ -98,6 +115,7 @@ public class Grid implements LayerEventListener, LogEventListener {
         FCurrentLayer = null;
         FGridManager = aGridManager;
         FLogManager = new LogManager();
+        FUpdateCount = 0;
     }
 
     public void Initialize() {
@@ -230,12 +248,25 @@ public class Grid implements LayerEventListener, LogEventListener {
     }
 
     public void Save() {
-        FGridManager.saveGrid(this);
+        BeginUpdate();
+        try {
+            FGridManager.saveGrid(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
     }
 
     public void Load() {
-        FGridManager.loadGrid(this);
-        UpdateStage(true, "");
+        BeginUpdate();
+        try {
+            FGridManager.loadGrid(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
     }
 
     public GridManager getManager() {
