@@ -2,6 +2,7 @@ package Grids;
 
 import Uniwork.Base.NGLogEntry;
 import Uniwork.Graphics.*;
+import Uniwork.Visuals.NGGridDisplayController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -64,7 +65,6 @@ public class GridStageController implements Initializable {
     @FXML
     private TextArea Log;
 
-    protected GraphicsContext gc0;
     protected GraphicsContext gc1;
 
     protected Integer FUpdateCount;
@@ -76,7 +76,9 @@ public class GridStageController implements Initializable {
     protected ContextMenu cmLayer0;
     protected DropShadow dsContextMenu;
 
-    protected boolean FPaintGrid;
+    protected boolean FDrawGrid;
+
+    protected NGGridDisplayController FGDC;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -99,7 +101,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handlePaintGrid(){
-        FPaintGrid = btnPaintGrid.isSelected();
+        FDrawGrid = btnPaintGrid.isSelected();
         RenderScene(true);
     }
 
@@ -165,43 +167,6 @@ public class GridStageController implements Initializable {
 
     protected void setToolMode(ToolMode aToolMode) {
         FToolMode = aToolMode;
-    }
-
-    protected void RenderLayer0() {
-        gc0.clearRect(0,0,Layer0.getWidth(),Layer0.getHeight());
-        if (!FPaintGrid)
-            return;
-        Integer index = 0;
-        Color color;
-        for(int i = 0; i <= Layer0.getWidth(); i = i + Grid.getGridDistance()) {
-            gc0.beginPath();
-            gc0.moveTo(i, 0);
-            gc0.lineTo(i, Layer0.getHeight());
-            if (index%2 == 0)
-                color = Grid.getGridColor().darker();
-            else
-                color = Grid.getGridColor();
-            gc0.setStroke(color);
-            gc0.setLineWidth(1);
-            gc0.stroke();
-            gc0.closePath();
-            index = index + 1;
-        }
-        index = 0;
-        for(int i = 0; i < Layer0.getHeight(); i = i + Grid.getGridDistance()) {
-            gc0.beginPath();
-            gc0.moveTo(0, i);
-            gc0.lineTo(Layer0.getWidth(), i);
-            if (index%2 == 0)
-                color = Grid.getGridColor().darker();
-            else
-                color = Grid.getGridColor();
-            gc0.setStroke(color);
-            gc0.setLineWidth(1);
-            gc0.stroke();
-            gc0.closePath();
-            index = index + 1;
-        }
     }
 
     protected void RenderLayer1() {
@@ -545,7 +510,7 @@ public class GridStageController implements Initializable {
     public GridStageController() {
         FUpdateCount = 0;
         FToolMode = ToolMode.Select;
-        FPaintGrid = true;
+        FDrawGrid = true;
         FCurrentGO = null;
         FCurrentGOPoint = null;
     }
@@ -554,7 +519,6 @@ public class GridStageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Line line;
         EventHandler<MouseEvent> click;
-        gc0 = Layer0.getGraphicsContext2D();
         gc1 = Layer1.getGraphicsContext2D();
         cbGridSize.getItems().add(1);
         cbGridSize.getItems().add(2);
@@ -595,11 +559,12 @@ public class GridStageController implements Initializable {
             public void handle(MouseEvent event) {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
-        btnPaintGrid.setSelected(FPaintGrid);
+        btnPaintGrid.setSelected(FDrawGrid);
+        FGDC = new NGGridDisplayController(Layer0);
     }
 
     public void Initialize() {
-        RenderLayer0();
+        FGDC.Initialize();
         RenderLayer1();
         Layer0.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
@@ -633,7 +598,10 @@ public class GridStageController implements Initializable {
 
     public void RenderScene(Boolean aComplete) {
         if (aComplete) {
-            RenderLayer0();
+            FGDC.GridColor = Grid.getGridColor();
+            FGDC.GridDistance = Grid.getGridDistance();
+            FGDC.DrawGrid = FDrawGrid;
+            FGDC.Render();
         }
         RenderLayer1();
     }
