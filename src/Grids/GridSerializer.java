@@ -1,10 +1,10 @@
 package Grids;
 
-import Uniwork.Base.ObjectSerializer;
+import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Graphics.GeometryObject2D;
 import java.util.ArrayList;
 
-public class GridSerializer extends ObjectSerializer{
+public class GridSerializer extends NGObjectSerializer {
 
     public GridSerializer(String aFilename, Grid aGrid)  throws Exception {
         super(aFilename, aGrid);

@@ -1,10 +1,10 @@
 package Grids;
 
-import Uniwork.Base.ObjectDeserializer;
+import Uniwork.Base.NGObjectDeserializer;
 import Uniwork.Graphics.GeometryObject2D;
 import javafx.scene.paint.Color;
 
-public class GridDeserializer extends ObjectDeserializer{
+public class GridDeserializer extends NGObjectDeserializer {
 
     public GridDeserializer(String aFilename, Grid aGrid) throws Exception {
         super(aFilename, aGrid);

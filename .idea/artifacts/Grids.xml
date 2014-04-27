@@ -3,12 +3,18 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Grids</output-path>
     <properties id="javafx-properties">
       <options>
-        <option name="appClass" value="sample.Main" />
+        <option name="appClass" value="Grids.Main" />
+        <option name="description" value="" />
+        <option name="htmlParamFile" value="" />
+        <option name="paramFile" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
       </options>
     </properties>
     <root id="root">
-      <element id="archive" name="JavaFXApp.jar">
+      <element id="archive" name="Grids.jar">
         <element id="module-output" name="Grids" />
+        <element id="artifact" artifact-name="Uniwork" />
       </element>
     </root>
   </artifact>

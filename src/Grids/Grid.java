@@ -1,8 +1,8 @@
 package Grids;
 
-import Uniwork.Base.LogEvent;
-import Uniwork.Base.LogEventListener;
-import Uniwork.Base.LogManager;
+import Uniwork.Base.NGLogEvent;
+import Uniwork.Base.NGLogEventListener;
+import Uniwork.Base.NGLogManager;
 import Uniwork.Graphics.Point2D;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Grid implements LayerEventListener, LogEventListener {
+public class Grid implements LayerEventListener, NGLogEventListener {
 
     protected int FUpdateCount;
     protected Integer FGridDistance;
@@ -25,7 +25,7 @@ public class Grid implements LayerEventListener, LogEventListener {
     protected Layer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
-    protected LogManager FLogManager;
+    protected NGLogManager FLogManager;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
         if (InUpdate()) return;
@@ -114,7 +114,7 @@ public class Grid implements LayerEventListener, LogEventListener {
         FGridColor = aColor;
         FCurrentLayer = null;
         FGridManager = aGridManager;
-        FLogManager = new LogManager();
+        FLogManager = new NGLogManager();
         FUpdateCount = 0;
     }
 
@@ -302,7 +302,7 @@ public class Grid implements LayerEventListener, LogEventListener {
     }
 
     @Override
-    public void handleAddLog(LogEvent e) {
+    public void handleAddLog(NGLogEvent e) {
         FStageController.DisplayLogEntry(e.LogEntry);
     }
 

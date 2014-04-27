@@ -1,6 +1,6 @@
 package Grids;
 
-import Uniwork.Base.LogEntry;
+import Uniwork.Base.NGLogEntry;
 import Uniwork.Graphics.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -638,7 +638,7 @@ public class GridStageController implements Initializable {
         RenderLayer1();
     }
 
-    public void DisplayLogEntry(LogEntry aLogEntry) {
+    public void DisplayLogEntry(NGLogEntry aLogEntry) {
         String lStr = Log.getText();
         if (lStr.length() == 0) {
             lStr = aLogEntry.GetFullAsString();
