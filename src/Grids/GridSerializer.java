@@ -24,7 +24,7 @@ public class GridSerializer extends NGObjectSerializer {
         XMLGrid.setCurrentLayer(lGrid.getCurrentLayer().getName());
         XMLLayers = new ArrayList<XMLLayer>();
         XMLGrid.setLayers(XMLLayers);
-        for (Layer layer : lGrid.getLayers()) {
+        for (GridLayer layer : lGrid.getLayers()) {
             XMLLayer = new XMLLayer();
             XMLLayers.add(XMLLayer);
             XMLLayer.setName(layer.getName());

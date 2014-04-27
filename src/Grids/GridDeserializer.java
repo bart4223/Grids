@@ -12,7 +12,7 @@ public class GridDeserializer extends NGObjectDeserializer {
 
     @Override
     protected void DoTransform() {
-        Layer layer;
+        GridLayer layer;
         XMLGrid XMLGrid = (XMLGrid)FXMLObject;
         Grid lGrid = (Grid)FObject;
         lGrid.removeAllLayers();

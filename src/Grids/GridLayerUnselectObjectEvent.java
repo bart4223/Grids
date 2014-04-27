@@ -2,13 +2,12 @@ package Grids;
 
 import Uniwork.Graphics.NGGeometryObject2D;
 
-public class LayerAddObjectEvent extends java.util.EventObject {
+public class GridLayerUnselectObjectEvent extends java.util.EventObject {
 
     public String LayerName;
     public NGGeometryObject2D Object;
 
-    public LayerAddObjectEvent(Object source) {
+    public GridLayerUnselectObjectEvent(Object source) {
         super(source);
     }
-
 }

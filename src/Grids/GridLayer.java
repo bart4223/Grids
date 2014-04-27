@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Layer implements Comparable<Layer> {
+public class GridLayer implements Comparable<GridLayer> {
 
     protected String FName;
     protected String FDescription;
@@ -17,42 +17,42 @@ public class Layer implements Comparable<Layer> {
     protected Integer FZOrder;
 
     protected synchronized void RaiseAddObjectEvent(NGGeometryObject2D aObject) {
-        LayerAddObjectEvent lEvent = new LayerAddObjectEvent(this);
+        GridLayerAddObjectEvent lEvent = new GridLayerAddObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleAddObject(lEvent);
+            ((GridLayerEventListener)FEventListener).handleAddObject(lEvent);
         }
     }
 
     protected synchronized void RaiseRemoveObjectEvent(NGGeometryObject2D aObject) {
-        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
+        GridLayerRemoveObjectEvent lEvent = new GridLayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
+            ((GridLayerEventListener)FEventListener).handleRemoveObject(lEvent);
         }
     }
 
     protected synchronized void RaiseSelectObjectEvent(NGGeometryObject2D aObject) {
-        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
+        GridLayerRemoveObjectEvent lEvent = new GridLayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
+            ((GridLayerEventListener)FEventListener).handleRemoveObject(lEvent);
         }
     }
 
     protected synchronized void RaiseUnselectObjectEvent(NGGeometryObject2D aObject) {
-        LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
+        GridLayerRemoveObjectEvent lEvent = new GridLayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
         for (Object FEventListener : FEventListeners) {
-            ((LayerEventListener)FEventListener).handleRemoveObject(lEvent);
+            ((GridLayerEventListener)FEventListener).handleRemoveObject(lEvent);
         }
     }
 
-    public Layer(String aName, String aDescription, Color aColor) {
+    public GridLayer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
         FObjects = new ArrayList<NGGeometryObject2D>();
         FSelectedObjects = new ArrayList<NGGeometryObject2D>();
@@ -68,7 +68,7 @@ public class Layer implements Comparable<Layer> {
     }
 
     @Override
-    public int compareTo(Layer o) {
+    public int compareTo(GridLayer o) {
         Integer myZOrder = getZOrder();
         Integer oZOrder = o.getZOrder();
         return myZOrder.compareTo(oZOrder);
@@ -248,11 +248,11 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    public synchronized void addEventListener(LayerEventListener aListener)  {
+    public synchronized void addEventListener(GridLayerEventListener aListener)  {
         FEventListeners.add(aListener);
     }
 
-    public synchronized void removeEventListener(LayerEventListener aListener)   {
+    public synchronized void removeEventListener(GridLayerEventListener aListener)   {
         FEventListeners.remove(aListener);
     }
 

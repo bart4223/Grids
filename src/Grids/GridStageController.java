@@ -171,19 +171,19 @@ public class GridStageController implements Initializable {
 
     protected void RenderLayer1() {
         gc1.clearRect(0, 0, Layer1.getWidth(), Layer1.getHeight());
-        ArrayList<Layer> Layers = new ArrayList<Layer>();
-        for (Layer Layer : Grid.getLayers()) {
+        ArrayList<GridLayer> Layers = new ArrayList<GridLayer>();
+        for (GridLayer Layer : Grid.getLayers()) {
             Layers.add(Layer);
         }
         Collections.sort(Layers);
-        for (Layer Layer : Layers) {
+        for (GridLayer Layer : Layers) {
             for (NGGeometryObject2D Object : Layer.getObjects()) {
                 drawGeometryObject(gc1, Layer, Object);
             }
         }
     }
 
-    protected void drawGeometryObject(GraphicsContext aGC, Layer aLayer, NGGeometryObject2D aObject) {
+    protected void drawGeometryObject(GraphicsContext aGC, GridLayer aLayer, NGGeometryObject2D aObject) {
         aGC.setFill(aLayer.getObjectColor());
         if (aObject instanceof NGPoint2D) {
             NGPoint2D Point = (NGPoint2D)aObject;
@@ -315,7 +315,7 @@ public class GridStageController implements Initializable {
         switch (t.getButton()) {
             case PRIMARY:
                 NGGeometryObject2D layerObject;
-                Layer Layer = Grid.getCurrentLayer();
+                GridLayer Layer = Grid.getCurrentLayer();
                 NGPoint2D gridPoint = Grid.CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
                 switch (FToolMode) {
                     case Select:
@@ -457,7 +457,7 @@ public class GridStageController implements Initializable {
 
     protected void UpdatecbLayers() {
         cbLayers.getItems().clear();
-        for (Layer Layer : Grid.getLayers()) {
+        for (GridLayer Layer : Grid.getLayers()) {
             cbLayers.getItems().add(Layer.getName());
         }
         if (Grid.getCurrentLayer() != null) {

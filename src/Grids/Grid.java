@@ -14,15 +14,15 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Grid implements LayerEventListener, NGLogEventListener {
+public class Grid implements GridLayerEventListener, NGLogEventListener {
 
     protected int FUpdateCount;
     protected Integer FGridDistance;
     protected Color FGridColor;
     protected Stage FStage;
     protected GridStageController FStageController;
-    protected ArrayList<Layer> FLayers;
-    protected Layer FCurrentLayer;
+    protected ArrayList<GridLayer> FLayers;
+    protected GridLayer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
     protected NGLogManager FLogManager;
@@ -63,7 +63,7 @@ public class Grid implements LayerEventListener, NGLogEventListener {
 
     protected void RenameLayers() {
         int i = 1;
-        for (Layer Layer : FLayers) {
+        for (GridLayer Layer : FLayers) {
             Layer.setName("LAYER" + i);
             Layer.setDescription("Layer " + i);
             i++;
@@ -84,7 +84,7 @@ public class Grid implements LayerEventListener, NGLogEventListener {
 
     protected int getMaxZOrder() {
         int lresult = 0;
-        for (Layer Layer : FLayers) {
+        for (GridLayer Layer : FLayers) {
             if (Layer.getZOrder() > lresult) {
                 lresult = Layer.getZOrder();
             }
@@ -108,7 +108,7 @@ public class Grid implements LayerEventListener, NGLogEventListener {
     }
 
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
-        FLayers = new ArrayList<Layer>();
+        FLayers = new ArrayList<GridLayer>();
         FGenerator = new Random();
         FGridDistance = aGridDistance;
         FGridColor = aColor;
@@ -159,8 +159,8 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         return FGridColor;
     }
 
-    public Layer addLayer(String aName, String aDescription, Color aColor) {
-        Layer Layer = new Layer(aName, aDescription, aColor);
+    public GridLayer addLayer(String aName, String aDescription, Color aColor) {
+        GridLayer Layer = new GridLayer(aName, aDescription, aColor);
         int lZOrder = getMaxZOrder() + 1;
         Layer.setZOrder(lZOrder);
         Layer.addEventListener(this);
@@ -169,11 +169,11 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         return Layer;
     }
 
-    public Layer addLayer() {
+    public GridLayer addLayer() {
         return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255))));
     }
 
-    public void removeLayer(Layer layer, boolean force) {
+    public void removeLayer(GridLayer layer, boolean force) {
         if (!force && FLayers.size() < 2) return;
         layer.removeEventListener(this);
         FLayers.remove(layer);
@@ -196,22 +196,22 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         }
     }
 
-    public void clearLayer(Layer aLayer) {
+    public void clearLayer(GridLayer aLayer) {
         aLayer.removeObjects();
     }
 
     public void clearLayer(String aName) {
-        Layer aLayer = getLayer(aName);
+        GridLayer aLayer = getLayer(aName);
         clearLayer(aLayer);
     }
 
     public void clearCurrentLayer() {
-        Layer aLayer = getCurrentLayer();
+        GridLayer aLayer = getCurrentLayer();
         clearLayer(aLayer);
     }
 
-    public Layer getLayer(String aName) {
-        for (Layer Layer : FLayers) {
+    public GridLayer getLayer(String aName) {
+        for (GridLayer Layer : FLayers) {
             if (Layer.getName().equals(aName)) {
                 return Layer;
             }
@@ -219,14 +219,14 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         return null;
     }
 
-    public Layer setCurrentLayer(String aName) {
+    public GridLayer setCurrentLayer(String aName) {
         if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
             setCurrentLayer(getLayer(aName));
         }
         return FCurrentLayer;
     }
 
-    public void setCurrentLayer(Layer aLayer) {
+    public void setCurrentLayer(GridLayer aLayer) {
         FCurrentLayer = aLayer;
         int lZOrder = getMaxZOrder();
         if (FCurrentLayer.getZOrder() < lZOrder) {
@@ -235,11 +235,11 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         UpdateStage(true, "");
     }
 
-    public ArrayList<Layer> getLayers() {
+    public ArrayList<GridLayer> getLayers() {
         return FLayers;
     }
 
-    public Layer getCurrentLayer() {
+    public GridLayer getCurrentLayer() {
         return FCurrentLayer;
     }
 
@@ -282,22 +282,22 @@ public class Grid implements LayerEventListener, NGLogEventListener {
     }
 
     @Override
-    public void handleAddObject(LayerAddObjectEvent e) {
+    public void handleAddObject(GridLayerAddObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 
     @Override
-    public void handleRemoveObject(LayerRemoveObjectEvent e) {
+    public void handleRemoveObject(GridLayerRemoveObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 
     @Override
-    public void handleSelectObject(LayerSelectObjectEvent e) {
+    public void handleSelectObject(GridLayerSelectObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 
     @Override
-    public void handleUnselectObject(LayerUnselectObjectEvent e) {
+    public void handleUnselectObject(GridLayerUnselectObjectEvent e) {
         UpdateStage(false, e.LayerName);
     }
 
