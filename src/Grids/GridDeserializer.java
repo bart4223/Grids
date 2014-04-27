@@ -1,7 +1,7 @@
 package Grids;
 
 import Uniwork.Base.NGObjectDeserializer;
-import Uniwork.Graphics.GeometryObject2D;
+import Uniwork.Graphics.NGGeometryObject2D;
 import javafx.scene.paint.Color;
 
 public class GridDeserializer extends NGObjectDeserializer {
@@ -21,7 +21,7 @@ public class GridDeserializer extends NGObjectDeserializer {
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
             layer = lGrid.addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
             layer.setZOrder(XMLLayer.getZOrder());
-            for (GeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
+            for (NGGeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
                 layer.addObject(GeoObject);
             }
         }

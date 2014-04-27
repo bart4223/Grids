@@ -1,7 +1,8 @@
 package Grids;
 
 import Uniwork.Base.NGObjectSerializer;
-import Uniwork.Graphics.GeometryObject2D;
+import Uniwork.Graphics.NGGeometryObject2D;
+
 import java.util.ArrayList;
 
 public class GridSerializer extends NGObjectSerializer {
@@ -14,7 +15,7 @@ public class GridSerializer extends NGObjectSerializer {
     protected void DoTransform() {
         XMLLayer XMLLayer;
         ArrayList<XMLLayer> XMLLayers;
-        ArrayList<GeometryObject2D> XMLGeoObjects;
+        ArrayList<NGGeometryObject2D> XMLGeoObjects;
         XMLGrid XMLGrid = new XMLGrid();
         setXMLObject(XMLGrid);
         Grid lGrid = (Grid)FObject;
@@ -30,9 +31,9 @@ public class GridSerializer extends NGObjectSerializer {
             XMLLayer.setDescription(layer.getDescription());
             XMLLayer.setObjectColor(layer.getObjectColor().toString());
             XMLLayer.setZOrder(layer.getZOrder());
-            XMLGeoObjects = new ArrayList<GeometryObject2D>();
+            XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
             XMLLayer.setGeometryObjects(XMLGeoObjects);
-            for (GeometryObject2D GeoObject : layer.getObjects()) {
+            for (NGGeometryObject2D GeoObject : layer.getObjects()) {
                 XMLGeoObjects.add(GeoObject);
             }
         }

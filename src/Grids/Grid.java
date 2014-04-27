@@ -3,7 +3,7 @@ package Grids;
 import Uniwork.Base.NGLogEvent;
 import Uniwork.Base.NGLogEventListener;
 import Uniwork.Base.NGLogManager;
-import Uniwork.Graphics.Point2D;
+import Uniwork.Graphics.NGPoint2D;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -243,8 +243,8 @@ public class Grid implements LayerEventListener, NGLogEventListener {
         return FCurrentLayer;
     }
 
-    public Point2D CoordinatesToGridCoordinates(Point2D aPoint) {
-        return new Point2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
+    public NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
+        return new NGPoint2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
     }
 
     public void Save() {

@@ -10,13 +10,13 @@ public class Layer implements Comparable<Layer> {
 
     protected String FName;
     protected String FDescription;
-    protected ArrayList<GeometryObject2D> FObjects;
-    protected ArrayList<GeometryObject2D> FSelectedObjects;
+    protected ArrayList<NGGeometryObject2D> FObjects;
+    protected ArrayList<NGGeometryObject2D> FSelectedObjects;
     protected Color FObjectColor;
     protected List FEventListeners;
     protected Integer FZOrder;
 
-    protected synchronized void RaiseAddObjectEvent(GeometryObject2D aObject) {
+    protected synchronized void RaiseAddObjectEvent(NGGeometryObject2D aObject) {
         LayerAddObjectEvent lEvent = new LayerAddObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
@@ -25,7 +25,7 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    protected synchronized void RaiseRemoveObjectEvent(GeometryObject2D aObject) {
+    protected synchronized void RaiseRemoveObjectEvent(NGGeometryObject2D aObject) {
         LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
@@ -34,7 +34,7 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    protected synchronized void RaiseSelectObjectEvent(GeometryObject2D aObject) {
+    protected synchronized void RaiseSelectObjectEvent(NGGeometryObject2D aObject) {
         LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
@@ -43,7 +43,7 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    protected synchronized void RaiseUnselectObjectEvent(GeometryObject2D aObject) {
+    protected synchronized void RaiseUnselectObjectEvent(NGGeometryObject2D aObject) {
         LayerRemoveObjectEvent lEvent = new LayerRemoveObjectEvent(this);
         lEvent.LayerName = FName;
         lEvent.Object = aObject;
@@ -54,8 +54,8 @@ public class Layer implements Comparable<Layer> {
 
     public Layer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
-        FObjects = new ArrayList<GeometryObject2D>();
-        FSelectedObjects = new ArrayList<GeometryObject2D>();
+        FObjects = new ArrayList<NGGeometryObject2D>();
+        FSelectedObjects = new ArrayList<NGGeometryObject2D>();
         FName = aName;
         FDescription = aDescription;
         FObjectColor = aColor;
@@ -74,52 +74,52 @@ public class Layer implements Comparable<Layer> {
         return myZOrder.compareTo(oZOrder);
     }
 
-    public void addObject(GeometryObject2D aObject) {
+    public void addObject(NGGeometryObject2D aObject) {
         FObjects.add(aObject);
         RaiseAddObjectEvent(aObject);
     }
 
-    public Point2D addPoint(int aX, int aY) {
-        Point2D Point = null;
-        GeometryObject2D layerObject = getObjectInLayer(aX, aY);
-        if (!(layerObject instanceof Point2D)) {
-            Point = new Point2D(aX, aY);
+    public NGPoint2D addPoint(int aX, int aY) {
+        NGPoint2D Point = null;
+        NGGeometryObject2D layerObject = getObjectInLayer(aX, aY);
+        if (!(layerObject instanceof NGPoint2D)) {
+            Point = new NGPoint2D(aX, aY);
             addObject(Point);
         }
         return Point;
     }
 
-    public Line2D addLine(int aAX, int aAY, int aBX, int aBY) {
-        Line2D Line = new Line2D(aAX, aAY, aBX, aBY);
+    public NGLine2D addLine(int aAX, int aAY, int aBX, int aBY) {
+        NGLine2D Line = new NGLine2D(aAX, aAY, aBX, aBY);
         addObject(Line);
         return Line;
     }
 
-    public Circle addCircle(int aX, int aY, int aRadius) {
-        Circle Circle = new Circle(aX, aY, aRadius);
+    public NGCircle addCircle(int aX, int aY, int aRadius) {
+        NGCircle Circle = new NGCircle(aX, aY, aRadius);
         addObject(Circle);
         return Circle;
     }
 
-    public Ellipse addEllipse(int aX, int aY, int aRadiusX, int aRadiusY) {
-        Ellipse Ellipse = new Ellipse(aX, aY, aRadiusX, aRadiusY);
+    public NGEllipse addEllipse(int aX, int aY, int aRadiusX, int aRadiusY) {
+        NGEllipse Ellipse = new NGEllipse(aX, aY, aRadiusX, aRadiusY);
         addObject(Ellipse);
         return Ellipse;
     }
 
-    public Quadrat addQuadrat(int aX, int aY, int aA) {
-        Quadrat Quadrat = new Quadrat(aA, aX, aY);
+    public NGQuadrat addQuadrat(int aX, int aY, int aA) {
+        NGQuadrat Quadrat = new NGQuadrat(aA, aX, aY);
         addObject(Quadrat);
         return Quadrat;
     }
 
-    public Rectangle addRectangle(int aX, int aY, int aA, int aB) {
-        Rectangle Rectangle = new Rectangle(aA, aB, aX, aY);
+    public NGRectangle addRectangle(int aX, int aY, int aA, int aB) {
+        NGRectangle Rectangle = new NGRectangle(aA, aB, aX, aY);
         addObject(Rectangle);
         return Rectangle;
     }
 
-    public void removeObject(GeometryObject2D aObject) {
+    public void removeObject(NGGeometryObject2D aObject) {
         unselectObject(aObject);
         FObjects.remove(aObject);
         RaiseRemoveObjectEvent(aObject);
@@ -131,28 +131,28 @@ public class Layer implements Comparable<Layer> {
         }
     }
 
-    public GeometryObject2D getObjectInLayer(int aX, int aY) {
-        for (GeometryObject2D Object : FObjects)
-            if (Object instanceof Point2D) {
-                Point2D Point = (Point2D)Object;
+    public NGGeometryObject2D getObjectInLayer(int aX, int aY) {
+        for (NGGeometryObject2D Object : FObjects)
+            if (Object instanceof NGPoint2D) {
+                NGPoint2D Point = (NGPoint2D)Object;
                 if (Point.getXAsInt() == aX && Point.getYAsInt() == aY) {
                     return Point;
                 }
             }
-            else if (Object instanceof Ellipse) {
-                Ellipse Ellipse = (Ellipse)Object;
+            else if (Object instanceof NGEllipse) {
+                NGEllipse Ellipse = (NGEllipse)Object;
                 if (Ellipse.getMiddlePoint().getXAsInt() == aX && Ellipse.getMiddlePoint().getYAsInt() == aY) {
                     return Ellipse;
                 }
             }
-            else if (Object instanceof Rectangle) {
-                Rectangle Rectangle = (Rectangle)Object;
+            else if (Object instanceof NGRectangle) {
+                NGRectangle Rectangle = (NGRectangle)Object;
                 if (Rectangle.getMiddlePoint().getXAsInt() == aX && Rectangle.getMiddlePoint().getYAsInt() == aY) {
                     return Rectangle;
                 }
             }
-            else if (Object instanceof Line2D) {
-                Line2D Line = (Line2D)Object;
+            else if (Object instanceof NGLine2D) {
+                NGLine2D Line = (NGLine2D)Object;
                 if ((Line.getA().getXAsInt() == aX && Line.getA().getYAsInt() == aY) || ((Line.getB().getXAsInt() == aX && Line.getB().getYAsInt() == aY))) {
                     return Line;
                 }
@@ -192,16 +192,16 @@ public class Layer implements Comparable<Layer> {
         FObjectColor = aValue;
     }
 
-    public ArrayList<GeometryObject2D> getObjects() {
+    public ArrayList<NGGeometryObject2D> getObjects() {
         return FObjects;
     }
 
-    public ArrayList<GeometryObject2D> getSelected() {
+    public ArrayList<NGGeometryObject2D> getSelected() {
         return FSelectedObjects;
     }
 
-    public void selectObject(GeometryObject2D aObject) {
-        for (GeometryObject2D Object : FObjects)
+    public void selectObject(NGGeometryObject2D aObject) {
+        for (NGGeometryObject2D Object : FObjects)
             if (Object.equals(aObject))  {
                 FSelectedObjects.add(aObject);
                 RaiseSelectObjectEvent(aObject);
@@ -209,8 +209,8 @@ public class Layer implements Comparable<Layer> {
             }
     }
 
-    public void unselectObject(GeometryObject2D aObject) {
-        for (GeometryObject2D Object : FSelectedObjects)
+    public void unselectObject(NGGeometryObject2D aObject) {
+        for (NGGeometryObject2D Object : FSelectedObjects)
             if (Object.equals(aObject))  {
                 FSelectedObjects.remove(aObject);
                 RaiseUnselectObjectEvent(aObject);
@@ -218,15 +218,15 @@ public class Layer implements Comparable<Layer> {
             }
     }
 
-    public boolean isObjectSelected(GeometryObject2D aObject) {
-        for (GeometryObject2D Object : FSelectedObjects)
+    public boolean isObjectSelected(NGGeometryObject2D aObject) {
+        for (NGGeometryObject2D Object : FSelectedObjects)
             if (Object.equals(aObject))  {
                 return true;
             }
         return false;
     }
 
-    public boolean toggleObjectSelected(GeometryObject2D aObject) {
+    public boolean toggleObjectSelected(NGGeometryObject2D aObject) {
         if (isObjectSelected(aObject)) {
             unselectObject(aObject);
         }
