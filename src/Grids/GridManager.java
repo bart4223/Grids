@@ -44,6 +44,9 @@ public class GridManager {
             String userDirectoryString = System.getProperty("user.home");
             File userDirectory = new File(userDirectoryString);
             fileChooser.setInitialDirectory(userDirectory);
+            fileChooser.setTitle("Save as");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+            fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showSaveDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
                 GridSerializer Serializer = new GridSerializer(chosenFile.getPath(), aGrid);
@@ -51,7 +54,7 @@ public class GridManager {
                 aGrid.writeLog(String.format("Saving file %s successfully...",chosenFile.getPath()));
             }
             else {
-                aGrid.writeLog("Saving aborted.");
+                aGrid.writeLog("Saving aborted...");
             }
         }
         catch (Exception e) {
@@ -66,6 +69,9 @@ public class GridManager {
             String userDirectoryString = System.getProperty("user.home");
             File userDirectory = new File(userDirectoryString);
             fileChooser.setInitialDirectory(userDirectory);
+            fileChooser.setTitle("Load from");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+            fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
                 GridDeserializer Deserializer = new GridDeserializer(chosenFile.getPath(), aGrid);
@@ -73,7 +79,7 @@ public class GridManager {
                 aGrid.writeLog(String.format("Loading file %s successfully...",chosenFile.getPath()));
             }
             else {
-                aGrid.writeLog("Loading aborted.");
+                aGrid.writeLog("Loading aborted...");
             }
         }
         catch (Exception e) {

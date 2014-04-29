@@ -80,7 +80,7 @@ public class GridStageController implements Initializable {
     protected boolean FDrawGrid;
 
     protected NGGrid2DDisplayController FGDC;
-    protected NGGeometryObject2DDisplayManager FGODM;
+    protected GridLayerDisplayManager FGLDM;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -172,22 +172,16 @@ public class GridStageController implements Initializable {
     }
 
     protected void RenderLayer1() {
-        gc1.clearRect(0, 0, Layer1.getWidth(), Layer1.getHeight());
-        ArrayList<GridLayer> Layers = new ArrayList<GridLayer>();
-        for (GridLayer Layer : Grid.getLayers()) {
-            Layers.add(Layer);
-        }
-        Collections.sort(Layers);
-        for (GridLayer Layer : Layers) {
-            for (NGGeometryObject2D Object : Layer.getObjects()) {
-                //drawGeometryObject(gc1, Layer, Object);
-                FGODM.setPixelSize(Grid.getGridDistance());
-                FGODM.GeometryObject = Object;
-                FGODM.GeometryObjectColor = Layer.getObjectColor();
-                FGODM.Selected = Layer.isObjectSelected(Object);
-                FGODM.Render();
-            }
-        }
+        FGLDM.setPixelSize(Grid.getGridDistance());
+        FGLDM.Layers = Grid.getLayers();
+        FGLDM.Render();
+    }
+
+    protected void RenderLayer0() {
+        FGDC.GridColor = Grid.getGridColor();
+        FGDC.GridDistance = Grid.getGridDistance();
+        FGDC.DrawGrid = FDrawGrid;
+        FGDC.Render();
     }
 
     protected void HandleMousePressed(MouseEvent t) {
@@ -440,12 +434,12 @@ public class GridStageController implements Initializable {
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
         btnPaintGrid.setSelected(FDrawGrid);
         FGDC = new NGGrid2DDisplayController(Layer0);
-        FGODM = new NGGeometryObject2DDisplayManager(Layer1);
+        FGLDM = new GridLayerDisplayManager(Layer1);
     }
 
     public void Initialize() {
         FGDC.Initialize();
-        FGODM.Initialize();
+        FGLDM.Initialize();
         Layer0.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
                     @Override
@@ -478,10 +472,7 @@ public class GridStageController implements Initializable {
 
     public void RenderScene(Boolean aComplete) {
         if (aComplete) {
-            FGDC.GridColor = Grid.getGridColor();
-            FGDC.GridDistance = Grid.getGridDistance();
-            FGDC.DrawGrid = FDrawGrid;
-            FGDC.Render();
+            RenderLayer0();
         }
         RenderLayer1();
     }
