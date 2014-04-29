@@ -244,7 +244,7 @@ public class Grid implements GridLayerEventListener, NGLogEventListener {
     }
 
     public NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
-        return new NGPoint2D((int)(aPoint.getX() / getGridDistance()) + 1, (int)(aPoint.getY() / getGridDistance()) + 1);
+        return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
 
     public void Save() {

@@ -2,7 +2,8 @@ package Grids;
 
 import Uniwork.Base.NGLogEntry;
 import Uniwork.Graphics.*;
-import Uniwork.Visuals.NGGridDisplayController;
+import Uniwork.Visuals.NGGeometryObject2DDisplayManager;
+import Uniwork.Visuals.NGGrid2DDisplayController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -78,7 +79,8 @@ public class GridStageController implements Initializable {
 
     protected boolean FDrawGrid;
 
-    protected NGGridDisplayController FGDC;
+    protected NGGrid2DDisplayController FGDC;
+    protected NGGeometryObject2DDisplayManager FGODM;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -178,137 +180,14 @@ public class GridStageController implements Initializable {
         Collections.sort(Layers);
         for (GridLayer Layer : Layers) {
             for (NGGeometryObject2D Object : Layer.getObjects()) {
-                drawGeometryObject(gc1, Layer, Object);
+                //drawGeometryObject(gc1, Layer, Object);
+                FGODM.setPixelSize(Grid.getGridDistance());
+                FGODM.GeometryObject = Object;
+                FGODM.GeometryObjectColor = Layer.getObjectColor();
+                FGODM.Selected = Layer.isObjectSelected(Object);
+                FGODM.Render();
             }
         }
-    }
-
-    protected void drawGeometryObject(GraphicsContext aGC, GridLayer aLayer, NGGeometryObject2D aObject) {
-        aGC.setFill(aLayer.getObjectColor());
-        if (aObject instanceof NGPoint2D) {
-            NGPoint2D Point = (NGPoint2D)aObject;
-            drawGridPixel(aGC, Point.getXAsInt(), Point.getYAsInt(), aLayer.isObjectSelected(aObject));
-        } else if (aObject instanceof NGLine2D) {
-            NGLine2D Line = (NGLine2D)aObject;
-            drawLineBresenham(aGC, Line.getA().getXAsInt(), Line.getA().getYAsInt(), Line.getB().getXAsInt(), Line.getB().getYAsInt(), aLayer.isObjectSelected(aObject));
-        } else if (aObject instanceof NGCircle) {
-            NGCircle Circle = (NGCircle)aObject;
-            drawCircleBresenham(aGC, Circle.getMiddlePoint().getXAsInt(), Circle.getMiddlePoint().getYAsInt(), Circle.getRadiusAsInt(), aLayer.isObjectSelected(aObject));
-        } else if (aObject instanceof NGEllipse) {
-            NGEllipse Ellipse = (NGEllipse)aObject;
-            drawEllipseBresenham(aGC, Ellipse.getMiddlePoint().getXAsInt(), Ellipse.getMiddlePoint().getYAsInt(), Ellipse.getRadiusXAsInt(), Ellipse.getRadiusYAsInt(), aLayer.isObjectSelected(aObject));
-        } else if (aObject instanceof NGRectangle) {
-            NGRectangle Rectangle = (NGRectangle)aObject;
-            drawRectangle(aGC, Rectangle.getMiddlePoint().getXAsInt(), Rectangle.getMiddlePoint().getYAsInt(), Rectangle.getAAsInt(), Rectangle.getBAsInt(), aLayer.isObjectSelected(aObject));
-        }
-    }
-
-    protected void drawRectangle(GraphicsContext aGC, int aX, int aY, int aA, int aB, Boolean aSelected) {
-        int dx = aA/2;
-        int dy = aB/2;
-        int TLX = aX-dx;
-        int TLY = aY-dy;
-        int BRX = aX+aA-dx;
-        int BRY = aY+aB-dy;
-        drawLineBresenham(aGC,TLX,TLY,BRX,TLY,aSelected);
-        drawLineBresenham(aGC,BRX,TLY,BRX,BRY,aSelected);
-        drawLineBresenham(aGC,TLX,TLY,TLX,BRY,aSelected);
-        drawLineBresenham(aGC,TLX,BRY,BRX,BRY,aSelected);
-        if (aSelected) {
-            drawGridPixel(aGC, aX, aY, aSelected);
-        }
-    }
-
-    protected void drawLineBresenham(GraphicsContext aGC, int aX0, int aY0, int aX1, int aY1, Boolean aSelected) {
-        {
-            int dx =  abs(aX1-aX0), sx = aX0<aX1 ? 1 : -1;
-            int dy = -abs(aY1-aY0), sy = aY0<aY1 ? 1 : -1;
-            int err = dx+dy, e2;
-            for(;;){
-                drawGridPixel(aGC, aX0, aY0, aSelected);
-                if (aX0==aX1 && aY0==aY1)
-                    break;
-                e2 = 2*err;
-                if (e2 > dy) { err += dy; aX0 += sx; }
-                if (e2 < dx) { err += dx; aY0 += sy; }
-            }
-        }
-    }
-
-    protected void drawCircleBresenham(GraphicsContext aGC, int aX, int aY, int aRadius, Boolean aSelected) {
-        int f = 1 - aRadius;
-        int ddF_x = 0;
-        int ddF_y = -2 * aRadius;
-        int x = 0;
-        int y = aRadius;
-        drawGridPixel(aGC, aX, aY + aRadius, aSelected);
-        drawGridPixel(aGC, aX, aY - aRadius, aSelected);
-        drawGridPixel(aGC, aX + aRadius, aY, aSelected);
-        drawGridPixel(aGC, aX - aRadius, aY, aSelected);
-        while(x < y)
-        {
-            if(f >= 0)
-            {
-                y--;
-                ddF_y += 2;
-                f += ddF_y;
-            }
-            x++;
-            ddF_x += 2;
-            f += ddF_x + 1;
-            drawGridPixel(aGC, aX + x, aY + y, aSelected);
-            drawGridPixel(aGC, aX - x, aY + y, aSelected);
-            drawGridPixel(aGC, aX + x, aY - y, aSelected);
-            drawGridPixel(aGC, aX - x, aY - y, aSelected);
-            drawGridPixel(aGC, aX + y, aY + x, aSelected);
-            drawGridPixel(aGC, aX - y, aY + x, aSelected);
-            drawGridPixel(aGC, aX + y, aY - x, aSelected);
-            drawGridPixel(aGC, aX - y, aY - x, aSelected);
-        }
-        if (aSelected) {
-            drawGridPixel(aGC, aX, aY, aSelected);
-        }
-    }
-
-    protected void drawEllipseBresenham(GraphicsContext aGC, int aX, int aY, int aRadiusX, int aRadiusY, Boolean aSelected) {
-        int dx = 0, dy = aRadiusY;
-        long a2 = aRadiusX*aRadiusX, b2 = aRadiusY*aRadiusY;
-        long err = b2-(2*aRadiusY-1)*a2, e2;
-        do {
-            drawGridPixel(aGC, aX + dx, aY + dy, aSelected);
-            drawGridPixel(aGC, aX - dx, aY + dy, aSelected);
-            drawGridPixel(aGC, aX - dx, aY - dy, aSelected);
-            drawGridPixel(aGC, aX + dx, aY - dy, aSelected);
-
-            e2 = 2*err;
-            if (e2 <  (2*dx+1)*b2) { dx++; err += (2*dx+1)*b2; }
-            if (e2 > -(2*dy-1)*a2) { dy--; err -= (2*dy-1)*a2; }
-        } while (dy > 0);
-        dx--;
-        while (dx++ < aRadiusX) {
-            drawGridPixel(aGC, aX + dx, aY, aSelected);
-            drawGridPixel(aGC, aX - dx, aY, aSelected);
-        }
-        if (aSelected) {
-            drawGridPixel(aGC, aX, aY, aSelected);
-        }
-    }
-
-    protected void drawGridPixel(GraphicsContext aGC, int aX, int aY, Boolean aSelected) {
-        int PX = (aX - 1) * Grid.getGridDistance();
-        int PY = (aY - 1) * Grid.getGridDistance();
-        aGC.fillRect(PX, PY, Grid.getGridDistance(), Grid.getGridDistance());
-        if (aSelected) {
-            drawGridPixelFrame(aGC, aX, aY);
-        }
-    }
-
-    protected void drawGridPixelFrame(GraphicsContext aGC, int aX, int aY) {
-        int PX = (aX - 1) * Grid.getGridDistance();
-        int PY = (aY - 1) * Grid.getGridDistance();
-        aGC.setLineWidth(2);
-        aGC.setStroke(Color.MAGENTA);
-        aGC.strokeRect(PX, PY, Grid.getGridDistance(), Grid.getGridDistance());
     }
 
     protected void HandleMousePressed(MouseEvent t) {
@@ -560,12 +439,13 @@ public class GridStageController implements Initializable {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
         btnPaintGrid.setSelected(FDrawGrid);
-        FGDC = new NGGridDisplayController(Layer0);
+        FGDC = new NGGrid2DDisplayController(Layer0);
+        FGODM = new NGGeometryObject2DDisplayManager(Layer1);
     }
 
     public void Initialize() {
         FGDC.Initialize();
-        RenderLayer1();
+        FGODM.Initialize();
         Layer0.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
                     @Override
