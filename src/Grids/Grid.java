@@ -3,6 +3,8 @@ package Grids;
 import Uniwork.Base.NGLogEvent;
 import Uniwork.Base.NGLogEventListener;
 import Uniwork.Base.NGLogManager;
+import Uniwork.Base.NGObject;
+import Uniwork.Graphics.NGGeometryObject2D;
 import Uniwork.Graphics.NGPoint2D;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +16,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Grid implements GridLayerEventListener, NGLogEventListener {
+public class Grid extends NGObject implements GridLayerEventListener, NGLogEventListener {
 
     protected int FUpdateCount;
     protected Integer FGridDistance;
@@ -105,6 +107,50 @@ public class Grid implements GridLayerEventListener, NGLogEventListener {
 
     protected Boolean InUpdate() {
         return FUpdateCount > 0;
+    }
+
+    @Override
+    protected void DoAssignFrom(NGObject aObject) {
+        GridLayer layer;
+        XMLGrid XMLGrid = (XMLGrid)aObject;
+        removeAllLayers();
+        setGridDistance(XMLGrid.getGridDistance());
+        setGridColor(Color.valueOf(XMLGrid.getGridColor()));
+        for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
+            layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
+            layer.setZOrder(XMLLayer.getZOrder());
+            for (NGGeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
+                layer.addObject(GeoObject);
+            }
+        }
+        setCurrentLayer(XMLGrid.getCurrentLayer());
+    }
+
+    @Override
+    protected NGObject DoAssignTo( ) {
+        XMLLayer XMLLayer;
+        ArrayList<XMLLayer> XMLLayers;
+        ArrayList<NGGeometryObject2D> XMLGeoObjects;
+        XMLGrid XMLGrid = new XMLGrid();
+        XMLGrid.setGridDistance(getGridDistance());
+        XMLGrid.setGridColor(getGridColor().toString());
+        XMLGrid.setCurrentLayer(getCurrentLayer().getName());
+        XMLLayers = new ArrayList<XMLLayer>();
+        XMLGrid.setLayers(XMLLayers);
+        for (GridLayer layer : getLayers()) {
+            XMLLayer = new XMLLayer();
+            XMLLayers.add(XMLLayer);
+            XMLLayer.setName(layer.getName());
+            XMLLayer.setDescription(layer.getDescription());
+            XMLLayer.setObjectColor(layer.getObjectColor().toString());
+            XMLLayer.setZOrder(layer.getZOrder());
+            XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
+            XMLLayer.setGeometryObjects(XMLGeoObjects);
+            for (NGGeometryObject2D GeoObject : layer.getObjects()) {
+                XMLGeoObjects.add(GeoObject);
+            }
+        }
+        return XMLGrid;
     }
 
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {

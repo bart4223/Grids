@@ -1,10 +1,11 @@
 package Grids;
 
+import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGGeometryObject2D;
 
 import java.util.ArrayList;
 
-public class XMLLayer {
+public class XMLLayer extends NGObject{
     public XMLLayer() { }
     protected String Name = "";
     protected String Description;

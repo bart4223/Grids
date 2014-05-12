@@ -1,8 +1,10 @@
 package Grids;
 
+import Uniwork.Base.NGObject;
+
 import java.util.ArrayList;
 
-public class XMLGrid {
+public class XMLGrid extends NGObject{
     public XMLGrid() { }
     protected int GridDistance = 0;
     protected String GridColor = "";
