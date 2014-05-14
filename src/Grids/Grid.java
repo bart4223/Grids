@@ -1,8 +1,8 @@
 package Grids;
 
-import Uniwork.Base.NGLogEvent;
-import Uniwork.Base.NGLogEventListener;
-import Uniwork.Base.NGLogManager;
+import Uniwork.Misc.NGLogEvent;
+import Uniwork.Misc.NGLogEventListener;
+import Uniwork.Misc.NGLogManager;
 import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGGeometryObject2D;
 import Uniwork.Graphics.NGPoint2D;

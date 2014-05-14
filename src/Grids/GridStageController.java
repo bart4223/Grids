@@ -1,8 +1,7 @@
 package Grids;
 
-import Uniwork.Base.NGLogEntry;
+import Uniwork.Misc.NGLogEntry;
 import Uniwork.Graphics.*;
-import Uniwork.Visuals.NGGeometryObject2DDisplayManager;
 import Uniwork.Visuals.NGGrid2DDisplayController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,11 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ResourceBundle;
-
-import static java.lang.Math.abs;
 
 public class GridStageController implements Initializable {
 
