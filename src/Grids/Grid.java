@@ -327,6 +327,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         FLogManager.clearLog();
     }
 
+    public NGLogManager getLogManager() {
+        return FLogManager;
+    }
+
     @Override
     public void handleAddObject(GridLayerAddObjectEvent e) {
         UpdateStage(false, e.LayerName);

@@ -2,6 +2,7 @@ package Grids;
 
 import Uniwork.Base.NGObjectDeserializer;
 import Uniwork.Base.NGObjectSerializer;
+import Uniwork.Base.NGObjectSerializerFile;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import java.io.File;
@@ -51,9 +52,9 @@ public class GridManager {
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showSaveDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
-                NGObjectSerializer Serializer = new NGObjectSerializer(chosenFile.getPath(), aGrid);
+                NGObjectSerializer Serializer = new NGObjectSerializerFile(aGrid, chosenFile.getPath());
+                Serializer.setLogManager(aGrid.getLogManager());
                 Serializer.Serialize();
-                aGrid.writeLog(String.format("Saving file %s successfully...",chosenFile.getPath()));
             }
             else {
                 aGrid.writeLog("Saving aborted...");
