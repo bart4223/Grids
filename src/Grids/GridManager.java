@@ -1,6 +1,7 @@
 package Grids;
 
 import Uniwork.Base.NGObjectDeserializer;
+import Uniwork.Base.NGObjectDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectSerializerFile;
 import javafx.scene.paint.Color;
@@ -77,9 +78,9 @@ public class GridManager {
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
-                NGObjectDeserializer Deserializer = new NGObjectDeserializer(chosenFile.getPath(), aGrid);
+                NGObjectDeserializer Deserializer = new NGObjectDeserializerFile(aGrid, chosenFile.getPath());
+                Deserializer.setLogManager(aGrid.getLogManager());
                 Deserializer.Deserialize();
-                aGrid.writeLog(String.format("Loading file %s successfully...",chosenFile.getPath()));
             }
             else {
                 aGrid.writeLog("Loading aborted...");
