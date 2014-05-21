@@ -55,7 +55,7 @@ public class GridManager {
             if (chosenFile != null) {
                 NGObjectSerializer Serializer = new NGObjectSerializerFile(aGrid, chosenFile.getPath());
                 Serializer.setLogManager(aGrid.getLogManager());
-                Serializer.Serialize();
+                Serializer.serializeObject();
             }
             else {
                 aGrid.writeLog("Saving aborted...");
@@ -80,7 +80,7 @@ public class GridManager {
             if (chosenFile != null) {
                 NGObjectDeserializer Deserializer = new NGObjectDeserializerFile(aGrid, chosenFile.getPath());
                 Deserializer.setLogManager(aGrid.getLogManager());
-                Deserializer.Deserialize();
+                Deserializer.deserializeObject();
             }
             else {
                 aGrid.writeLog("Loading aborted...");
