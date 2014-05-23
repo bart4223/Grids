@@ -1,9 +1,9 @@
 package Grids;
 
 import Uniwork.Base.NGObjectDeserializer;
-import Uniwork.Base.NGObjectDeserializerFile;
+import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
-import Uniwork.Base.NGObjectSerializerFile;
+import Uniwork.Base.NGObjectXMLSerializerFile;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import java.io.File;
@@ -53,7 +53,7 @@ public class GridManager {
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showSaveDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
-                NGObjectSerializer Serializer = new NGObjectSerializerFile(aGrid, chosenFile.getPath());
+                NGObjectSerializer Serializer = new NGObjectXMLSerializerFile(aGrid, XMLGrid.class, chosenFile.getPath());
                 Serializer.setLogManager(aGrid.getLogManager());
                 Serializer.serializeObject();
             }
@@ -78,7 +78,7 @@ public class GridManager {
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
-                NGObjectDeserializer Deserializer = new NGObjectDeserializerFile(aGrid, chosenFile.getPath());
+                NGObjectDeserializer Deserializer = new NGObjectXMLDeserializerFile(aGrid, chosenFile.getPath());
                 Deserializer.setLogManager(aGrid.getLogManager());
                 Deserializer.deserializeObject();
             }

@@ -110,7 +110,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     @Override
-    protected void DoAssignFrom(NGObject aObject) {
+    protected void DoAssignFrom(Object aObject) {
         GridLayer layer;
         XMLGrid XMLGrid = (XMLGrid)aObject;
         removeAllLayers();
@@ -127,11 +127,11 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     @Override
-    protected NGObject DoAssignTo( ) {
+    protected void DoAssignTo(Object aObject) {
         XMLLayer XMLLayer;
         ArrayList<XMLLayer> XMLLayers;
         ArrayList<NGGeometryObject2D> XMLGeoObjects;
-        XMLGrid XMLGrid = new XMLGrid();
+        XMLGrid XMLGrid = (XMLGrid)aObject;
         XMLGrid.setGridDistance(getGridDistance());
         XMLGrid.setGridColor(getGridColor().toString());
         XMLGrid.setCurrentLayer(getCurrentLayer().getName());
@@ -150,7 +150,6 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
                 XMLGeoObjects.add(GeoObject);
             }
         }
-        return XMLGrid;
     }
 
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
