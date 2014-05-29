@@ -16,9 +16,9 @@
             <Button id="btnAddLayer" prefWidth="80" text="Add" onAction="#handleAddLayer" fx:id="btnAddLayer" />
             <Button id="btnClearLayer" prefWidth="80" text="Clear" onAction="#handleClearLayer" fx:id="btnClearLayer" />
             <Button id="btnRemoveLayer" prefWidth="80" text="Remove" onAction="#handleRemoveLayer" fx:id="btnRemoveLayer" />
-            <ComboBox id="cbLayers" prefWidth="200" onAction="#handlecbLayers" fx:id="cbLayers" />
-            <Button id="btnSaveGrid" prefWidth="60" text="Save" onAction="#handleSaveGrid" fx:id="btnSaveGrid" />
+            <ComboBox id="cbLayers" prefWidth="190" onAction="#handlecbLayers" fx:id="cbLayers" />
             <Button id="btnLoadGrid" prefWidth="60" text="Load" onAction="#handleLoadGrid" fx:id="btnLoadGrid" />
+            <Button id="btnSaveGrid" prefWidth="80" text="Save..." onAction="#handleSaveGrid" fx:id="btnSaveGrid" />
         </HBox>
     </AnchorPane>
     <AnchorPane prefHeight="750" minWidth="800" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
@@ -34,8 +34,8 @@
                 <ToggleButton id="btnEllipse" prefHeight="30" prefWidth="80" text="Ellipse" onAction="#handleEllipse" fx:id="btnEllipse" />
              </VBox>
         </AnchorPane>
-        <AnchorPane prefHeight="750" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0">
-            <AnchorPane prefHeight="700" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.topAnchor="0">
+        <AnchorPane prefHeight="750" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.rightAnchor="0" >
+            <AnchorPane prefHeight="700" minWidth="700" xmlns:fx="http://javafx.com/fxml" AnchorPane.topAnchor="0" >
                 <Canvas id="Layer1" height="700" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer1" />
                 <Canvas id="Layer0" height="700" width="700" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" fx:id="Layer0" />
             </AnchorPane>

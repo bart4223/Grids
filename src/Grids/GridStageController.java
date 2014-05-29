@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -21,6 +22,9 @@ import java.util.ResourceBundle;
 public class GridStageController implements Initializable {
 
     public enum ToolMode{Select, Point, Line, Circle, Ellipse, Quadrat, Rectangle};
+
+    @FXML
+    private Button btnSaveGrid;
 
     @FXML
     private ToggleButton btnSelect;
@@ -70,6 +74,7 @@ public class GridStageController implements Initializable {
     protected NGGeometryObject2D FCurrentGOPoint;
 
     protected ContextMenu cmLayer0;
+    protected ContextMenu cmbtnSaveGrid;
     protected DropShadow dsContextMenu;
 
     protected boolean FDrawGrid;
@@ -104,7 +109,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handleSaveGrid(){
-        Grid.Save();
+        cmbtnSaveGrid.show(btnSaveGrid, Side.BOTTOM, 0, 0);
     }
 
     @FXML
@@ -388,8 +393,9 @@ public class GridStageController implements Initializable {
         Line line;
         EventHandler<MouseEvent> click;
         gc1 = Layer1.getGraphicsContext2D();
-        cbGridSize.getItems().add(1);
-        cbGridSize.getItems().add(2);
+        for( int i = 1; i < 5; i++ ) {
+            cbGridSize.getItems().add(i);
+        }
         for( int i = 5; i <= 20; i = i + 5 ) {
             cbGridSize.getItems().add(i);
         }
@@ -403,6 +409,7 @@ public class GridStageController implements Initializable {
         btnRectangle.setToggleGroup(group);
         btnSelect.setSelected(true);
         dsContextMenu = new DropShadow();
+        // Contextmenu Layer 0
         cmLayer0 = new ContextMenu();
         // Clear Selection
         line = new Line(60, 10, 150, 10);
@@ -427,9 +434,28 @@ public class GridStageController implements Initializable {
             public void handle(MouseEvent event) {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
+        // Contextmenu btnSaveGrid
+        cmbtnSaveGrid = new ContextMenu();
+        // Save as XML
+        line = new Line(60, 10, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.SaveAsXML();
+            }};
+        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as XML", line, click));
+        // Saev as PNG
+        line = new Line(60, 30, 150, 50);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.SaveAsPNG();
+            }};
+        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
         btnPaintGrid.setSelected(FDrawGrid);
         FGDC = new NGGrid2DDisplayController(Layer0);
         FGLDM = new GridLayerDisplayManager(Layer1);
+        FGLDM.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void Initialize() {
@@ -493,6 +519,10 @@ public class GridStageController implements Initializable {
         UpdatecbLayers();
         UpdatecbGridSize();
         EndUpdateControls();
+    }
+
+    public Canvas getObjectLayer() {
+        return Layer1;
     }
 
 }

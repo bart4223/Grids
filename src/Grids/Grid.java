@@ -292,10 +292,21 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
 
-    public void Save() {
+    public void SaveAsXML() {
         BeginUpdate();
         try {
-            FGridManager.saveGrid(this);
+            FGridManager.saveGridAsXML(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
+    }
+
+    public void SaveAsPNG() {
+        BeginUpdate();
+        try {
+            FGridManager.saveGridImageAsPNG(this);
             EndUpdate();
         }
         catch (Exception e) {
@@ -328,6 +339,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
 
     public NGLogManager getLogManager() {
         return FLogManager;
+    }
+
+    public GridStageController getStageController() {
+        return FStageController;
     }
 
     @Override
