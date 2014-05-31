@@ -14,6 +14,7 @@
             <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
             <ToggleButton id="btnPaintGrid" prefWidth="80" text="Grid" onAction="#handlePaintGrid" fx:id="btnPaintGrid" />
             <ComboBox id="cbGridsize" prefWidth="40" onAction="#handlecbGridSize" fx:id="cbGridSize" />
+            <Button id="btnNewr" prefWidth="80" text="New" onAction="#handleNew" fx:id="btnNew" />
             <Button id="btnAddLayer" prefWidth="80" text="Add" onAction="#handleAddLayer" fx:id="btnAddLayer" />
             <Button id="btnClearLayer" prefWidth="80" text="Clear" onAction="#handleClearLayer" fx:id="btnClearLayer" />
             <Button id="btnRemoveLayer" prefWidth="80" text="Remove" onAction="#handleRemoveLayer" fx:id="btnRemoveLayer" />

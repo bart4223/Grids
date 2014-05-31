@@ -162,6 +162,11 @@ public class GridStageController implements Initializable {
     }
 
     @FXML
+    protected void handleNew(){
+        Grid.New();
+    }
+
+    @FXML
     protected void handleAddLayer(){
         Grid.addLayer();
     }

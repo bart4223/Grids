@@ -241,6 +241,11 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         }
     }
 
+    public void New() {
+        removeAllLayers();
+        addLayer();
+    }
+
     public void clearLayer(GridLayer aLayer) {
         aLayer.removeObjects();
     }
