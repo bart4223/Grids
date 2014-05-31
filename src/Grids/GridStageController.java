@@ -4,15 +4,19 @@ import Uniwork.Misc.NGLogEntry;
 import Uniwork.Graphics.*;
 import Uniwork.Visuals.NGGrid2DDisplayController;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -65,6 +69,9 @@ public class GridStageController implements Initializable {
     @FXML
     private TextArea Log;
 
+    @FXML
+    private ColorPicker cpObjectColor;
+
     protected GraphicsContext gc1;
 
     protected Integer FUpdateCount;
@@ -78,6 +85,8 @@ public class GridStageController implements Initializable {
     protected DropShadow dsContextMenu;
 
     protected boolean FDrawGrid;
+
+    protected final Button hlpbutton;
 
     protected NGGrid2DDisplayController FGDC;
     protected GridLayerDisplayManager FGLDM;
@@ -165,6 +174,12 @@ public class GridStageController implements Initializable {
     @FXML
     protected void handleRemoveLayer(){
         Grid.removeCurrentLayer();
+    }
+
+    @FXML
+    protected void handleObjectColor() {
+        Grid.getCurrentLayer().setObjectColor(cpObjectColor.getValue());
+        RenderLayer1();
     }
 
     protected void setToolMode(ToolMode aToolMode) {
@@ -342,6 +357,13 @@ public class GridStageController implements Initializable {
         cbGridSize.getSelectionModel().select(Grid.getGridDistance().toString());
     }
 
+    protected void UpdatecpObjectColor() {
+        cpObjectColor.setValue(Grid.getCurrentLayer().getObjectColor());
+        // workaround start
+        cpObjectColor.fireEvent(new ActionEvent(hlpbutton, cpObjectColor));
+        // workaround end
+    }
+
     protected void BeginUpdateControls() {
         FUpdateCount = FUpdateCount + 1;
     }
@@ -386,6 +408,7 @@ public class GridStageController implements Initializable {
         FDrawGrid = true;
         FCurrentGO = null;
         FCurrentGOPoint = null;
+        hlpbutton = new Button("Press me.");
     }
 
     @Override
@@ -393,10 +416,7 @@ public class GridStageController implements Initializable {
         Line line;
         EventHandler<MouseEvent> click;
         gc1 = Layer1.getGraphicsContext2D();
-        for( int i = 1; i < 5; i++ ) {
-            cbGridSize.getItems().add(i);
-        }
-        for( int i = 5; i <= 20; i = i + 5 ) {
+        for( int i = 1; i <= 20; i ++ ) {
             cbGridSize.getItems().add(i);
         }
         ToggleGroup group = new ToggleGroup();
@@ -419,7 +439,7 @@ public class GridStageController implements Initializable {
                 Grid.getCurrentLayer().clearSelectedObjects();
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Clear Selection", line, click));
-        // Clear Selection
+        // Clear Selected Objects
         line = new Line(60, 30, 150, 50);
         click = new EventHandler<MouseEvent>() {
             @Override
@@ -444,7 +464,7 @@ public class GridStageController implements Initializable {
                 Grid.SaveAsXML();
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as XML", line, click));
-        // Saev as PNG
+        // Save as PNG
         line = new Line(60, 30, 150, 50);
         click = new EventHandler<MouseEvent>() {
             @Override
@@ -518,6 +538,7 @@ public class GridStageController implements Initializable {
         BeginUpdateControls();
         UpdatecbLayers();
         UpdatecbGridSize();
+        UpdatecpObjectColor();
         EndUpdateControls();
     }
 

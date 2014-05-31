@@ -47,7 +47,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             FStageController.Grid = this;
             Parent lRoot = lXMLLoader.getRoot();
             FStage.setTitle("Grid");
-            Scene Scene = new Scene(lRoot, 800, 800, Color.WHITE);
+            Scene Scene = new Scene(lRoot, 1000, 800, Color.WHITE);
             FStage.setScene(Scene);
             FStage.setResizable(false);
             Scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
