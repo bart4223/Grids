@@ -138,8 +138,8 @@ public class GridManager {
             String userDirectoryString = System.getProperty("user.home");
             File userDirectory = new File(userDirectoryString);
             fileChooser.setInitialDirectory(userDirectory);
-            fileChooser.setTitle("Load from XML");
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+            fileChooser.setTitle("Load from GDF");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("GDF files (*.gdf)", "*.gdf");
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
