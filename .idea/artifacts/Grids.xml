@@ -16,6 +16,9 @@
         <element id="module-output" name="Grids" />
         <element id="artifact" artifact-name="Uniwork" />
       </element>
+      <element id="directory" name="resources">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/config.gcf" />
+      </element>
     </root>
   </artifact>
 </component>

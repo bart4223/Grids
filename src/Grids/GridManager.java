@@ -32,12 +32,12 @@ public class GridManager {
 
     protected void LoadConfiguration() {
         try {
-            InputStream is = new FileInputStream("resources/config.grd");
+            InputStream is = new FileInputStream("resources/config.gcf");
             FConfiguration.load(is);
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
         }
-        catch ( Exception e) {
+        catch (Exception e) {
             writeLog(e.getMessage());
         }
     }
