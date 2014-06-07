@@ -468,7 +468,7 @@ public class GridStageController implements Initializable {
             public void handle(MouseEvent event) {
                 Grid.SaveAsXML();
             }};
-        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as XML", line, click));
+        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as GDF", line, click));
         // Save as PNG
         line = new Line(60, 30, 150, 50);
         click = new EventHandler<MouseEvent>() {
