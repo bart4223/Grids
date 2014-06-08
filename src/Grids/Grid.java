@@ -119,6 +119,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
             layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
             layer.setZOrder(XMLLayer.getZOrder());
+            layer.setImageName(XMLLayer.getImagename());
             for (NGGeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
                 layer.addObject(GeoObject);
             }
@@ -146,6 +147,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             XMLLayer.setZOrder(layer.getZOrder());
             XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
             XMLLayer.setGeometryObjects(XMLGeoObjects);
+            XMLLayer.setImagename(layer.getImageName());
             for (NGGeometryObject2D GeoObject : layer.getObjects()) {
                 XMLGeoObjects.add(GeoObject);
             }

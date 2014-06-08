@@ -421,7 +421,7 @@ public class GridStageController implements Initializable {
         Line line;
         EventHandler<MouseEvent> click;
         gc1 = Layer1.getGraphicsContext2D();
-        for( int i = 1; i <= 20; i ++ ) {
+        for( int i = 1; i <= 42; i ++ ) {
             cbGridSize.getItems().add(i);
         }
         ToggleGroup group = new ToggleGroup();

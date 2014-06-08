@@ -15,6 +15,7 @@ public class GridLayer implements Comparable<GridLayer> {
     protected Color FObjectColor;
     protected List FEventListeners;
     protected Integer FZOrder;
+    protected String FImageName;
 
     protected synchronized void RaiseAddObjectEvent(NGGeometryObject2D aObject) {
         GridLayerAddObjectEvent lEvent = new GridLayerAddObjectEvent(this);
@@ -60,6 +61,7 @@ public class GridLayer implements Comparable<GridLayer> {
         FDescription = aDescription;
         FObjectColor = aColor;
         FZOrder = 0;
+        FImageName = "";
     }
 
     @Override
@@ -190,6 +192,14 @@ public class GridLayer implements Comparable<GridLayer> {
 
     public void setObjectColor(Color aValue) {
         FObjectColor = aValue;
+    }
+
+    public void setImageName(String aImageName) {
+        FImageName = aImageName;
+    }
+
+    public String getImageName() {
+        return FImageName;
     }
 
     public ArrayList<NGGeometryObject2D> getObjects() {
