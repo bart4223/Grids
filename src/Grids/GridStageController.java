@@ -105,7 +105,8 @@ public class GridStageController implements Initializable {
         if (InUpdate()) return;
         if (Event.getEventType().equals(ActionEvent.ACTION)) {
             if (cbLayers.getValue() != null) {
-                Grid.setCurrentLayer(cbLayers.getValue().toString());
+                GridLayer layer = Grid.setCurrentLayer(cbLayers.getValue().toString());
+                cbLayers.setTooltip(new Tooltip(layer.getDescription()));
             }
         }
     }
