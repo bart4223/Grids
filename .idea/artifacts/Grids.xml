@@ -19,6 +19,9 @@
       <element id="directory" name="resources">
         <element id="file-copy" path="$PROJECT_DIR$/resources/config.gcf" />
       </element>
+      <element id="directory" name="images">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/images/sample.png" />
+      </element>
     </root>
   </artifact>
 </component>
