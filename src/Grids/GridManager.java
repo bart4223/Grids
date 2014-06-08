@@ -4,7 +4,6 @@ import Uniwork.Base.NGObjectDeserializer;
 import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectXMLSerializerFile;
-import Uniwork.Misc.NGImageList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -24,6 +23,7 @@ public class GridManager {
     protected Properties FConfiguration;
     protected int FImageFileSizeX;
     protected int FImageFileSizeY;
+    protected String FImagePath;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -37,10 +37,19 @@ public class GridManager {
             FConfiguration.load(is);
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
+            FImagePath = FConfiguration.getProperty("ImagePath");
         }
         catch (Exception e) {
             writeLog(e.getMessage());
         }
+    }
+
+    protected String getImagePath() {
+        if (FImagePath.length() == 0) {
+            return System.getProperty("user.home");
+        }
+        else
+            return FImagePath;
     }
 
     public GridManager() {
@@ -48,6 +57,7 @@ public class GridManager {
         FConfiguration = new Properties();
         FImageFileSizeX = 8;
         FImageFileSizeY = 8;
+        FImagePath = "";
     }
 
     public void Initialize() {
@@ -76,7 +86,7 @@ public class GridManager {
         }
     }
 
-    public void saveGridAsXML(Grid aGrid) {
+    public void saveGridAsGDF(Grid aGrid) {
         try
         {
             FileChooser fileChooser = new FileChooser();
@@ -105,7 +115,7 @@ public class GridManager {
         try
         {
             FileChooser fileChooser = new FileChooser();
-            String userDirectoryString = System.getProperty("user.home");
+            String userDirectoryString = getImagePath();
             File userDirectory = new File(userDirectoryString);
             fileChooser.setInitialDirectory(userDirectory);
             fileChooser.setTitle("Save as PNG");
@@ -132,7 +142,7 @@ public class GridManager {
         }
     }
 
-    public void loadGrid(Grid aGrid) {
+    public void loadGridFromGDF(Grid aGrid) {
         try
         {
             FileChooser fileChooser = new FileChooser();

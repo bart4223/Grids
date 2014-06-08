@@ -9,9 +9,12 @@ Configuration
 
 The configuration file must place under resources/config.gcf (grid config file)
 Properties:
-    -ImageFileSizeX (X-Size for Save as PNG)
-    -ImageFileSizeY (Y-Size for Save as PNG)
-
+    -ImageFileSizeX
+        X-Size for Save as PNG
+    -ImageFileSizeY
+        Y-Size for Save as PNG
+    -ImagePath
+        Default path for image download and layer image file name
 
 Save/Load
 =========

@@ -123,7 +123,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handleLoadGrid(){
-        Grid.Load();
+        Grid.LoadFromGDF();
     }
 
     @FXML
@@ -466,7 +466,7 @@ public class GridStageController implements Initializable {
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Grid.SaveAsXML();
+                Grid.SaveAsGDF();
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as GDF", line, click));
         // Save as PNG

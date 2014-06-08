@@ -119,7 +119,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
             layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
             layer.setZOrder(XMLLayer.getZOrder());
-            layer.setImageName(XMLLayer.getImagename());
+            layer.setImageName(FGridManager.getImagePath() + XMLLayer.getImagename());
             for (NGGeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
                 layer.addObject(GeoObject);
             }
@@ -299,10 +299,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
 
-    public void SaveAsXML() {
+    public void SaveAsGDF() {
         BeginUpdate();
         try {
-            FGridManager.saveGridAsXML(this);
+            FGridManager.saveGridAsGDF(this);
             EndUpdate();
         }
         catch (Exception e) {
@@ -321,10 +321,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         }
     }
 
-    public void Load() {
+    public void LoadFromGDF() {
         BeginUpdate();
         try {
-            FGridManager.loadGrid(this);
+            FGridManager.loadGridFromGDF(this);
             EndUpdate();
         }
         catch (Exception e) {
