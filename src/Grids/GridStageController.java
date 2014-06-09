@@ -2,6 +2,7 @@ package Grids;
 
 import Uniwork.Misc.NGLogEntry;
 import Uniwork.Graphics.*;
+import Uniwork.Visuals.NGDisplayView;
 import Uniwork.Visuals.NGGrid2DDisplayController;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -90,6 +91,7 @@ public class GridStageController implements Initializable {
 
     protected NGGrid2DDisplayController FGDC;
     protected GridLayerDisplayManager FGLDM;
+    protected NGDisplayView FView;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -205,12 +207,18 @@ public class GridStageController implements Initializable {
         FGDC.Render();
     }
 
+    protected NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
+        aPoint.setX(aPoint.getX() + FView.getPositionX());
+        aPoint.setY(aPoint.getY() + FView.getPositionY());
+        return Grid.CoordinatesToGridCoordinates(aPoint);
+    }
+
     protected void HandleMousePressed(MouseEvent t) {
         switch (t.getButton()) {
             case PRIMARY:
                 NGGeometryObject2D layerObject;
                 GridLayer Layer = Grid.getCurrentLayer();
-                NGPoint2D gridPoint = Grid.CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
+                NGPoint2D gridPoint = CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
                 switch (FToolMode) {
                     case Select:
                         layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
@@ -262,7 +270,7 @@ public class GridStageController implements Initializable {
         int lXDist;
         int lYDist;
         if (FCurrentGO != null) {
-            NGPoint2D gridPoint = Grid.CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
+            NGPoint2D gridPoint = CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
             switch (FToolMode) {
                 case Select:
                     if (FCurrentGO instanceof NGPoint2D) {
@@ -479,8 +487,12 @@ public class GridStageController implements Initializable {
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
         btnPaintGrid.setSelected(FDrawGrid);
+        FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
+        FView.setPosition(5, 5);
         FGDC = new NGGrid2DDisplayController(Layer0);
+        FGDC.setView(FView);
         FGLDM = new GridLayerDisplayManager(Layer1);
+        FGLDM.setView(FView);
         FGLDM.setBackgroundColor(Color.TRANSPARENT);
     }
 

@@ -22,11 +22,11 @@ public class GridLayerDisplayManager extends NGGeometryObject2DDisplayManager {
 
     protected void ClearCanvas() {
         if (FBackgroundColor.equals(Color.TRANSPARENT)) {
-            FGC.clearRect(0, 0, getWidth(), getHeight());
+            FGC.clearRect(0, 0, getViewWidth(), getViewHeight());
         }
         else {
             FGC.setFill(FBackgroundColor);
-            FGC.fillRect(0, 0, getWidth(), getHeight());
+            FGC.fillRect(0, 0, getViewWidth(), getViewHeight());
         }
     }
 
