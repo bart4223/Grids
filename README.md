@@ -9,6 +9,10 @@ Configuration
 
 The configuration file must place under resources/config.gcf (grid config file)
 Properties:
+    -GridMaxWidth
+        maximum grid width
+    -GridMaxHeight
+        maximum grid height
     -ImageFileSizeX
         X-Size for Save as PNG
     -ImageFileSizeY

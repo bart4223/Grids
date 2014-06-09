@@ -24,6 +24,8 @@ public class GridManager {
     protected int FImageFileSizeX;
     protected int FImageFileSizeY;
     protected String FImagePath;
+    protected double FGridMaxWidth;
+    protected double FGridMaxHeight;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -38,6 +40,8 @@ public class GridManager {
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
             FImagePath = FConfiguration.getProperty("ImagePath");
+            FGridMaxWidth = Integer.parseInt(FConfiguration.getProperty("GridMaxWidth"));
+            FGridMaxHeight = Integer.parseInt(FConfiguration.getProperty("GridMaxHeight"));
         }
         catch (Exception e) {
             writeLog(e.getMessage());
@@ -58,14 +62,16 @@ public class GridManager {
         FImageFileSizeX = 8;
         FImageFileSizeY = 8;
         FImagePath = "";
+        FGridMaxWidth = 1024;
+        FGridMaxHeight = 1024;
     }
 
     public void Initialize() {
+        LoadConfiguration();
         for (Grid grid : FGrids) {
             grid.Initialize();
         }
         writeLog("Welcome to Grids have fun...");
-        LoadConfiguration();
     }
 
     public void Finalize() {
@@ -165,6 +171,14 @@ public class GridManager {
         catch (Exception e) {
             aGrid.writeLog(e.getMessage());
         }
+    }
+
+    public double getGridMaxWidth() {
+        return FGridMaxWidth;
+    }
+
+    public double getGridMaxHeight() {
+        return FGridMaxHeight;
     }
 
 }

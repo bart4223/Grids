@@ -119,7 +119,9 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
             layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
             layer.setZOrder(XMLLayer.getZOrder());
-            layer.setImageName(FGridManager.getImagePath() + XMLLayer.getImagename());
+            if (XMLLayer.getImagename().length() > 0) {
+                layer.setImageName(FGridManager.getImagePath() + XMLLayer.getImagename());
+            }
             for (NGGeometryObject2D GeoObject : XMLLayer.getGeometryObjects()) {
                 layer.addObject(GeoObject);
             }

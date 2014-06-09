@@ -16,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -299,13 +300,13 @@ public class GridStageController implements Initializable {
                             dx = Line.getB().getX() - Line.getA().getX();
                             dy = Line.getB().getY() - Line.getA().getY();
                             Line.setA(gridPoint.getX(), gridPoint.getY());
-                            Line.setB(gridPoint.getX()+dx, gridPoint.getY()+dy);
+                            Line.setB(gridPoint.getX() + dx, gridPoint.getY() + dy);
                         }
                         else {
                             dx = Line.getA().getX() - Line.getB().getX();
                             dy = Line.getA().getY() - Line.getB().getY();
                             Line.setB(gridPoint.getX(), gridPoint.getY());
-                            Line.setA(gridPoint.getX()+dx, gridPoint.getY()+dy);
+                            Line.setA(gridPoint.getX() + dx, gridPoint.getY() + dy);
                         }
                     }
                     break;
@@ -335,9 +336,9 @@ public class GridStageController implements Initializable {
                     lXDist = Math.abs(Quadrat.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
                     lYDist = Math.abs(Quadrat.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
                     if (lXDist > lYDist)
-                        Quadrat.setA(2*lXDist);
+                        Quadrat.setA(2 * lXDist);
                     else
-                        Quadrat.setA(2*lYDist);
+                        Quadrat.setA(2 * lYDist);
                 case Rectangle:
                     NGRectangle Rectangle = (NGRectangle)FCurrentGO;
                     lXDist = Math.abs(Rectangle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
@@ -357,12 +358,36 @@ public class GridStageController implements Initializable {
         }
     }
 
+    protected void HandleMouseScrolled(ScrollEvent t) {
+        double x = FView.getPositionX() - t.getDeltaX();
+        if (x < 0) {
+            x = 0;
+        }
+        double xmax = Grid.getManager().getGridMaxWidth() - FView.getWidth();
+        if (x > xmax) {
+            x = xmax;
+        }
+        double y = FView.getPositionY() - t.getDeltaY();
+        if (y < 0) {
+            y = 0;
+        }
+        double ymax = Grid.getManager().getGridMaxHeight() - FView.getHeight();
+        if (y > ymax) {
+            y = ymax;
+        }
+        FView.setPosition(x, y);
+        RenderScene(true);
+    }
+
     protected void UpdatecbLayers() {
         cbLayers.getItems().clear();
         for (GridLayer Layer : Grid.getLayers()) {
             cbLayers.getItems().add(Layer.getName());
         }
         if (Grid.getCurrentLayer() != null) {
+            // workaround start
+            cbLayers.valueProperty().set(null);
+            // workaround end
             cbLayers.getSelectionModel().select(Grid.getCurrentLayer().getName());
         }
     }
@@ -414,6 +439,11 @@ public class GridStageController implements Initializable {
         return mi;
     }
 
+    protected void resetView() {
+        FView.setPosition(0, 0);
+        RenderLayer0();
+    }
+
     public Grid Grid;
 
     public GridStageController() {
@@ -461,8 +491,16 @@ public class GridStageController implements Initializable {
                 Grid.getCurrentLayer().removeSelectedObjects();
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Remove Selected Object(s)", line, click));
-        // Cancel
+        // Reset View
         line = new Line(60, 50, 150, 90);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                resetView();
+            }};
+        cmLayer0.getItems().add(getMenuItemForLine("Reset View", line, click));
+        // Cancel
+        line = new Line(60, 70, 150, 130);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -488,7 +526,6 @@ public class GridStageController implements Initializable {
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
         btnPaintGrid.setSelected(FDrawGrid);
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
-        FView.setPosition(5, 5);
         FGDC = new NGGrid2DDisplayController(Layer0);
         FGDC.setView(FView);
         FGLDM = new GridLayerDisplayManager(Layer1);
@@ -498,6 +535,8 @@ public class GridStageController implements Initializable {
 
     public void Initialize() {
         FGDC.Initialize();
+        FGDC.GridWidth = Grid.getManager().getGridMaxWidth();
+        FGDC.GridHeight = Grid.getManager().getGridMaxHeight();
         FGLDM.Initialize();
         Layer0.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
@@ -527,6 +566,12 @@ public class GridStageController implements Initializable {
                         HandleMouseClicked(t);
                     }
                 });
+        Layer0.setOnScroll(new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent t) {
+                HandleMouseScrolled(t);
+            }
+        });
     }
 
     public void RenderScene(Boolean aComplete) {
