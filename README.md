@@ -9,7 +9,9 @@ Configuration
 
 The configuration file must place under resources/config.gcf (grid config file)
 Properties:
-    -GridMaxWidth
+   -GridMaxDistance
+        maximum grid raster distance
+   -GridMaxWidth
         maximum grid width
     -GridMaxHeight
         maximum grid height

@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -379,6 +380,19 @@ public class GridStageController implements Initializable {
         RenderScene(true);
     }
 
+    protected void HandleZoom(ZoomEvent t) {
+        double z = Grid.getGridDistance() * t.getTotalZoomFactor();
+        if (z < 0) {
+            z = 0;
+        }
+        double maxz = Grid.getManager().getGridMaxDistance();
+        if (z > maxz) {
+            z = maxz;
+        }
+        Grid.setGridDistance((int)z);
+        cbGridSize.setValue((int)z);
+    }
+
     protected void UpdatecbLayers() {
         cbLayers.getItems().clear();
         for (GridLayer Layer : Grid.getLayers()) {
@@ -460,9 +474,6 @@ public class GridStageController implements Initializable {
         Line line;
         EventHandler<MouseEvent> click;
         gc1 = Layer1.getGraphicsContext2D();
-        for( int i = 1; i <= 42; i ++ ) {
-            cbGridSize.getItems().add(i);
-        }
         ToggleGroup group = new ToggleGroup();
         btnSelect.setToggleGroup(group);
         btnPoint.setToggleGroup(group);
@@ -534,6 +545,9 @@ public class GridStageController implements Initializable {
     }
 
     public void Initialize() {
+        for( int i = 1; i <= Grid.getManager().getGridMaxDistance(); i ++ ) {
+            cbGridSize.getItems().add(i);
+        }
         FGDC.Initialize();
         FGDC.GridWidth = Grid.getManager().getGridMaxWidth();
         FGDC.GridHeight = Grid.getManager().getGridMaxHeight();
@@ -570,6 +584,12 @@ public class GridStageController implements Initializable {
             @Override
             public void handle(ScrollEvent t) {
                 HandleMouseScrolled(t);
+            }
+        });
+        Layer0.setOnZoom(new EventHandler<ZoomEvent>() {
+            @Override
+            public void handle(ZoomEvent t) {
+                HandleZoom(t);
             }
         });
     }

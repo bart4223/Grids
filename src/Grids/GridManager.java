@@ -26,6 +26,7 @@ public class GridManager {
     protected String FImagePath;
     protected double FGridMaxWidth;
     protected double FGridMaxHeight;
+    protected int FGridMaxDistance;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -42,6 +43,7 @@ public class GridManager {
             FImagePath = FConfiguration.getProperty("ImagePath");
             FGridMaxWidth = Integer.parseInt(FConfiguration.getProperty("GridMaxWidth"));
             FGridMaxHeight = Integer.parseInt(FConfiguration.getProperty("GridMaxHeight"));
+            FGridMaxDistance = Integer.parseInt(FConfiguration.getProperty("GridMaxDistance"));
         }
         catch (Exception e) {
             writeLog(e.getMessage());
@@ -64,6 +66,7 @@ public class GridManager {
         FImagePath = "";
         FGridMaxWidth = 1024;
         FGridMaxHeight = 1024;
+        FGridMaxDistance = 10;
     }
 
     public void Initialize() {
@@ -179,6 +182,10 @@ public class GridManager {
 
     public double getGridMaxHeight() {
         return FGridMaxHeight;
+    }
+
+    public int getGridMaxDistance() {
+        return FGridMaxDistance;
     }
 
 }
