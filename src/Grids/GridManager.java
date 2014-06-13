@@ -27,6 +27,7 @@ public class GridManager {
     protected double FGridMaxWidth;
     protected double FGridMaxHeight;
     protected int FGridMaxDistance;
+    protected int FGridCount;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -41,6 +42,7 @@ public class GridManager {
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
             FImagePath = FConfiguration.getProperty("ImagePath");
+            FGridCount = Integer.parseInt(FConfiguration.getProperty("GridCount"));
             FGridMaxWidth = Integer.parseInt(FConfiguration.getProperty("GridMaxWidth"));
             FGridMaxHeight = Integer.parseInt(FConfiguration.getProperty("GridMaxHeight"));
             FGridMaxDistance = Integer.parseInt(FConfiguration.getProperty("GridMaxDistance"));
@@ -67,11 +69,16 @@ public class GridManager {
         FGridMaxWidth = 1024;
         FGridMaxHeight = 1024;
         FGridMaxDistance = 10;
+        FGridCount = 1;
     }
 
     public void Initialize() {
         LoadConfiguration();
         for (Grid grid : FGrids) {
+            grid.Initialize();
+        }
+        for (int i=0; i < FGridCount; i++ ) {
+            Grid grid = addGrid(20, Color.LIGHTGRAY);
             grid.Initialize();
         }
         writeLog("Welcome to Grids have fun...");
@@ -138,6 +145,7 @@ public class GridManager {
                     parameter.setFill(Color.TRANSPARENT);
                     aGrid.getStageController().getObjectLayer().snapshot(parameter, wim);
                     ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", new File(chosenFile.getPath()));
+                    aGrid.writeLog(String.format("PNG saved in %s.",chosenFile.getPath()));
                 }
                 catch (Exception e) {
                     e.printStackTrace();

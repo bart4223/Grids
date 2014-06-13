@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Misc.NGImageList;
 import Uniwork.Misc.NGLogEvent;
 import Uniwork.Misc.NGLogEventListener;
 import Uniwork.Misc.NGLogManager;
@@ -113,7 +114,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     protected void DoAssignFrom(Object aObject) {
         GridLayer layer;
         XMLGrid XMLGrid = (XMLGrid)aObject;
-        removeAllLayers();
+        New(false);
         setGridDistance(XMLGrid.getGridDistance());
         setGridColor(Color.valueOf(XMLGrid.getGridColor()));
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
@@ -246,8 +247,15 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     public void New() {
+        New(true);
+    }
+
+    public void New(Boolean aOneLayer) {
         removeAllLayers();
-        addLayer();
+        NGImageList.resetGlobal();
+        if (aOneLayer) {
+            addLayer();
+        }
     }
 
     public void clearLayer(GridLayer aLayer) {
