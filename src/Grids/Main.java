@@ -11,7 +11,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         FGridManager = new GridManager();
-        FGridManager.addGrid(20, Color.LIGHTGRAY);
         FGridManager.Initialize();
         FGridManager.ShowStages();
     }

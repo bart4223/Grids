@@ -10,7 +10,7 @@ Configuration
 The configuration file must place under resources/config.gcf (grid config file)
 Properties:
    -GridCount
-        numbers of grid stages (>1)
+        numbers of initialized grid stages (1..10)
    -GridMaxDistance
         maximum grid raster distance
    -GridMaxWidth

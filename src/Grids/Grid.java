@@ -7,6 +7,7 @@ import Uniwork.Misc.NGLogManager;
 import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGGeometryObject2D;
 import Uniwork.Graphics.NGPoint2D;
+import Uniwork.Visuals.NGCommonDialogs;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -256,6 +257,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         if (aOneLayer) {
             addLayer();
         }
+        writeLog("New grid...");
     }
 
     public void clearLayer(GridLayer aLayer) {

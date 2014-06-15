@@ -2,15 +2,14 @@ package Grids;
 
 import Uniwork.Misc.NGLogEntry;
 import Uniwork.Graphics.*;
+import Uniwork.Visuals.NGCommonDialogs;
 import Uniwork.Visuals.NGDisplayView;
 import Uniwork.Visuals.NGGrid2DDisplayController;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -18,8 +17,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -168,7 +165,9 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handleNew(){
-        Grid.New();
+        if (NGCommonDialogs.showConfirmDialog(Grid.getStage(), "New grid", "Do you want really a new grid?") == NGCommonDialogs.Response.Yes) {
+            Grid.New();
+        }
     }
 
     @FXML

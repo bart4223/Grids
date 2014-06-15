@@ -9,6 +9,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -43,6 +44,12 @@ public class GridManager {
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
             FImagePath = FConfiguration.getProperty("ImagePath");
             FGridCount = Integer.parseInt(FConfiguration.getProperty("GridCount"));
+            if (FGridCount < 1) {
+                FGridCount = 1;
+            }
+            if (FGridCount > 10) {
+                FGridCount = 10;
+            }
             FGridMaxWidth = Integer.parseInt(FConfiguration.getProperty("GridMaxWidth"));
             FGridMaxHeight = Integer.parseInt(FConfiguration.getProperty("GridMaxHeight"));
             FGridMaxDistance = Integer.parseInt(FConfiguration.getProperty("GridMaxDistance"));
@@ -74,10 +81,7 @@ public class GridManager {
 
     public void Initialize() {
         LoadConfiguration();
-        for (Grid grid : FGrids) {
-            grid.Initialize();
-        }
-        for (int i=0; i < FGridCount; i++ ) {
+        for (int i = 0; i < FGridCount; i++ ) {
             Grid grid = addGrid(20, Color.LIGHTGRAY);
             grid.Initialize();
         }
@@ -194,6 +198,10 @@ public class GridManager {
 
     public int getGridMaxDistance() {
         return FGridMaxDistance;
+    }
+
+    public Stage getPrimaryStage() {
+        return FGrids.get(0).getStage();
     }
 
 }
