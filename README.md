@@ -21,8 +21,6 @@ Properties:
         X-Size for Save as PNG
     -ImageFileSizeY
         Y-Size for Save as PNG
-    -ImagePath
-        Default path for image download and layer image file name
 
 Save/Load
 =========

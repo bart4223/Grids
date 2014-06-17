@@ -24,7 +24,6 @@ public class GridManager {
     protected Properties FConfiguration;
     protected int FImageFileSizeX;
     protected int FImageFileSizeY;
-    protected String FImagePath;
     protected double FGridMaxWidth;
     protected double FGridMaxHeight;
     protected int FGridMaxDistance;
@@ -42,7 +41,6 @@ public class GridManager {
             FConfiguration.load(is);
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
-            FImagePath = FConfiguration.getProperty("ImagePath");
             FGridCount = Integer.parseInt(FConfiguration.getProperty("GridCount"));
             if (FGridCount < 1) {
                 FGridCount = 1;
@@ -59,20 +57,11 @@ public class GridManager {
         }
     }
 
-    protected String getImagePath() {
-        if (FImagePath.length() == 0) {
-            return System.getProperty("user.home");
-        }
-        else
-            return FImagePath;
-    }
-
     public GridManager() {
         FGrids = new ArrayList<Grid>();
         FConfiguration = new Properties();
         FImageFileSizeX = 8;
         FImageFileSizeY = 8;
-        FImagePath = "";
         FGridMaxWidth = 1024;
         FGridMaxHeight = 1024;
         FGridMaxDistance = 10;
@@ -135,7 +124,7 @@ public class GridManager {
         try
         {
             FileChooser fileChooser = new FileChooser();
-            String userDirectoryString = getImagePath();
+            String userDirectoryString = System.getProperty("user.home");
             File userDirectory = new File(userDirectoryString);
             fileChooser.setInitialDirectory(userDirectory);
             fileChooser.setTitle("Save as PNG");
