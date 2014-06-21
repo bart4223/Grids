@@ -79,6 +79,7 @@ public class GridStageController implements Initializable {
 
     protected NGGeometryObject2D FCurrentGO;
     protected NGGeometryObject2D FCurrentGOPoint;
+    protected Boolean FCurrentGOPointRemoved;
 
     protected ContextMenu cmLayer0;
     protected ContextMenu cmbtnSaveGrid;
@@ -236,6 +237,7 @@ public class GridStageController implements Initializable {
                         }
                         else {
                             Layer.removeObject(layerObject);
+                            FCurrentGOPointRemoved = true;
                         }
                         break;
                     case Line:
@@ -263,6 +265,7 @@ public class GridStageController implements Initializable {
             case PRIMARY:
                 FCurrentGO = null;
                 FCurrentGOPoint = null;
+                FCurrentGOPointRemoved = false;
                 break;
         }
     }
@@ -270,84 +273,95 @@ public class GridStageController implements Initializable {
     protected void HandleMouseDragged(MouseEvent t) {
         int lXDist;
         int lYDist;
-        if (FCurrentGO != null) {
-            NGPoint2D gridPoint = CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
-            switch (FToolMode) {
-                case Select:
-                    if (FCurrentGO instanceof NGPoint2D) {
-                        NGPoint2D Point = (NGPoint2D)FCurrentGO;
-                        Point.setX(gridPoint.getX());
-                        Point.setY(gridPoint.getY());
-                    } else if (FCurrentGO instanceof NGEllipse) {
-                        NGEllipse Ellipse = (NGEllipse)FCurrentGO;
-                        Ellipse.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
-                    } else if (FCurrentGO instanceof NGRectangle) {
-                        NGRectangle Rectangle = (NGRectangle)FCurrentGO;
-                        Rectangle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
-                    } else if (FCurrentGO instanceof NGLine2D) {
-                        NGLine2D Line = (NGLine2D) FCurrentGO;
-                        double dx;
-                        double dy;
-                        if (FCurrentGOPoint == null) {
-                            if (Line.getA().getX() == gridPoint.getX() && Line.getA().getY() == gridPoint.getY()) {
-                                FCurrentGOPoint = Line.getA();
-                            }
-                            else {
-                                FCurrentGOPoint = Line.getB();
-                            }
-                        }
-                        if (FCurrentGOPoint.equals(Line.getA())) {
-                            dx = Line.getB().getX() - Line.getA().getX();
-                            dy = Line.getB().getY() - Line.getA().getY();
-                            Line.setA(gridPoint.getX(), gridPoint.getY());
-                            Line.setB(gridPoint.getX() + dx, gridPoint.getY() + dy);
+        NGGeometryObject2D layerObject;
+        GridLayer Layer = Grid.getCurrentLayer();
+        NGPoint2D gridPoint = CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
+        switch (FToolMode) {
+            case Select:
+                if (FCurrentGO instanceof NGPoint2D) {
+                    NGPoint2D Point = (NGPoint2D)FCurrentGO;
+                    Point.setX(gridPoint.getX());
+                    Point.setY(gridPoint.getY());
+                } else if (FCurrentGO instanceof NGEllipse) {
+                    NGEllipse Ellipse = (NGEllipse)FCurrentGO;
+                    Ellipse.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                } else if (FCurrentGO instanceof NGRectangle) {
+                    NGRectangle Rectangle = (NGRectangle)FCurrentGO;
+                    Rectangle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                } else if (FCurrentGO instanceof NGLine2D) {
+                    NGLine2D Line = (NGLine2D) FCurrentGO;
+                    double dx;
+                    double dy;
+                    if (FCurrentGOPoint == null) {
+                        if (Line.getA().getX() == gridPoint.getX() && Line.getA().getY() == gridPoint.getY()) {
+                            FCurrentGOPoint = Line.getA();
                         }
                         else {
-                            dx = Line.getA().getX() - Line.getB().getX();
-                            dy = Line.getA().getY() - Line.getB().getY();
-                            Line.setB(gridPoint.getX(), gridPoint.getY());
-                            Line.setA(gridPoint.getX() + dx, gridPoint.getY() + dy);
+                            FCurrentGOPoint = Line.getB();
                         }
                     }
-                    break;
-                case Line:
-                    NGLine2D Line = (NGLine2D)FCurrentGO;
-                    Line.getB().setX(gridPoint.getX());
-                    Line.getB().setY(gridPoint.getY());
-                    break;
-                case Circle:
-                    NGCircle Circle = (NGCircle)FCurrentGO;
-                    lXDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
-                    lYDist = Math.abs(Circle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
-                    if (lXDist > lYDist)
-                        Circle.setRadius(lXDist);
-                    else
-                        Circle.setRadius(lYDist);
-                    break;
-                case Ellipse:
-                    NGEllipse Ellipse = (NGEllipse)FCurrentGO;
-                    lXDist = Math.abs(Ellipse.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
-                    lYDist = Math.abs(Ellipse.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
-                    Ellipse.setRadiusX(lXDist);
-                    Ellipse.setRadiusY(lYDist);
-                    break;
-                case Quadrat:
-                    NGQuadrat Quadrat = (NGQuadrat)FCurrentGO;
-                    lXDist = Math.abs(Quadrat.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
-                    lYDist = Math.abs(Quadrat.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
-                    if (lXDist > lYDist)
-                        Quadrat.setA(2 * lXDist);
-                    else
-                        Quadrat.setA(2 * lYDist);
-                case Rectangle:
-                    NGRectangle Rectangle = (NGRectangle)FCurrentGO;
-                    lXDist = Math.abs(Rectangle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
-                    lYDist = Math.abs(Rectangle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
-                    Rectangle.setA(2*lXDist);
-                    Rectangle.setB(2*lYDist);
-            }
-            RenderLayer1();
+                    if (FCurrentGOPoint.equals(Line.getA())) {
+                        dx = Line.getB().getX() - Line.getA().getX();
+                        dy = Line.getB().getY() - Line.getA().getY();
+                        Line.setA(gridPoint.getX(), gridPoint.getY());
+                        Line.setB(gridPoint.getX() + dx, gridPoint.getY() + dy);
+                    }
+                    else {
+                        dx = Line.getA().getX() - Line.getB().getX();
+                        dy = Line.getA().getY() - Line.getB().getY();
+                        Line.setB(gridPoint.getX(), gridPoint.getY());
+                        Line.setA(gridPoint.getX() + dx, gridPoint.getY() + dy);
+                    }
+                }
+                break;
+            case Point:
+                layerObject = Layer.getObjectInLayer(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                if (!FCurrentGOPointRemoved) {
+                    if (layerObject == null || !(layerObject instanceof NGPoint2D)) {
+                        FCurrentGO = Layer.addPoint(gridPoint.getXAsInt(), gridPoint.getYAsInt());
+                    }
+                }
+                else if (layerObject != null) {
+                    Layer.removeObject(layerObject);
+                }
+                break;
+            case Line:
+                NGLine2D Line = (NGLine2D)FCurrentGO;
+                Line.getB().setX(gridPoint.getX());
+                Line.getB().setY(gridPoint.getY());
+                break;
+            case Circle:
+                NGCircle Circle = (NGCircle)FCurrentGO;
+                lXDist = Math.abs(Circle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                lYDist = Math.abs(Circle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                if (lXDist > lYDist)
+                    Circle.setRadius(lXDist);
+                else
+                    Circle.setRadius(lYDist);
+                break;
+            case Ellipse:
+                NGEllipse Ellipse = (NGEllipse)FCurrentGO;
+                lXDist = Math.abs(Ellipse.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                lYDist = Math.abs(Ellipse.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                Ellipse.setRadiusX(lXDist);
+                Ellipse.setRadiusY(lYDist);
+                break;
+            case Quadrat:
+                NGQuadrat Quadrat = (NGQuadrat)FCurrentGO;
+                lXDist = Math.abs(Quadrat.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                lYDist = Math.abs(Quadrat.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                if (lXDist > lYDist)
+                    Quadrat.setA(2 * lXDist);
+                else
+                    Quadrat.setA(2 * lYDist);
+            case Rectangle:
+                NGRectangle Rectangle = (NGRectangle)FCurrentGO;
+                lXDist = Math.abs(Rectangle.getMiddlePoint().getXAsInt() - gridPoint.getXAsInt());
+                lYDist = Math.abs(Rectangle.getMiddlePoint().getYAsInt() - gridPoint.getYAsInt());
+                Rectangle.setA(2*lXDist);
+                Rectangle.setB(2*lYDist);
         }
+        RenderLayer1();
     }
 
     protected void HandleMouseClicked(MouseEvent t) {
@@ -464,7 +478,7 @@ public class GridStageController implements Initializable {
         FToolMode = ToolMode.Select;
         FDrawGrid = true;
         FCurrentGO = null;
-        FCurrentGOPoint = null;
+        FCurrentGOPointRemoved = false;
         hlpbutton = new Button("Press me.");
     }
 
