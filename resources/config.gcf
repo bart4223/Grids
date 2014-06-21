@@ -1,5 +1,5 @@
 GridCount=2
-GridMaxDistance=42
+GridMaxDistance=64
 GridMaxWidth=8192
 GridMaxHeight=8192
 ImageFileSizeX=32
