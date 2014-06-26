@@ -532,7 +532,7 @@ public class GridStageController implements Initializable {
         cmLayer0.getItems().add(getMenuItemForLine("Cancel", line, click));
         // Contextmenu btnSaveGrid
         cmbtnSaveGrid = new ContextMenu();
-        // Save as XML
+        // Save as GDF
         line = new Line(60, 10, 150, 10);
         click = new EventHandler<MouseEvent>() {
             @Override
@@ -540,14 +540,23 @@ public class GridStageController implements Initializable {
                 Grid.SaveAsGDF();
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as GDF", line, click));
-        // Save as PNG
+        // Save as GOF
         line = new Line(60, 30, 150, 50);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.SaveAsGOF();
+            }};
+        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as GOF", line, click));
+        // Save as PNG
+        line = new Line(60, 50, 150, 90);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 Grid.SaveAsPNG();
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
+
         btnPaintGrid.setSelected(FDrawGrid);
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
         FGDC = new NGGrid2DDisplayController(Layer0);

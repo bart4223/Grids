@@ -4,6 +4,8 @@ import Uniwork.Base.NGObjectDeserializer;
 import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectXMLSerializerFile;
+import Uniwork.Graphics.NGSerializeGeometryObjectItem;
+import Uniwork.Graphics.NGSerializeGeometryObjectList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -112,7 +114,32 @@ public class GridManager {
                 Serializer.serializeObject();
             }
             else {
-                aGrid.writeLog("Saving aborted...");
+                aGrid.writeLog("Saving as GDF aborted...");
+            }
+        }
+        catch (Exception e) {
+            aGrid.writeLog(e.getMessage());
+        }
+    }
+
+    public void saveGridAsGOF(Grid aGrid) {
+        try
+        {
+            FileChooser fileChooser = new FileChooser();
+            String userDirectoryString = System.getProperty("user.home");
+            File userDirectory = new File(userDirectoryString);
+            fileChooser.setInitialDirectory(userDirectory);
+            fileChooser.setTitle("Save as GOF");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("GOF files (*.gof)", "*.gof");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File chosenFile = fileChooser.showSaveDialog(aGrid.getStage().getOwner());
+            if (chosenFile != null) {
+                NGObjectSerializer Serializer = new NGObjectXMLSerializerFile(aGrid, NGSerializeGeometryObjectList.class, chosenFile.getPath());
+                Serializer.setLogManager(aGrid.getLogManager());
+                Serializer.serializeObject();
+            }
+            else {
+                aGrid.writeLog("Saving as GOF aborted...");
             }
         }
         catch (Exception e) {
@@ -144,7 +171,7 @@ public class GridManager {
                     e.printStackTrace();
                 }            }
             else {
-                aGrid.writeLog("Saving aborted...");
+                aGrid.writeLog("Saving as PNG aborted...");
             }
         }
         catch (Exception e) {
@@ -169,7 +196,7 @@ public class GridManager {
                 Deserializer.deserializeObject();
             }
             else {
-                aGrid.writeLog("Loading aborted...");
+                aGrid.writeLog("Loading as GDF aborted...");
             }
         }
         catch (Exception e) {

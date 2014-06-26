@@ -1,5 +1,8 @@
 package Grids;
 
+import Uniwork.Base.NGSerializePropertyItem;
+import Uniwork.Graphics.NGSerializeGeometryObjectItem;
+import Uniwork.Graphics.NGSerializeGeometryObjectList;
 import Uniwork.Misc.NGImageList;
 import Uniwork.Misc.NGLogEvent;
 import Uniwork.Misc.NGLogEventListener;
@@ -7,7 +10,6 @@ import Uniwork.Misc.NGLogManager;
 import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGGeometryObject2D;
 import Uniwork.Graphics.NGPoint2D;
-import Uniwork.Visuals.NGCommonDialogs;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -133,27 +136,45 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
 
     @Override
     protected void DoAssignTo(Object aObject) {
-        XMLLayer XMLLayer;
-        ArrayList<XMLLayer> XMLLayers;
-        ArrayList<NGGeometryObject2D> XMLGeoObjects;
-        XMLGrid XMLGrid = (XMLGrid)aObject;
-        XMLGrid.setGridDistance(getGridDistance());
-        XMLGrid.setGridColor(getGridColor().toString());
-        XMLGrid.setCurrentLayer(getCurrentLayer().getName());
-        XMLLayers = new ArrayList<XMLLayer>();
-        XMLGrid.setLayers(XMLLayers);
-        for (GridLayer layer : getLayers()) {
-            XMLLayer = new XMLLayer();
-            XMLLayers.add(XMLLayer);
-            XMLLayer.setName(layer.getName());
-            XMLLayer.setDescription(layer.getDescription());
-            XMLLayer.setObjectColor(layer.getObjectColor().toString());
-            XMLLayer.setZOrder(layer.getZOrder());
-            XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
-            XMLLayer.setGeometryObjects(XMLGeoObjects);
-            XMLLayer.setImagename(layer.getImageName());
-            for (NGGeometryObject2D GeoObject : layer.getObjects()) {
-                XMLGeoObjects.add(GeoObject);
+        if (aObject instanceof XMLGrid) {
+            XMLLayer XMLLayer;
+            ArrayList<XMLLayer> XMLLayers;
+            ArrayList<NGGeometryObject2D> XMLGeoObjects;
+            XMLGrid XMLGrid = (XMLGrid)aObject;
+            XMLGrid.setGridDistance(getGridDistance());
+            XMLGrid.setGridColor(getGridColor().toString());
+            XMLGrid.setCurrentLayer(getCurrentLayer().getName());
+            XMLLayers = new ArrayList<XMLLayer>();
+            XMLGrid.setLayers(XMLLayers);
+            for (GridLayer layer : getLayers()) {
+                XMLLayer = new XMLLayer();
+                XMLLayers.add(XMLLayer);
+                XMLLayer.setName(layer.getName());
+                XMLLayer.setDescription(layer.getDescription());
+                XMLLayer.setObjectColor(layer.getObjectColor().toString());
+                XMLLayer.setZOrder(layer.getZOrder());
+                XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
+                XMLLayer.setGeometryObjects(XMLGeoObjects);
+                XMLLayer.setImagename(layer.getImageName());
+                for (NGGeometryObject2D GeoObject : layer.getObjects()) {
+                    XMLGeoObjects.add(GeoObject);
+                }
+            }
+        }
+        else if (aObject instanceof NGSerializeGeometryObjectList) {
+            NGSerializeGeometryObjectList SGOL = (NGSerializeGeometryObjectList)aObject;
+            SGOL.setSGOS(new ArrayList<NGSerializeGeometryObjectItem>());
+            for (GridLayer layer : getLayers()) {
+                for (NGGeometryObject2D go : layer.getObjects()) {
+                    NGSerializeGeometryObjectItem sgoi = new NGSerializeGeometryObjectItem();
+                    sgoi.setGO(go);
+                    sgoi.setProps(new ArrayList<NGSerializePropertyItem>());
+                    NGSerializePropertyItem prop = new NGSerializePropertyItem();
+                    prop.setName("NAME");
+                    prop.setValue(layer.getName());
+                    sgoi.getProps().add(prop);
+                    SGOL.getSGOS().add(sgoi);
+                }
             }
         }
     }
@@ -315,6 +336,17 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         BeginUpdate();
         try {
             FGridManager.saveGridAsGDF(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
+    }
+
+    public void SaveAsGOF() {
+        BeginUpdate();
+        try {
+            FGridManager.saveGridAsGOF(this);
             EndUpdate();
         }
         catch (Exception e) {
