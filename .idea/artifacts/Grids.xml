@@ -22,6 +22,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/resources/images/sample.png" />
         </element>
       </element>
+      <element id="file-copy" path="$PROJECT_DIR$/README.md" />
     </root>
   </artifact>
 </component>

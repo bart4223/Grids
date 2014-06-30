@@ -167,6 +167,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             for (GridLayer layer : getLayers()) {
                 for (NGGeometryObject2D go : layer.getObjects()) {
                     NGSerializeGeometryObjectItem sgoi = new NGSerializeGeometryObjectItem();
+                    go.setID(layer.getName());
                     sgoi.setGO(go);
                     sgoi.setProps(new ArrayList<NGSerializePropertyItem>());
                     NGSerializePropertyItem prop = new NGSerializePropertyItem();
