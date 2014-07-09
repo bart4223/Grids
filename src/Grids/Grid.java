@@ -174,6 +174,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
                     prop.setName("NAME");
                     prop.setValue(layer.getName());
                     sgoi.getProps().add(prop);
+                    prop = new NGSerializePropertyItem();
+                    prop.setName("COLOR");
+                    prop.setValue(layer.getObjectColor().toString());
+                    sgoi.getProps().add(prop);
                     SGOL.getSGOS().add(sgoi);
                 }
             }
