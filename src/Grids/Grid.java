@@ -162,6 +162,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             }
         }
         else if (aObject instanceof NGSerializeGeometryObjectList) {
+            Integer count = 0;
             NGSerializeGeometryObjectList SGOL = (NGSerializeGeometryObjectList)aObject;
             SGOL.setSGOS(new ArrayList<NGSerializeGeometryObjectItem>());
             for (GridLayer layer : getLayers()) {
@@ -179,8 +180,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
                     prop.setValue(layer.getObjectColor().toString());
                     sgoi.getProps().add(prop);
                     SGOL.getSGOS().add(sgoi);
+                    count ++;
                 }
             }
+            writeLog(String.format("%d geometry object(s) exported...", count));
         }
     }
 
