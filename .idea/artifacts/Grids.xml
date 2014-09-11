@@ -17,10 +17,7 @@
         <element id="artifact" artifact-name="Uniwork" />
       </element>
       <element id="directory" name="resources">
-        <element id="file-copy" path="$PROJECT_DIR$/resources/config.gcf" />
-        <element id="directory" name="images">
-          <element id="file-copy" path="$PROJECT_DIR$/resources/images/sample.png" />
-        </element>
+        <element id="dir-copy" path="$PROJECT_DIR$/resources" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/README.md" />
     </root>
