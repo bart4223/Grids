@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" name="Grids">
+  <artifact type="javafx" build-on-make="true" name="Grids">
     <output-path>$PROJECT_DIR$/out/artifacts/Grids</output-path>
     <properties id="javafx-properties">
       <options>
