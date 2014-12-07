@@ -4,7 +4,6 @@ import Uniwork.Base.NGObjectDeserializer;
 import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectXMLSerializerFile;
-import Uniwork.Graphics.NGSerializeGeometryObjectItem;
 import Uniwork.Graphics.NGSerializeGeometryObjectList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
@@ -14,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -197,6 +197,47 @@ public class GridManager {
             }
             else {
                 aGrid.writeLog("Loading as GDF aborted...");
+            }
+        }
+        catch (Exception e) {
+            aGrid.writeLog(e.getMessage());
+        }
+    }
+
+    public void loadGridFromPNG(Grid aGrid) {
+        try
+        {
+            FileChooser fileChooser = new FileChooser();
+            String userDirectoryString = System.getProperty("user.home");
+            File userDirectory = new File(userDirectoryString);
+            fileChooser.setInitialDirectory(userDirectory);
+            fileChooser.setTitle("Load from PNG");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
+            if (chosenFile != null) {
+                aGrid.New(false);
+                BufferedImage bufferedImage = ImageIO.read(chosenFile);
+                WritableImage img =  new WritableImage(bufferedImage.getWidth(), bufferedImage.getHeight());
+                SwingFXUtils.toFXImage(bufferedImage, img);
+                Integer layercount = 0;
+                for (int y = 0; y < img.getHeight(); y++) {
+                    for (int x = 0; x < img.getWidth(); x++) {
+                        Color color = img.getPixelReader().getColor(x, y);
+                        if (!color.equals(Color.TRANSPARENT)) {
+                            GridLayer layer = aGrid.getLayer(color);
+                            if (layer == null) {
+                                layer = aGrid.addLayer(String.format("LAYER%d", layercount), String.format("Layer %d", layercount), color);
+                                layercount++;
+                            }
+                            layer.addPoint(x, y);
+                        }
+                    }
+                }
+                aGrid.writeLog(String.format("File %s with %d/%d Pixels loaded.", chosenFile.getName(), bufferedImage.getWidth(), bufferedImage.getHeight()));
+            }
+            else {
+                aGrid.writeLog("Loading as PNG aborted...");
             }
         }
         catch (Exception e) {

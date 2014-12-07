@@ -312,6 +312,15 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         return null;
     }
 
+    public GridLayer getLayer(Color aColor) {
+        for (GridLayer Layer : FLayers) {
+            if (Layer.getObjectColor().equals(aColor)) {
+                return Layer;
+            }
+        }
+        return null;
+    }
+
     public GridLayer setCurrentLayer(String aName) {
         if (FCurrentLayer == null || !FCurrentLayer.getName().equals(aName)) {
             setCurrentLayer(getLayer(aName));
@@ -377,6 +386,17 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         BeginUpdate();
         try {
             FGridManager.loadGridFromGDF(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
+    }
+
+    public void LoadFromPNG() {
+        BeginUpdate();
+        try {
+            FGridManager.loadGridFromPNG(this);
             EndUpdate();
         }
         catch (Exception e) {

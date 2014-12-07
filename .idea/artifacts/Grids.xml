@@ -14,13 +14,12 @@
     <root id="root">
       <element id="archive" name="Grids.jar">
         <element id="module-output" name="Grids" />
-        <element id="artifact" artifact-name="Uniwork" />
+        <element id="module-output" name="Uniwork" />
       </element>
+      <element id="file-copy" path="$PROJECT_DIR$/README.md" />
       <element id="directory" name="resources">
         <element id="dir-copy" path="$PROJECT_DIR$/resources" />
       </element>
-      <element id="file-copy" path="$PROJECT_DIR$/README.md" />
-      <element id="module-output" name="Uniwork" />
     </root>
   </artifact>
 </component>

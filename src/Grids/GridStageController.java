@@ -31,6 +31,9 @@ public class GridStageController implements Initializable {
     private Button btnSaveGrid;
 
     @FXML
+    private Button btnLoadGrid;
+
+    @FXML
     private ToggleButton btnSelect;
 
     @FXML
@@ -82,6 +85,7 @@ public class GridStageController implements Initializable {
     protected Boolean FCurrentGOPointRemoved;
 
     protected ContextMenu cmLayer0;
+    protected ContextMenu cmbtnLoadGrid;
     protected ContextMenu cmbtnSaveGrid;
     protected DropShadow dsContextMenu;
 
@@ -126,7 +130,7 @@ public class GridStageController implements Initializable {
 
     @FXML
     protected void handleLoadGrid(){
-        Grid.LoadFromGDF();
+        cmbtnLoadGrid.show(btnLoadGrid, Side.BOTTOM, 0, 0);
     }
 
     @FXML
@@ -556,6 +560,24 @@ public class GridStageController implements Initializable {
                 Grid.SaveAsPNG();
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
+        // Contextmenu btnLoadGrid
+        cmbtnLoadGrid = new ContextMenu();
+        // Load from GDF
+        line = new Line(60, 10, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.LoadFromGDF();
+            }};
+        cmbtnLoadGrid.getItems().add(getMenuItemForLine("from GDF", line, click));
+        // Load from PNG
+        line = new Line(60, 30, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.LoadFromPNG();
+            }};
+        cmbtnLoadGrid.getItems().add(getMenuItemForLine("from PNG", line, click));
 
         btnPaintGrid.setSelected(FDrawGrid);
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
