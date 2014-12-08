@@ -232,6 +232,8 @@ public class GridStageController implements Initializable {
                             if (Layer.toggleObjectSelected(layerObject)) {
                                 FCurrentGO = layerObject;
                             }
+                        } else {
+                            Grid.setCurrentLayerWithObject(gridPoint.getXAsInt(), gridPoint.getYAsInt());
                         }
                         break;
                     case Point:

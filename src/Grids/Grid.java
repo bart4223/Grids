@@ -345,6 +345,16 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         return FCurrentLayer;
     }
 
+    public void setCurrentLayerWithObject(int aX, int aY) {
+        for (GridLayer layer : FLayers) {
+            NGGeometryObject2D object = layer.getObjectInLayer(aX, aY);
+            if (object != null) {
+                setCurrentLayer(layer);
+                return;
+            }
+        }
+    }
+
     public NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
         return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
