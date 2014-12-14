@@ -35,12 +35,14 @@ public class GridLayerDisplayManager extends NGGeometryObject2DDisplayManager {
         ClearCanvas();
         PrepareGridLayers();
         for (GridLayer Layer : FLayers) {
-            for (NGGeometryObject2D Object : Layer.getObjects()) {
-                setImageName(Layer.getImageName());
-                GeometryObject = Object;
-                GeometryObjectColor = Layer.getObjectColor();
-                Selected = Layer.isObjectSelected(Object);
-                super.InternalRender();
+            if (Layer.getObjects().size() > 0) {
+                for (NGGeometryObject2D Object : Layer.getObjects()) {
+                    setImageName(Layer.getImageName());
+                    GeometryObject = Object;
+                    GeometryObjectColor = Layer.getObjectColor();
+                    Selected = Layer.isObjectSelected(Object);
+                    super.InternalRender();
+                }
             }
         }
     }
