@@ -61,6 +61,12 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
                     handleKeyPressed(keyEvent);
                 }
             });
+            Scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    handleKeyReleased(keyEvent);
+                }
+            });
             FStageController.Initialize();
         }
         catch( Exception e) {
@@ -81,8 +87,16 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         switch (e.getCode()) {
             case BACK_SPACE:
                 FCurrentLayer.removeSelectedObjects();
+            case ALT:
+                FStageController.ShowInfoTooltip();
         }
+    }
 
+    protected void handleKeyReleased(KeyEvent e) {
+        switch (e.getCode()) {
+            case ALT:
+                FStageController.HideInfoTooltip();
+        }
     }
 
     protected int getRandomValue(int aMax) {
@@ -214,6 +228,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     public void CloseStage(){
+        FStageController.Finalize();
         FStage.close();
     }
 

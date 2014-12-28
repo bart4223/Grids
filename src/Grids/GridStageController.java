@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -96,6 +97,10 @@ public class GridStageController implements Initializable {
     protected NGGrid2DDisplayController FGDC;
     protected GridLayerDisplayManager FGLDM;
     protected NGDisplayView FView;
+
+    protected Tooltip FCoordinatesTooltip;
+
+    protected MouseEvent FLastMouseEvent;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -219,6 +224,16 @@ public class GridStageController implements Initializable {
         return Grid.CoordinatesToGridCoordinates(aPoint);
     }
 
+    protected void HandleMouseMoved(MouseEvent t) {
+        FLastMouseEvent = t;
+        if (t.isAltDown()) {
+            ShowInfoTooltip();
+        }
+        else {
+            HideInfoTooltip();
+        }
+    }
+
     protected void HandleMousePressed(MouseEvent t) {
         switch (t.getButton()) {
             case PRIMARY:
@@ -277,6 +292,7 @@ public class GridStageController implements Initializable {
     }
 
     protected void HandleMouseDragged(MouseEvent t) {
+        FLastMouseEvent = t;
         int lXDist;
         int lYDist;
         NGGeometryObject2D layerObject;
@@ -368,6 +384,12 @@ public class GridStageController implements Initializable {
                 Rectangle.setB(2*lYDist);
         }
         RenderLayer1();
+        if (t.isAltDown()) {
+            ShowInfoTooltip();
+        }
+        else {
+            HideInfoTooltip();
+        }
     }
 
     protected void HandleMouseClicked(MouseEvent t) {
@@ -486,6 +508,8 @@ public class GridStageController implements Initializable {
         FCurrentGO = null;
         FCurrentGOPointRemoved = false;
         hlpbutton = new Button("Press me.");
+        FCoordinatesTooltip = new Tooltip("Mouse Position 0,0");
+        FCoordinatesTooltip.setHideOnEscape(true);
     }
 
     @Override
@@ -580,7 +604,6 @@ public class GridStageController implements Initializable {
                 Grid.LoadFromPNG();
             }};
         cmbtnLoadGrid.getItems().add(getMenuItemForLine("from PNG", line, click));
-
         btnPaintGrid.setSelected(FDrawGrid);
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
         FGDC = new NGGrid2DDisplayController(Layer0);
@@ -598,6 +621,13 @@ public class GridStageController implements Initializable {
         FGDC.GridWidth = Grid.getManager().getGridMaxWidth();
         FGDC.GridHeight = Grid.getManager().getGridMaxHeight();
         FGLDM.Initialize();
+        Layer0.addEventHandler(MouseEvent.MOUSE_MOVED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent t) {
+                        HandleMouseMoved(t);
+                    }
+                });
         Layer0.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
                     @Override
@@ -640,6 +670,10 @@ public class GridStageController implements Initializable {
         });
     }
 
+    public void Finalize() {
+        HideInfoTooltip();
+    }
+
     public void RenderScene(Boolean aComplete) {
         if (aComplete) {
             RenderLayer0();
@@ -673,6 +707,31 @@ public class GridStageController implements Initializable {
 
     public Canvas getObjectLayer() {
         return Layer1;
+    }
+
+    public void HideInfoTooltip() {
+        FCoordinatesTooltip.hide();
+    }
+
+    public void ShowInfoTooltip() {
+        if (FLastMouseEvent != null) {
+            Node node = (Node)FLastMouseEvent.getSource();
+            int x = (int)FLastMouseEvent.getX() / Grid.getGridDistance() + 1;
+            int y = (int)FLastMouseEvent.getY() / Grid.getGridDistance() + 1;
+            if (FCurrentGO == null) {
+                FCoordinatesTooltip.setText(String.format("Mouse Position %d,%d", x, y));
+            }
+            else {
+                if (FCurrentGO instanceof NGCircle) {
+                    NGCircle circle = (NGCircle)FCurrentGO;
+                    FCoordinatesTooltip.setText(String.format("Mouse Position %d,%d\nCircle:\n-MiddlePoint %d,%d\n-Radius %d", x, y, (int)circle.getMiddlePointX(), (int)circle.getMiddlePointY(), circle.getRadiusAsInt()));
+                } else if (FCurrentGO instanceof NGEllipse) {
+                    NGEllipse ellipse = (NGEllipse)FCurrentGO;
+                    FCoordinatesTooltip.setText(String.format("Mouse Position %d,%d\nEllipse:\n-MiddlePoint %d,%d\n-Radius X %d\n-Radius Y %d", x, y, (int)ellipse.getMiddlePointX(), (int)ellipse.getMiddlePointY(), ellipse.getRadiusXAsInt(), ellipse.getRadiusYAsInt()));
+                }
+            }
+            FCoordinatesTooltip.show(node, Grid.getStage().getX() + FLastMouseEvent.getSceneX() + 10, Grid.getStage().getY() + FLastMouseEvent.getSceneY() + 10);
+        }
     }
 
 }
