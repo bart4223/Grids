@@ -234,6 +234,11 @@ public class GridStageController implements Initializable {
         }
     }
 
+    protected void HandleMouseExited(MouseEvent t) {
+        FLastMouseEvent = null;
+        HideInfoTooltip();
+    }
+
     protected void HandleMousePressed(MouseEvent t) {
         switch (t.getButton()) {
             case PRIMARY:
@@ -621,6 +626,13 @@ public class GridStageController implements Initializable {
         FGDC.GridWidth = Grid.getManager().getGridMaxWidth();
         FGDC.GridHeight = Grid.getManager().getGridMaxHeight();
         FGLDM.Initialize();
+        Layer0.addEventHandler(MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent t) {
+                        HandleMouseExited(t);
+                    }
+                });
         Layer0.addEventHandler(MouseEvent.MOUSE_MOVED,
                 new EventHandler<MouseEvent>() {
                     @Override
