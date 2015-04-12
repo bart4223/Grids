@@ -201,6 +201,11 @@ public class GridStageController implements Initializable {
         RenderLayer1();
     }
 
+    @FXML
+    protected void handleQuit(){
+        Grid.Shutdown();
+    }
+
     protected void setToolMode(ToolMode aToolMode) {
         FToolMode = aToolMode;
     }

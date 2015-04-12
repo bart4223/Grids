@@ -18,9 +18,10 @@
             <Button id="btnAddLayer" prefWidth="80" text="Add" onAction="#handleAddLayer" fx:id="btnAddLayer" />
             <Button id="btnClearLayer" prefWidth="80" text="Clear" onAction="#handleClearLayer" fx:id="btnClearLayer" />
             <Button id="btnRemoveLayer" prefWidth="80" text="Remove" onAction="#handleRemoveLayer" fx:id="btnRemoveLayer" />
-            <ComboBox id="cbLayers" prefWidth="250" onAction="#handlecbLayers" fx:id="cbLayers" />
+            <ComboBox id="cbLayers" prefWidth="200" onAction="#handlecbLayers" fx:id="cbLayers" />
             <Button id="btnLoadGrid" prefWidth="80" text="Load..." onAction="#handleLoadGrid" fx:id="btnLoadGrid" />
             <Button id="btnSaveGrid" prefWidth="80" text="Save..." onAction="#handleSaveGrid" fx:id="btnSaveGrid" />
+            <Button id="btnQuit" prefWidth="80" text="Quit" onAction="#handleQuit" fx:id="btnQuit" />
         </HBox>
     </AnchorPane>
     <AnchorPane prefHeight="750" minWidth="1000" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">

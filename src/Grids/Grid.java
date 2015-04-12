@@ -223,6 +223,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         CloseStage();
     }
 
+    public void Shutdown() {
+        FGridManager.Shutdown();
+    }
+
     public void ShowStage(){
         FStage.show();
     }

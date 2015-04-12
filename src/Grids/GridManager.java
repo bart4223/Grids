@@ -5,6 +5,7 @@ import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectXMLSerializerFile;
 import Uniwork.Graphics.NGSerializeGeometryObjectList;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -83,6 +84,10 @@ public class GridManager {
         for (Grid grid : FGrids) {
             grid.Finalize();
         }
+    }
+
+    public void Shutdown() {
+        Platform.exit();
     }
 
     public Grid addGrid(int aSize, Color aColor) {
