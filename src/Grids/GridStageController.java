@@ -310,39 +310,57 @@ public class GridStageController implements Initializable {
         NGPoint2D gridPoint = CoordinatesToGridCoordinates(new NGPoint2D(t.getX(), t.getY()));
         switch (FToolMode) {
             case Select:
-                if (FCurrentGO instanceof NGPoint2D) {
-                    NGPoint2D Point = (NGPoint2D)FCurrentGO;
-                    Point.setX(gridPoint.getX());
-                    Point.setY(gridPoint.getY());
-                } else if (FCurrentGO instanceof NGEllipse) {
-                    NGEllipse Ellipse = (NGEllipse)FCurrentGO;
-                    Ellipse.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
-                } else if (FCurrentGO instanceof NGRectangle) {
-                    NGRectangle Rectangle = (NGRectangle)FCurrentGO;
-                    Rectangle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
-                } else if (FCurrentGO instanceof NGLine2D) {
-                    NGLine2D Line = (NGLine2D) FCurrentGO;
-                    double dx;
-                    double dy;
-                    if (FCurrentGOPoint == null) {
-                        if (Line.getA().getX() == gridPoint.getX() && Line.getA().getY() == gridPoint.getY()) {
-                            FCurrentGOPoint = Line.getA();
+                if (FLastMouseEvent.isAltDown()) {
+                    if (FCurrentGO instanceof NGPoint2D) {
+                        NGPoint2D Point = (NGPoint2D) FCurrentGO;
+                        double dX = Point.getX() - gridPoint.getX();
+                        double dY = Point.getY() - gridPoint.getY();
+                        Point.setX(gridPoint.getX());
+                        Point.setY(gridPoint.getY());
+                        for (NGGeometryObject2D obj : Layer.getSelected()) {
+                            if ((obj != FCurrentGO) && (obj instanceof NGPoint2D)) {
+                                Point = (NGPoint2D)obj;
+                                Point.setX(Point.getX() - dX);
+                                Point.setY(Point.getY() - dY);
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (FCurrentGO instanceof NGPoint2D) {
+                        NGPoint2D Point = (NGPoint2D)FCurrentGO;
+                        Point.setX(gridPoint.getX());
+                        Point.setY(gridPoint.getY());
+                    } else if (FCurrentGO instanceof NGEllipse) {
+                        NGEllipse Ellipse = (NGEllipse)FCurrentGO;
+                        Ellipse.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    } else if (FCurrentGO instanceof NGRectangle) {
+                        NGRectangle Rectangle = (NGRectangle)FCurrentGO;
+                        Rectangle.setMiddlePoint(gridPoint.getX(), gridPoint.getY());
+                    } else if (FCurrentGO instanceof NGLine2D) {
+                        NGLine2D Line = (NGLine2D) FCurrentGO;
+                        double dx;
+                        double dy;
+                        if (FCurrentGOPoint == null) {
+                            if (Line.getA().getX() == gridPoint.getX() && Line.getA().getY() == gridPoint.getY()) {
+                                FCurrentGOPoint = Line.getA();
+                            }
+                            else {
+                                FCurrentGOPoint = Line.getB();
+                            }
+                        }
+                        if (FCurrentGOPoint.equals(Line.getA())) {
+                            dx = Line.getB().getX() - Line.getA().getX();
+                            dy = Line.getB().getY() - Line.getA().getY();
+                            Line.setA(gridPoint.getX(), gridPoint.getY());
+                            Line.setB(gridPoint.getX() + dx, gridPoint.getY() + dy);
                         }
                         else {
-                            FCurrentGOPoint = Line.getB();
+                            dx = Line.getA().getX() - Line.getB().getX();
+                            dy = Line.getA().getY() - Line.getB().getY();
+                            Line.setB(gridPoint.getX(), gridPoint.getY());
+                            Line.setA(gridPoint.getX() + dx, gridPoint.getY() + dy);
                         }
-                    }
-                    if (FCurrentGOPoint.equals(Line.getA())) {
-                        dx = Line.getB().getX() - Line.getA().getX();
-                        dy = Line.getB().getY() - Line.getA().getY();
-                        Line.setA(gridPoint.getX(), gridPoint.getY());
-                        Line.setB(gridPoint.getX() + dx, gridPoint.getY() + dy);
-                    }
-                    else {
-                        dx = Line.getA().getX() - Line.getB().getX();
-                        dy = Line.getA().getY() - Line.getB().getY();
-                        Line.setB(gridPoint.getX(), gridPoint.getY());
-                        Line.setA(gridPoint.getX() + dx, gridPoint.getY() + dy);
                     }
                 }
                 break;
@@ -547,8 +565,16 @@ public class GridStageController implements Initializable {
                 Grid.getCurrentLayer().clearSelectedObjects();
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Clear Selection", line, click));
-        // Clear Selected Objects
+        // Clear Selection
         line = new Line(60, 30, 150, 50);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.getCurrentLayer().SelectAllObjects();
+            }};
+        cmLayer0.getItems().add(getMenuItemForLine("Select All", line, click));
+        // Clear Selected Objects
+        line = new Line(60, 50, 150, 90);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -556,7 +582,7 @@ public class GridStageController implements Initializable {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Remove Selected Object(s)", line, click));
         // Reset View
-        line = new Line(60, 50, 150, 90);
+        line = new Line(60, 70, 150, 130);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -564,7 +590,7 @@ public class GridStageController implements Initializable {
             }};
         cmLayer0.getItems().add(getMenuItemForLine("Reset View", line, click));
         // Cancel
-        line = new Line(60, 70, 150, 130);
+        line = new Line(60, 90, 150, 170);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {

@@ -29,3 +29,8 @@ To store and load raw data use "save as gdf" (grid data file) function.
 To store geometry object data use "save as gof" (grid object file) function.
 To store as png file use "save as png" function.
 
+History
+=======
+
+    25.05.2015  Select all and move all selected points via ALT  
+

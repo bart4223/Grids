@@ -246,6 +246,12 @@ public class GridLayer implements Comparable<GridLayer> {
         return isObjectSelected(aObject);
     }
 
+    public void SelectAllObjects() {
+        for (NGGeometryObject2D obj : FObjects) {
+            selectObject(obj);
+        }
+    }
+
     public void clearSelectedObjects() {
         while (FSelectedObjects.size() > 0) {
             unselectObject(FSelectedObjects.get(0));
