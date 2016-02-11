@@ -5,6 +5,7 @@ import Uniwork.Base.NGObjectXMLDeserializerFile;
 import Uniwork.Base.NGObjectSerializer;
 import Uniwork.Base.NGObjectXMLSerializerFile;
 import Uniwork.Graphics.NGSerializeGeometryObjectList;
+import Uniwork.Visuals.NGCommonDialogs;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
@@ -31,6 +32,7 @@ public class GridManager {
     protected double FGridMaxHeight;
     protected int FGridMaxDistance;
     protected int FGridCount;
+    protected Stage FPrimaryStage;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -60,7 +62,12 @@ public class GridManager {
         }
     }
 
-    public GridManager() {
+    protected void DoShutdown() {
+        Platform.exit();
+    }
+
+    public GridManager(Stage aStage) {
+        FPrimaryStage = aStage;
         FGrids = new ArrayList<Grid>();
         FConfiguration = new Properties();
         FImageFileSizeX = 8;
@@ -87,7 +94,8 @@ public class GridManager {
     }
 
     public void Shutdown() {
-        Platform.exit();
+        if (NGCommonDialogs.showConfirmDialog(FPrimaryStage, "Quit", "Do you really want to leave grids?") == NGCommonDialogs.Response.Yes)
+            DoShutdown();
     }
 
     public Grid addGrid(int aSize, Color aColor) {
