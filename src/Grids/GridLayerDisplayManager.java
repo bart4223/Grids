@@ -5,12 +5,12 @@ import Uniwork.Visuals.NGGeometryObject2DDisplayManager;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GridLayerDisplayManager extends NGGeometryObject2DDisplayManager {
 
-    protected ArrayList<GridLayer> FLayers;
+    protected CopyOnWriteArrayList<GridLayer> FLayers;
 
     protected void PrepareGridLayers() {
         FLayers.clear();
@@ -53,10 +53,10 @@ public class GridLayerDisplayManager extends NGGeometryObject2DDisplayManager {
 
     public GridLayerDisplayManager(Canvas aCanvas, String aName) {
         super(aCanvas, aName);
-        FLayers = new ArrayList<GridLayer>();
+        FLayers = new CopyOnWriteArrayList<GridLayer>();
         Layers = null;
     }
 
-    public ArrayList<GridLayer> Layers;
+    public CopyOnWriteArrayList<GridLayer> Layers;
 
 }

@@ -18,8 +18,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Grid extends NGObject implements GridLayerEventListener, NGLogEventListener {
 
@@ -28,7 +28,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     protected Color FGridColor;
     protected Stage FStage;
     protected GridStageController FStageController;
-    protected ArrayList<GridLayer> FLayers;
+    protected CopyOnWriteArrayList<GridLayer> FLayers;
     protected GridLayer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
@@ -152,13 +152,13 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     protected void DoAssignTo(Object aObject) {
         if (aObject instanceof XMLGrid) {
             XMLLayer XMLLayer;
-            ArrayList<XMLLayer> XMLLayers;
-            ArrayList<NGGeometryObject2D> XMLGeoObjects;
+            CopyOnWriteArrayList<XMLLayer> XMLLayers;
+            CopyOnWriteArrayList<NGGeometryObject2D> XMLGeoObjects;
             XMLGrid XMLGrid = (XMLGrid)aObject;
             XMLGrid.setGridDistance(getGridDistance());
             XMLGrid.setGridColor(getGridColor().toString());
             XMLGrid.setCurrentLayer(getCurrentLayer().getName());
-            XMLLayers = new ArrayList<XMLLayer>();
+            XMLLayers = new CopyOnWriteArrayList<XMLLayer>();
             XMLGrid.setLayers(XMLLayers);
             for (GridLayer layer : getLayers()) {
                 XMLLayer = new XMLLayer();
@@ -167,7 +167,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
                 XMLLayer.setDescription(layer.getDescription());
                 XMLLayer.setObjectColor(layer.getObjectColor().toString());
                 XMLLayer.setZOrder(layer.getZOrder());
-                XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
+                XMLGeoObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
                 XMLLayer.setGeometryObjects(XMLGeoObjects);
                 XMLLayer.setImagename(layer.getImageName());
                 for (NGGeometryObject2D GeoObject : layer.getObjects()) {
@@ -178,13 +178,13 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         else if (aObject instanceof NGSerializeGeometryObjectList) {
             Integer count = 0;
             NGSerializeGeometryObjectList SGOL = (NGSerializeGeometryObjectList)aObject;
-            SGOL.setSGOS(new ArrayList<NGSerializeGeometryObjectItem>());
+            SGOL.setSGOS(new CopyOnWriteArrayList<NGSerializeGeometryObjectItem>());
             for (GridLayer layer : getLayers()) {
                 for (NGGeometryObject2D go : layer.getObjects()) {
                     NGSerializeGeometryObjectItem sgoi = new NGSerializeGeometryObjectItem();
                     go.setID(layer.getName());
                     sgoi.setGO(go);
-                    sgoi.setProps(new ArrayList<NGSerializePropertyItem>());
+                    sgoi.setProps(new CopyOnWriteArrayList<NGSerializePropertyItem>());
                     NGSerializePropertyItem prop = new NGSerializePropertyItem();
                     prop.setName("NAME");
                     prop.setValue(layer.getName());
@@ -202,7 +202,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
-        FLayers = new ArrayList<GridLayer>();
+        FLayers = new CopyOnWriteArrayList<GridLayer>();
         FGenerator = new Random();
         FGridDistance = aGridDistance;
         FGridColor = aColor;
@@ -356,7 +356,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         UpdateStage(true, "");
     }
 
-    public ArrayList<GridLayer> getLayers() {
+    public CopyOnWriteArrayList<GridLayer> getLayers() {
         return FLayers;
     }
 

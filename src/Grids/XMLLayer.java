@@ -3,7 +3,7 @@ package Grids;
 import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGGeometryObject2D;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class XMLLayer extends NGObject{
     public XMLLayer() { }
@@ -11,7 +11,7 @@ public class XMLLayer extends NGObject{
     protected String Description;
     protected String ObjectColor = "";
     protected int ZOrder = 0;
-    protected ArrayList<NGGeometryObject2D> GeometryObjects;
+    protected CopyOnWriteArrayList<NGGeometryObject2D> GeometryObjects;
     protected String Imagename = "";
     public void setName(String value) { Name = value;}
     public String getName() { return Name; }
@@ -21,8 +21,8 @@ public class XMLLayer extends NGObject{
     public int getZOrder() { return ZOrder; }
     public void setObjectColor(String value) { ObjectColor = value;}
     public String getObjectColor() { return ObjectColor; }
-    public void setGeometryObjects(ArrayList<NGGeometryObject2D> value) { GeometryObjects = value;}
-    public ArrayList<NGGeometryObject2D> getGeometryObjects() { return GeometryObjects; }
+    public void setGeometryObjects(CopyOnWriteArrayList<NGGeometryObject2D> value) { GeometryObjects = value;}
+    public CopyOnWriteArrayList<NGGeometryObject2D> getGeometryObjects() { return GeometryObjects; }
     public void setImagename(String value) { Imagename = value;}
     public String getImagename() { return Imagename; }
 }

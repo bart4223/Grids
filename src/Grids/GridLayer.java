@@ -5,13 +5,14 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GridLayer implements Comparable<GridLayer> {
 
     protected String FName;
     protected String FDescription;
-    protected ArrayList<NGGeometryObject2D> FObjects;
-    protected ArrayList<NGGeometryObject2D> FSelectedObjects;
+    protected CopyOnWriteArrayList<NGGeometryObject2D> FObjects;
+    protected CopyOnWriteArrayList<NGGeometryObject2D> FSelectedObjects;
     protected Color FObjectColor;
     protected List FEventListeners;
     protected Integer FZOrder;
@@ -55,8 +56,8 @@ public class GridLayer implements Comparable<GridLayer> {
 
     public GridLayer(String aName, String aDescription, Color aColor) {
         FEventListeners= new ArrayList();
-        FObjects = new ArrayList<NGGeometryObject2D>();
-        FSelectedObjects = new ArrayList<NGGeometryObject2D>();
+        FObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
+        FSelectedObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
         FName = aName;
         FDescription = aDescription;
         FObjectColor = aColor;
@@ -202,11 +203,11 @@ public class GridLayer implements Comparable<GridLayer> {
         return FImageName;
     }
 
-    public ArrayList<NGGeometryObject2D> getObjects() {
+    public CopyOnWriteArrayList<NGGeometryObject2D> getObjects() {
         return FObjects;
     }
 
-    public ArrayList<NGGeometryObject2D> getSelected() {
+    public CopyOnWriteArrayList<NGGeometryObject2D> getSelected() {
         return FSelectedObjects;
     }
 

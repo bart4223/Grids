@@ -19,12 +19,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GridManager {
 
-    protected ArrayList<Grid> FGrids;
+    protected CopyOnWriteArrayList<Grid> FGrids;
     protected Properties FConfiguration;
     protected int FImageFileSizeX;
     protected int FImageFileSizeY;
@@ -68,7 +68,7 @@ public class GridManager {
 
     public GridManager(Stage aStage) {
         FPrimaryStage = aStage;
-        FGrids = new ArrayList<Grid>();
+        FGrids = new CopyOnWriteArrayList<Grid>();
         FConfiguration = new Properties();
         FImageFileSizeX = 8;
         FImageFileSizeY = 8;
