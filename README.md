@@ -21,6 +21,8 @@ The configuration file must place under resources/config.gcf (grid config file).
         -   X-Size for Save as PNG
    -    ImageFileSizeY
         -   Y-Size for Save as PNG
+   -    MegaGridPixelSize
+        -   Size of MegaPixel        
 
 Save/Load
 =========
@@ -33,5 +35,6 @@ Save/Load
 History
 =======
 
-    25.05.2015  Select all and move all selected points via ALT  
+    25.05.2015  Select all and move all selected points via ALT
+    26.07.2017  Octree color quantization support  
 

@@ -17,6 +17,7 @@ public class GridLayer implements Comparable<GridLayer> {
     protected List FEventListeners;
     protected Integer FZOrder;
     protected String FImageName;
+    protected Integer FID;
 
     protected synchronized void RaiseAddObjectEvent(NGGeometryObject2D aObject) {
         GridLayerAddObjectEvent lEvent = new GridLayerAddObjectEvent(this);
@@ -54,7 +55,7 @@ public class GridLayer implements Comparable<GridLayer> {
         }
     }
 
-    public GridLayer(String aName, String aDescription, Color aColor) {
+    public GridLayer(String aName, String aDescription, Color aColor, Integer aID) {
         FEventListeners= new ArrayList();
         FObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
         FSelectedObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
@@ -63,6 +64,7 @@ public class GridLayer implements Comparable<GridLayer> {
         FObjectColor = aColor;
         FZOrder = 0;
         FImageName = "";
+        FID = aID;
     }
 
     @Override
@@ -90,6 +92,18 @@ public class GridLayer implements Comparable<GridLayer> {
             addObject(Point);
         }
         return Point;
+    }
+
+    public Integer getPointsInRegion(NGRegion2D aRegion) {
+        Integer res = 0;
+        for (NGGeometryObject2D layerObject: FObjects) {
+            if (layerObject instanceof NGPoint2D) {
+                if (aRegion.IsPointInRegion((NGPoint2D)layerObject)) {
+                    res = res + 1;
+                }
+            }
+        }
+        return res;
     }
 
     public NGLine2D addLine(int aAX, int aAY, int aBX, int aBY) {
@@ -169,6 +183,10 @@ public class GridLayer implements Comparable<GridLayer> {
 
     public String getName() {
         return FName;
+    }
+
+    public Integer getID() {
+        return FID;
     }
 
     public void setDescription(String aDescription) {

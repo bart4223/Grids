@@ -5,6 +5,7 @@ import Uniwork.Graphics.*;
 import Uniwork.Visuals.NGCommonDialogs;
 import Uniwork.Visuals.NGDisplayView;
 import Uniwork.Visuals.NGGrid2DDisplayController;
+import Uniwork.Visuals.NGLabeledGrid2DDisplayController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -56,13 +58,16 @@ public class GridStageController implements Initializable {
     private ToggleButton btnRectangle;
 
     @FXML
-    private ToggleButton btnPaintGrid;
+    private Button btnPaintGrid;
 
     @FXML
     private Canvas Layer0;
 
     @FXML
     private Canvas Layer1;
+
+    @FXML
+    private AnchorPane CompleteLayer;
 
     @FXML
     private ComboBox cbGridSize;
@@ -86,21 +91,24 @@ public class GridStageController implements Initializable {
     protected Boolean FCurrentGOPointRemoved;
 
     protected ContextMenu cmLayer0;
+    protected ContextMenu cmbtnPaintGrid;
     protected ContextMenu cmbtnLoadGrid;
     protected ContextMenu cmbtnSaveGrid;
     protected DropShadow dsContextMenu;
 
-    protected boolean FDrawGrid;
-
     protected final Button hlpbutton;
 
     protected NGGrid2DDisplayController FGDC;
+    protected NGLabeledGrid2DDisplayController FLGDC;
+
     protected GridLayerDisplayManager FGLDM;
     protected NGDisplayView FView;
 
     protected Tooltip FCoordinatesTooltip;
 
     protected MouseEvent FLastMouseEvent;
+
+    protected Boolean FShowMegaPixel;
 
     @FXML
     protected void handlecbGridSize(ActionEvent Event){
@@ -121,16 +129,15 @@ public class GridStageController implements Initializable {
             }
         }
     }
-
-    @FXML
-    protected void handlePaintGrid(){
-        FDrawGrid = btnPaintGrid.isSelected();
-        RenderScene(true);
-    }
-
+    
     @FXML
     protected void handleSaveGrid(){
         cmbtnSaveGrid.show(btnSaveGrid, Side.BOTTOM, 0, 0);
+    }
+
+    @FXML
+    protected void handlePaintGrid(){
+        cmbtnPaintGrid.show(btnPaintGrid, Side.BOTTOM, 0, 0);
     }
 
     @FXML
@@ -216,11 +223,37 @@ public class GridStageController implements Initializable {
         FGLDM.Render();
     }
 
+    protected void BeforeRenderLayer0() {
+        if (FShowMegaPixel) {
+            FLGDC.clearLabels();
+            double x = 0 - FLGDC.getViewPositionX();
+            double y = 0 - FLGDC.getViewPositionY();
+            Integer indexX;
+            Integer indexY = 0;
+            for(double yy = y; yy < y + Layer0.getHeight(); yy = yy + Grid.getMegaGridPixleSize()) {
+                indexX = 0;
+                for(double xx = x; xx <= x + Layer0.getWidth(); xx = xx + Grid.getMegaGridPixleSize()) {
+                    NGRegion2D region = new NGRegion2D(xx, yy, xx + Grid.getMegaGridPixleSize(), yy + Grid.getMegaGridPixleSize());
+                    GridLayer MaxLayer = Grid.getLayerWithMaxPoints(region);
+                    if (MaxLayer != null) {
+                        FLGDC.addLabel(String.format("%d.%d", indexY, indexX), String.format("%d%s", MaxLayer.getID(), MaxLayer.getObjectColor().invert().toString()));
+                    }
+                    indexX = indexX + 1;
+                }
+                indexY = indexY + 1;
+            }
+        }
+    }
+
     protected void RenderLayer0() {
         FGDC.GridColor = Grid.getGridColor();
         FGDC.GridDistance = Grid.getGridDistance();
-        FGDC.DrawGrid = FDrawGrid;
+        FGDC.DrawGrid = Grid.getDrawGrid();
         FGDC.Render();
+        FLGDC.GridColor = Grid.getGridColor().darker().darker().darker();
+        FLGDC.GridDistance = Grid.getGridDistance() * Grid.getMegaGridPixleSize();
+        FLGDC.DrawGrid = FShowMegaPixel;
+        FLGDC.Render();
     }
 
     protected NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
@@ -532,12 +565,12 @@ public class GridStageController implements Initializable {
     public GridStageController() {
         FUpdateCount = 0;
         FToolMode = ToolMode.Select;
-        FDrawGrid = true;
         FCurrentGO = null;
         FCurrentGOPointRemoved = false;
         hlpbutton = new Button("Press me.");
         FCoordinatesTooltip = new Tooltip("Mouse Position 0,0");
         FCoordinatesTooltip.setHideOnEscape(true);
+        FShowMegaPixel = false;
     }
 
     @Override
@@ -619,9 +652,17 @@ public class GridStageController implements Initializable {
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Grid.SaveAsPNG();
+                Grid.SaveAsPNG(false);
             }};
         cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG", line, click));
+        // Save as PNG with Grid
+        line = new Line(90, 50, 150, 90);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.SaveAsPNG(true);
+            }};
+        cmbtnSaveGrid.getItems().add(getMenuItemForLine("as PNG with Grid", line, click));
         // Contextmenu btnLoadGrid
         cmbtnLoadGrid = new ContextMenu();
         // Load from GDF
@@ -632,18 +673,48 @@ public class GridStageController implements Initializable {
                 Grid.LoadFromGDF();
             }};
         cmbtnLoadGrid.getItems().add(getMenuItemForLine("from GDF", line, click));
-        // Load from PNG
+        // Load from Image
         line = new Line(60, 30, 150, 10);
         click = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Grid.LoadFromPNG();
+                Grid.LoadFromImage();
             }};
-        cmbtnLoadGrid.getItems().add(getMenuItemForLine("from PNG", line, click));
-        btnPaintGrid.setSelected(FDrawGrid);
+        cmbtnLoadGrid.getItems().add(getMenuItemForLine("from Image", line, click));
+        // Load from Image with CQ
+        line = new Line(60, 50, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.LoadFromImageWithCQ();
+            }};
+        cmbtnLoadGrid.getItems().add(getMenuItemForLine("from Image with CQ", line, click));
+        // Contextmenu btnPaintGrid aka Show
+        cmbtnPaintGrid = new ContextMenu();
+        // Default Grid
+        line = new Line(60, 10, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Grid.setDrawGrid(!Grid.getDrawGrid());
+                RenderScene(true);
+            }};
+        cmbtnPaintGrid.getItems().add(getMenuItemForLine("Default Grid", line, click));
+        // Mega Pixel Grid
+        line = new Line(60, 30, 150, 10);
+        click = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                FShowMegaPixel = !FShowMegaPixel;
+                RenderScene(true);
+            }};
+        cmbtnPaintGrid.getItems().add(getMenuItemForLine("Mega Pixel Grid", line, click));
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
         FGDC = new NGGrid2DDisplayController(Layer0);
         FGDC.setView(FView);
+        FLGDC = new NGLabeledGrid2DDisplayController(Layer0);
+        FLGDC.ClearRect = false;
+        FLGDC.setView(FView);
         FGLDM = new GridLayerDisplayManager(Layer1);
         FGLDM.setView(FView);
         FGLDM.setBackgroundColor(Color.TRANSPARENT);
@@ -656,6 +727,9 @@ public class GridStageController implements Initializable {
         FGDC.Initialize();
         FGDC.GridWidth = Grid.getManager().getGridMaxWidth();
         FGDC.GridHeight = Grid.getManager().getGridMaxHeight();
+        FLGDC.Initialize();
+        FLGDC.GridWidth = Grid.getManager().getGridMaxWidth();
+        FLGDC.GridHeight = Grid.getManager().getGridMaxHeight();
         FGLDM.Initialize();
         Layer0.addEventHandler(MouseEvent.MOUSE_EXITED,
                 new EventHandler<MouseEvent>() {
@@ -719,6 +793,7 @@ public class GridStageController implements Initializable {
 
     public void RenderScene(Boolean aComplete) {
         if (aComplete) {
+            BeforeRenderLayer0();
             RenderLayer0();
         }
         RenderLayer1();
@@ -750,6 +825,10 @@ public class GridStageController implements Initializable {
 
     public Canvas getObjectLayer() {
         return Layer1;
+    }
+
+    public AnchorPane getCompleteLayer() {
+        return CompleteLayer;
     }
 
     public void HideInfoTooltip() {

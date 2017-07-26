@@ -1,15 +1,12 @@
 package Grids;
 
 import Uniwork.Base.NGSerializePropertyItem;
-import Uniwork.Graphics.NGSerializeGeometryObjectItem;
-import Uniwork.Graphics.NGSerializeGeometryObjectList;
+import Uniwork.Graphics.*;
 import Uniwork.Misc.NGImageList;
 import Uniwork.Misc.NGLogEvent;
 import Uniwork.Misc.NGLogEventListener;
 import Uniwork.Misc.NGLogManager;
 import Uniwork.Base.NGObject;
-import Uniwork.Graphics.NGGeometryObject2D;
-import Uniwork.Graphics.NGPoint2D;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +22,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
 
     protected int FUpdateCount;
     protected Integer FGridDistance;
+    protected Boolean FDrawGrid;
     protected Color FGridColor;
     protected Stage FStage;
     protected GridStageController FStageController;
@@ -52,7 +50,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             FStageController.Grid = this;
             Parent lRoot = lXMLLoader.getRoot();
             FStage.setTitle("Grid");
-            Scene Scene = new Scene(lRoot, 1000, 800, Color.WHITE);
+            Scene Scene = new Scene(lRoot, 1000, 1000, Color.WHITE);
             FStage.setScene(Scene);
             FStage.setResizable(false);
             Scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -136,7 +134,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         setGridDistance(XMLGrid.getGridDistance());
         setGridColor(Color.valueOf(XMLGrid.getGridColor()));
         for (XMLLayer XMLLayer : XMLGrid.getLayers()) {
-            layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()));
+            layer = addLayer(XMLLayer.getName(), XMLLayer.getDescription(), Color.valueOf(XMLLayer.getObjectColor()), FLayers.size());
             layer.setZOrder(XMLLayer.getZOrder());
             if (XMLLayer.getImagename().length() > 0) {
                 layer.setImageName(XMLLayer.getImagename());
@@ -205,6 +203,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         FLayers = new CopyOnWriteArrayList<GridLayer>();
         FGenerator = new Random();
         FGridDistance = aGridDistance;
+        FDrawGrid = true;
         FGridColor = aColor;
         FCurrentLayer = null;
         FGridManager = aGridManager;
@@ -215,7 +214,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     public void Initialize() {
         CreateStage();
         FLogManager.addEventListener(this);
-        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)));
+        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)), FLayers.size());
     }
 
     public void Finalize() {
@@ -249,17 +248,43 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         return FGridDistance;
     }
 
+    public Integer getMegaGridPixleSize() {
+        return FGridManager.getMegaGridPixelSize();
+    }
+
     public void setGridColor(Color aValue) {
         FGridColor = aValue;
         UpdateStage(false, "");
+    }
+
+    public Boolean getDrawGrid() {
+        return FDrawGrid;
+    }
+
+    public void setDrawGrid(Boolean aDrawGrid) {
+        FDrawGrid = aDrawGrid;
+        UpdateStage(true, "");
     }
 
     public Color getGridColor() {
         return FGridColor;
     }
 
-    public GridLayer addLayer(String aName, String aDescription, Color aColor) {
-        GridLayer Layer = new GridLayer(aName, aDescription, aColor);
+    public GridLayer getLayerWithMaxPoints(NGRegion2D aRegion) {
+        GridLayer res = null;
+        Integer max = 0;
+        for (GridLayer layer : FLayers) {
+            Integer count = layer.getPointsInRegion(aRegion);
+            if (count > max) {
+                max = count;
+                res = layer;
+            }
+        }
+        return res;
+    }
+
+    public GridLayer addLayer(String aName, String aDescription, Color aColor, Integer aID) {
+        GridLayer Layer = new GridLayer(aName, aDescription, aColor, aID);
         int lZOrder = getMaxZOrder() + 1;
         Layer.setZOrder(lZOrder);
         Layer.addEventListener(this);
@@ -269,7 +294,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     public GridLayer addLayer() {
-        return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255))));
+        return(addLayer("LAYER" + (FLayers.size() + 1), "Layer " + (FLayers.size() + 1), Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)), FLayers.size()));
     }
 
     public void removeLayer(GridLayer layer, boolean force) {
@@ -374,6 +399,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         }
     }
 
+    public Integer getLayerCount() {
+        return FLayers.size();
+    }
+
     public NGPoint2D CoordinatesToGridCoordinates(NGPoint2D aPoint) {
         return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
@@ -400,10 +429,10 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         }
     }
 
-    public void SaveAsPNG() {
+    public void SaveAsPNG(Boolean aComplete) {
         BeginUpdate();
         try {
-            FGridManager.saveGridImageAsPNG(this);
+            FGridManager.saveGridImageAsPNG(this, aComplete);
             EndUpdate();
         }
         catch (Exception e) {
@@ -422,10 +451,21 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         }
     }
 
-    public void LoadFromPNG() {
+    public void LoadFromImageWithCQ() {
         BeginUpdate();
         try {
-            FGridManager.loadGridFromPNG(this);
+            FGridManager.loadGridFromImageWithQC(this);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            EndUpdate();
+        }
+    }
+
+    public void LoadFromImage() {
+        BeginUpdate();
+        try {
+            FGridManager.loadGridFromImage(this);
             EndUpdate();
         }
         catch (Exception e) {
