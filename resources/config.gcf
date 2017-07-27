@@ -5,3 +5,4 @@ GridMaxHeight=8192
 ImageFileSizeX=800
 ImageFileSizeY=800
 MegaGridPixelSize=20
+ColorQuantizeFactor=42

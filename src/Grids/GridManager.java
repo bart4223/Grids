@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
+import javax.print.attribute.IntegerSyntax;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +31,7 @@ public class GridManager {
     protected int FImageFileSizeX;
     protected int FImageFileSizeY;
     protected int FMegaGridPixelSize;
+    protected int FColorQuantizeFactor;
     protected double FGridMaxWidth;
     protected double FGridMaxHeight;
     protected int FGridMaxDistance;
@@ -59,6 +61,7 @@ public class GridManager {
             FGridMaxHeight = Integer.parseInt(FConfiguration.getProperty("GridMaxHeight"));
             FGridMaxDistance = Integer.parseInt(FConfiguration.getProperty("GridMaxDistance"));
             FMegaGridPixelSize = Integer.parseInt(FConfiguration.getProperty("MegaGridPixelSize"));
+            FColorQuantizeFactor = Integer.parseInt(FConfiguration.getProperty("ColorQuantizeFactor"));
         }
         catch (Exception e) {
             writeLog(e.getMessage());
@@ -80,6 +83,7 @@ public class GridManager {
         FGridMaxDistance = 10;
         FGridCount = 1;
         FMegaGridPixelSize = 10;
+        FColorQuantizeFactor = 10;
     }
 
     public void Initialize() {
@@ -252,7 +256,7 @@ public class GridManager {
                 ot.BuildPalette();
                 aGrid.writeLog(String.format("Image %s with %dx%d Pixels with %d colors loaded.", chosenFile.getName(), bufferedImage.getWidth(), bufferedImage.getHeight(), ot.getPaletteCount()));
                 aGrid.writeLog(String.format("Octree color Quantization start...", ot.getPaletteCount()));
-                ot.Quantize(42 * 3);
+                ot.Quantize(getColorQuantizeFactor());
                 ot.RebuildPalette();
                 aGrid.writeLog(String.format("...Octree color Quantization to %d colors.", ot.getPaletteCount()));
                 // Build Grid
@@ -350,6 +354,10 @@ public class GridManager {
 
     public int getMegaGridPixelSize() {
         return FMegaGridPixelSize;
+    }
+
+    public int getColorQuantizeFactor() {
+        return FColorQuantizeFactor;
     }
 
     public Stage getPrimaryStage() {

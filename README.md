@@ -22,7 +22,9 @@ The configuration file must place under resources/config.gcf (grid config file).
    -    ImageFileSizeY
         -   Y-Size for Save as PNG
    -    MegaGridPixelSize
-        -   Size of MegaPixel        
+        -   Size of MegaPixel
+   -    ColorQuantizeFactor
+        -   Colors to quantize the image          
 
 Save/Load
 =========
@@ -30,7 +32,9 @@ Save/Load
 -   To store and load raw data use "save as gdf" (grid data file) function.
 -   To store geometry object data use "save as gof" (grid object file) function.
 -   To store as png file use "save as png" function.
--   To load from png file use "load from png" function
+-   To store as png file with grids use "save as png with grids" function.
+-   To load from png file use "load from png" function.
+-   To load from png file with color quantization use "load from png with CQ" function.
 
 History
 =======
