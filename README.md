@@ -40,5 +40,6 @@ History
 =======
 
     25.05.2015  Select all and move all selected points via ALT
-    26.07.2017  Octree color quantization support  
+    26.07.2017  Octree color quantization support
+    30.07.2017  Color quantization dialog  
 
