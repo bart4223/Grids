@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Base.NGComponent;
 import Uniwork.Base.NGSerializePropertyItem;
 import Uniwork.Graphics.*;
 import Uniwork.Misc.NGImageList;
@@ -18,7 +19,7 @@ import javafx.stage.Stage;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Grid extends NGObject implements GridLayerEventListener, NGLogEventListener {
+public class Grid extends NGComponent implements GridLayerEventListener, NGLogEventListener {
 
     protected int FUpdateCount;
     protected Integer FGridDistance;
@@ -30,7 +31,6 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     protected GridLayer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
-    protected NGLogManager FLogManager;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
         if (InUpdate()) return;
@@ -127,6 +127,21 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     @Override
+    protected void DoInitialize() {
+        super.DoInitialize();
+        CreateStage();
+        FLogManager.addEventListener(this);
+        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)), FLayers.size());
+    }
+
+    @Override
+    protected void DoFinalize() {
+        FLogManager.removeEventListener(this);
+        CloseStage();
+        super.DoFinalize();
+    }
+
+    @Override
     protected void DoAssignFrom(Object aObject) {
         GridLayer layer;
         XMLGrid XMLGrid = (XMLGrid)aObject;
@@ -200,6 +215,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
     }
 
     public Grid(GridManager aGridManager, int aGridDistance, Color aColor) {
+        super(aGridManager);
         FLayers = new CopyOnWriteArrayList<GridLayer>();
         FGenerator = new Random();
         FGridDistance = aGridDistance;
@@ -209,17 +225,6 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
         FGridManager = aGridManager;
         FLogManager = new NGLogManager();
         FUpdateCount = 0;
-    }
-
-    public void Initialize() {
-        CreateStage();
-        FLogManager.addEventListener(this);
-        addLayer("LAYER1", "Layer 1", Color.rgb(getRandomValue(255), getRandomValue(255), getRandomValue(255)), FLayers.size());
-    }
-
-    public void Finalize() {
-        FLogManager.removeEventListener(this);
-        CloseStage();
     }
 
     public void Shutdown() {
@@ -414,6 +419,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }
@@ -425,6 +431,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }
@@ -436,6 +443,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }
@@ -447,6 +455,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }
@@ -458,6 +467,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }
@@ -469,6 +479,7 @@ public class Grid extends NGObject implements GridLayerEventListener, NGLogEvent
             EndUpdate();
         }
         catch (Exception e) {
+            writeError(e.getMessage());
             EndUpdate();
         }
     }

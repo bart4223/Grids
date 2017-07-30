@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ColorPicker?>
 <AnchorPane fx:controller="Grids.GridStageController" xmlns:fx="http://javafx.com/fxml" >
     <AnchorPane prefHeight="50" minWidth="1000" xmlns:fx="http://javafx.com/fxml" AnchorPane.TopAnchor="0">
-        <HBox prefHeight="50" minWidth="1000" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
+        <HBox prefHeight="50" minWidth="1000" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: gray;">
             <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
             <Button id="btnPaintGrid" prefWidth="80" text="Show..." onAction="#handlePaintGrid" fx:id="btnPaintGrid" />
             <ComboBox id="cbGridsize" prefWidth="40" onAction="#handlecbGridSize" fx:id="cbGridSize" />
@@ -26,7 +26,7 @@
     </AnchorPane>
     <AnchorPane prefHeight="950" minWidth="1000" xmlns:fx="http://javafx.com/fxml" AnchorPane.bottomAnchor="0">
         <AnchorPane prefHeight="950" minWidth="150" xmlns:fx="http://javafx.com/fxml" AnchorPane.leftAnchor="0">
-            <VBox prefHeight="950" minWidth="150" alignment="TOP_LEFT" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: lightgray;">
+            <VBox prefHeight="950" minWidth="150" spacing="10" xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: lightgray;">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <ColorPicker id ="cpObjectColor" prefHeight="30" prefWidth="130" onAction="#handleObjectColor" fx:id="cpObjectColor" />
                 <ToggleButton id="btnSelect" prefHeight="30" prefWidth="130" text="Selection" onAction="#handleSelect" fx:id="btnSelect" />

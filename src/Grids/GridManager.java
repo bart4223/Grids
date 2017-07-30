@@ -1,11 +1,12 @@
 package Grids;
 
-import Uniwork.Base.NGObjectDeserializer;
-import Uniwork.Base.NGObjectXMLDeserializerFile;
-import Uniwork.Base.NGObjectSerializer;
-import Uniwork.Base.NGObjectXMLSerializerFile;
+import Uniwork.Appl.NGCustomStageItem;
+import Uniwork.Appl.NGToolboxManager;
+import Uniwork.Base.*;
 import Uniwork.Graphics.NGColorOctree;
 import Uniwork.Graphics.NGSerializeGeometryObjectList;
+import Uniwork.UI.NGUIImageModificationToolboxContext;
+import Uniwork.UI.NGUIImageModificationToolboxItem;
 import Uniwork.Visuals.NGCommonDialogs;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -16,7 +17,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import javax.print.attribute.IntegerSyntax;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class GridManager {
+public class GridManager extends NGComponentManager {
 
     protected CopyOnWriteArrayList<Grid> FGrids;
     protected Properties FConfiguration;
@@ -37,6 +37,7 @@ public class GridManager {
     protected int FGridMaxDistance;
     protected int FGridCount;
     protected Stage FPrimaryStage;
+    protected NGToolboxManager FToolboxManager;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -72,7 +73,30 @@ public class GridManager {
         Platform.exit();
     }
 
+    @Override
+    protected void DoInitialize() {
+        LoadConfiguration();
+        for (int i = 0; i < FGridCount; i++ ) {
+            Grid grid = addGrid(20, Color.LIGHTGRAY);
+            registerComponent(grid);
+        }
+        super.DoInitialize();
+        writeLog("Welcome to Grids have fun...");
+    }
+
+    @Override
+    protected void DoFinalize() {
+        for (Grid grid : FGrids) {
+            grid.Finalize();
+        }
+        FToolboxManager.Finalize();
+        super.DoFinalize();
+    }
+
     public GridManager(Stage aStage) {
+        super();
+        FToolboxManager = new NGToolboxManager(this, "ToolboxManager");
+        registerComponent(FToolboxManager);
         FPrimaryStage = aStage;
         FGrids = new CopyOnWriteArrayList<Grid>();
         FConfiguration = new Properties();
@@ -84,21 +108,7 @@ public class GridManager {
         FGridCount = 1;
         FMegaGridPixelSize = 10;
         FColorQuantizeFactor = 10;
-    }
-
-    public void Initialize() {
-        LoadConfiguration();
-        for (int i = 0; i < FGridCount; i++ ) {
-            Grid grid = addGrid(20, Color.LIGHTGRAY);
-            grid.Initialize();
-        }
-        writeLog("Welcome to Grids have fun...");
-    }
-
-    public void Finalize() {
-        for (Grid grid : FGrids) {
-            grid.Finalize();
-        }
+        FToolboxManager.registerItemClass("Image.Manipulation", "Uniwork.UI.NGUIImageModificationToolboxItem");
     }
 
     public void Shutdown() {
@@ -240,54 +250,61 @@ public class GridManager {
             fileChooser.getExtensionFilters().add(extFilter);
             File chosenFile = fileChooser.showOpenDialog(aGrid.getStage().getOwner());
             if (chosenFile != null) {
-                NGColorOctree ot = new NGColorOctree();
-                aGrid.New(false);
-                BufferedImage bufferedImage = ImageIO.read(chosenFile);
-                // Build Octree
-                for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                    for (int x = 0; x < bufferedImage.getWidth(); x++) {
-                        int color = bufferedImage.getRGB(x, y);
-                        int  red   = (color & 0x00ff0000) >> 16;
-                        int  green = (color & 0x0000ff00) >> 8;
-                        int  blue  =  color & 0x000000ff;
-                        ot.addColor(red, green, blue);
-                    }
-                }
-                ot.BuildPalette();
-                aGrid.writeLog(String.format("Image %s with %dx%d Pixels with %d colors loaded.", chosenFile.getName(), bufferedImage.getWidth(), bufferedImage.getHeight(), ot.getPaletteCount()));
-                aGrid.writeLog(String.format("Octree color Quantization start...", ot.getPaletteCount()));
-                ot.Quantize(getColorQuantizeFactor());
-                ot.RebuildPalette();
-                aGrid.writeLog(String.format("...Octree color Quantization to %d colors.", ot.getPaletteCount()));
-                // Build Grid
-                aGrid.writeLog("Build Grid start...");
-                Map<Integer, Color> colors = new TreeMap<Integer, Color>();
-                Integer layercount = aGrid.getLayerCount();
-                for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                    for (int x = 0; x < bufferedImage.getWidth(); x++) {
-                        int color = bufferedImage.getRGB(x, y);
-                        int  red   = (color & 0x00ff0000) >> 16;
-                        int  green = (color & 0x0000ff00) >> 8;
-                        int  blue  =  color & 0x000000ff;
-                        Integer key = red * 65536 + green * 256 + blue * 255;
-                        Color c = colors.get(key);
-                        if (c == null) {
-                            c = ot.getNodeColorFromColor(Color.rgb(red, green, blue));
-                            colors.put(key, c);
+                NGUIImageModificationToolboxItem dialogIM = (NGUIImageModificationToolboxItem)FToolboxManager.CreateToolbox("Image.Manipulation", "Image.Manipulation", new NGUIImageModificationToolboxContext(chosenFile.getPath()));
+                dialogIM.setLogManager(aGrid.getLogManager());
+                dialogIM.setCQColorCount(getColorQuantizeFactor());
+                if (dialogIM.ShowModal() == NGCustomStageItem.NGDialogResult.OK) {
+                    ;
+                    NGColorOctree ot = new NGColorOctree();
+                    aGrid.New(false);
+                    BufferedImage bufferedImage = ImageIO.read(chosenFile);
+                    // Build Octree
+                    for (int y = 0; y < bufferedImage.getHeight(); y++) {
+                        for (int x = 0; x < bufferedImage.getWidth(); x++) {
+                            int color = bufferedImage.getRGB(x, y);
+                            int red = (color & 0x00ff0000) >> 16;
+                            int green = (color & 0x0000ff00) >> 8;
+                            int blue = color & 0x000000ff;
+                            ot.addColor(red, green, blue);
                         }
-                        if (!c.equals(Color.TRANSPARENT)) {
-                            GridLayer layer = aGrid.getLayer(c);
-                            if (layer == null) {
-                                layercount++;
-                                layer = aGrid.addLayer(String.format("LAYER%d", layercount), String.format("Layer %d", layercount), c, layercount);
+                    }
+                    ot.BuildPalette();
+                    aGrid.writeLog(String.format("Image %s with %dx%d Pixels with %d colors loaded.", chosenFile.getName(), bufferedImage.getWidth(), bufferedImage.getHeight(), ot.getPaletteCount()));
+                    aGrid.writeLog(String.format("Octree color Quantization start...", ot.getPaletteCount()));
+                    ot.Quantize(dialogIM.getCQColorCount());
+                    ot.RebuildPalette();
+                    aGrid.writeLog(String.format("...Octree color Quantization to %d colors.", ot.getPaletteCount()));
+                    // Build Grid
+                    aGrid.writeLog("Build Grid start...");
+                    Map<Integer, Color> colors = new TreeMap<Integer, Color>();
+                    Integer layercount = aGrid.getLayerCount();
+                    for (int y = 0; y < bufferedImage.getHeight(); y++) {
+                        for (int x = 0; x < bufferedImage.getWidth(); x++) {
+                            int color = bufferedImage.getRGB(x, y);
+                            int red = (color & 0x00ff0000) >> 16;
+                            int green = (color & 0x0000ff00) >> 8;
+                            int blue = color & 0x000000ff;
+                            Integer key = red * 65536 + green * 256 + blue * 255;
+                            Color c = colors.get(key);
+                            if (c == null) {
+                                c = ot.getNodeColorFromColor(Color.rgb(red, green, blue));
+                                colors.put(key, c);
                             }
-                            layer.addPoint(x, y);
+                            if (!c.equals(Color.TRANSPARENT)) {
+                                GridLayer layer = aGrid.getLayer(c);
+                                if (layer == null) {
+                                    layercount++;
+                                    layer = aGrid.addLayer(String.format("LAYER%d", layercount), String.format("Layer %d", layercount), c, layercount);
+                                }
+                                layer.addPoint(x, y);
+                            }
                         }
                     }
+                    aGrid.writeLog("Build Grid finished.");
+                    aGrid.setGridDistance(1);
+                    aGrid.setDrawGrid(false);
+
                 }
-                aGrid.writeLog("Build Grid finished.");
-                aGrid.setGridDistance(1);
-                aGrid.setDrawGrid(false);
             }
         } catch (Exception e) {
             aGrid.writeLog(e.getMessage());
