@@ -32,7 +32,7 @@
                 <ToggleButton id="btnSelect" prefHeight="30" prefWidth="130" text="Selection" onAction="#handleSelect" fx:id="btnSelect" />
                 <ToggleButton id="btnPoint" prefHeight="30" prefWidth="130" text="Point" onAction="#handlePoint" fx:id="btnPoint" />
                 <ToggleButton id="btnLine" prefHeight="30" prefWidth="130" text="Line" onAction="#handleLine" fx:id="btnLine" />
-                <ToggleButton id="btnQuadrat" prefHeight="30" prefWidth="130" text="Quadrat" onAction="#handleQuadrat" fx:id="btnQuadrat" />
+                <ToggleButton id="btnQuadrat" prefHeight="30" prefWidth="130" text="Square" onAction="#handleQuadrat" fx:id="btnQuadrat" />
                 <ToggleButton id="btnRectangle" prefHeight="30" prefWidth="130" text="Rectangle" onAction="#handleRectangle" fx:id="btnRectangle" />
                 <ToggleButton id="btnCircle" prefHeight="30" prefWidth="130" text="Circle" onAction="#handleCircle" fx:id="btnCircle" />
                 <ToggleButton id="btnEllipse" prefHeight="30" prefWidth="130" text="Ellipse" onAction="#handleEllipse" fx:id="btnEllipse" />

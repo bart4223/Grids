@@ -557,7 +557,7 @@ public class GridStageController implements Initializable {
 
     protected void resetView() {
         FView.setPosition(0, 0);
-        RenderLayer0();
+        RenderScene(true);
     }
 
     public Grid Grid;
