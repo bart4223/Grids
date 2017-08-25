@@ -1,0 +1,8 @@
+// Load grid with CQ
+Grid.LoadImageWithCQ
+// Set the Grid Distance
+Grid.SetGridDistance 2
+// Hide the Grid
+Grid.HideGrid
+// Show mega pixels
+Grid.ShowMegaPixel

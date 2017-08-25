@@ -1,7 +1,10 @@
 package Grids;
 
+import Uniwork.Appl.NGApplication;
 import Uniwork.Misc.NGLogEntry;
 import Uniwork.Graphics.*;
+import Uniwork.Script.NGScriptItem;
+import Uniwork.Script.NGScriptManager;
 import Uniwork.Visuals.NGCommonDialogs;
 import Uniwork.Visuals.NGDisplayView;
 import Uniwork.Visuals.NGGrid2DDisplayController;
@@ -24,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class GridStageController implements Initializable {
@@ -61,6 +65,9 @@ public class GridStageController implements Initializable {
     private Button btnPaintGrid;
 
     @FXML
+    private Button btnScript;
+
+    @FXML
     private Canvas Layer0;
 
     @FXML
@@ -94,6 +101,7 @@ public class GridStageController implements Initializable {
     protected ContextMenu cmbtnPaintGrid;
     protected ContextMenu cmbtnLoadGrid;
     protected ContextMenu cmbtnSaveGrid;
+    protected ContextMenu cmbtnScript;
     protected DropShadow dsContextMenu;
 
     protected final Button hlpbutton;
@@ -206,6 +214,11 @@ public class GridStageController implements Initializable {
     protected void handleObjectColor() {
         Grid.getCurrentLayer().setObjectColor(cpObjectColor.getValue());
         RenderLayer1();
+    }
+
+    @FXML
+    protected void handleScript(){
+        cmbtnScript.show(btnScript, Side.BOTTOM, 0, 0);
     }
 
     @FXML
@@ -709,6 +722,20 @@ public class GridStageController implements Initializable {
                 RenderScene(true);
             }};
         cmbtnPaintGrid.getItems().add(getMenuItemForLine("Mega Pixel Grid", line, click));
+        // Contextmenu btnScript
+        cmbtnScript = new ContextMenu();
+        NGScriptManager sm = (NGScriptManager)NGApplication.Application.ResolveObject(NGScriptManager.class);
+        Iterator<NGScriptItem> scripts = sm.getScripts();
+        while (scripts.hasNext()) {
+            final NGScriptItem script = scripts.next();
+            line = new Line(60, 10, 150, 10);
+            click = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Grid.RunScript(script.getName());
+                }};
+            cmbtnScript.getItems().add(getMenuItemForLine(script.getName(), line, click));
+        }
         FView = new NGDisplayView(Layer0.getWidth(), Layer0.getHeight());
         FGDC = new NGGrid2DDisplayController(Layer0);
         FGDC.setView(FView);
@@ -854,6 +881,16 @@ public class GridStageController implements Initializable {
             }
             FCoordinatesTooltip.show(node, Grid.getStage().getX() + FLastMouseEvent.getSceneX() + 10, Grid.getStage().getY() + FLastMouseEvent.getSceneY() + 10);
         }
+    }
+
+    public void ShowMegaPixel() {
+        FShowMegaPixel = true;
+        RenderScene(true);
+    }
+
+    public void HideMegaPixel() {
+        FShowMegaPixel = false;
+        RenderScene(true);
     }
 
 }

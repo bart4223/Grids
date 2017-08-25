@@ -412,6 +412,18 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
         return new NGPoint2D((int)(aPoint.getX() / getGridDistance()), (int)(aPoint.getY() / getGridDistance()));
     }
 
+    public void RunScript(String aScript) {
+        BeginUpdate();
+        try {
+            FGridManager.RunScript(this, aScript);
+            EndUpdate();
+        }
+        catch (Exception e) {
+            writeError(e.getMessage());
+            EndUpdate();
+        }
+    }
+
     public void SaveAsGDF() {
         BeginUpdate();
         try {
@@ -532,6 +544,22 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
     @Override
     public void handleClearLog() {
         FStageController.ClearLog();
+    }
+
+    public void ShowMegaPixel() {
+        FStageController.ShowMegaPixel();
+    }
+
+    public void HideMegaPixel() {
+        FStageController.HideMegaPixel();
+    }
+
+    public void ShowGrid() {
+        setDrawGrid(true);
+    }
+
+    public void HideGrid() {
+        setDrawGrid(false);
     }
 
 }

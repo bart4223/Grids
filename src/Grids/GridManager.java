@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Appl.NGApplication;
 import Uniwork.Appl.NGCustomStageItem;
 import Uniwork.Appl.NGToolboxManager;
 import Uniwork.Base.*;
@@ -38,6 +39,7 @@ public class GridManager extends NGComponentManager {
     protected int FGridCount;
     protected Stage FPrimaryStage;
     protected NGToolboxManager FToolboxManager;
+    protected GridRunScriptContext FCurrentRunScriptContext;
 
     protected void writeLog(String aText) {
         for (Grid grid : FGrids) {
@@ -47,7 +49,7 @@ public class GridManager extends NGComponentManager {
 
     protected void LoadConfiguration() {
         try {
-            InputStream is = new FileInputStream("resources/config.gcf");
+            InputStream is = new FileInputStream(NGApplication.Application.getConfigurationFilename());
             FConfiguration.load(is);
             FImageFileSizeX = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeX"));
             FImageFileSizeY = Integer.parseInt(FConfiguration.getProperty("ImageFileSizeY"));
@@ -82,6 +84,27 @@ public class GridManager extends NGComponentManager {
         }
         super.DoInitialize();
         writeLog("Welcome to Grids have fun...");
+    }
+
+    @Override
+    protected void DoAfterInitialize() {
+        super.DoAfterInitialize();
+        registerObjectRequests();
+    }
+
+    protected void registerObjectRequests() {
+        NGObjectRequestMethod orm;
+        registerObjectRequest("LoadImageWithCQ", "ScriptLoadImageWithQC", "\"Load an image from file with color quantization.\"");
+        registerObjectRequest("ShowMegaPixel", "ScriptShowMegaPixel", "\"Show the mega pixel grid.\"");
+        registerObjectRequest("HideMegaPixel", "ScriptHideMegaPixel", "\"Show the mega pixel grid.\"");
+        orm = registerObjectRequest("SetGridDistance", "ScriptSetGridDistance", "\"Set the grid distance.\"");
+        orm.addParam("Value", NGObjectRequestParameter.ParamKind.Integer);
+        registerObjectRequest("ShowGrid", "ScriptShowGrid", "\"Show the grid.\"");
+        registerObjectRequest("HideGrid", "ScriptHideGrid", "\"Hide the grid.\"");
+    }
+
+    protected NGObjectRequestMethod registerObjectRequest(String aMethod, String aObjectMethod, String aDescription) {
+        return NGApplication.Application.registerObjectRequest("Grid", this, aMethod, aObjectMethod, aDescription);
     }
 
     @Override
@@ -125,6 +148,16 @@ public class GridManager extends NGComponentManager {
     public void ShowStages() {
         for (Grid grid : FGrids) {
             grid.ShowStage();
+        }
+    }
+
+    public void RunScript(Grid aGrid, String aScript) {
+        try {
+            FCurrentRunScriptContext = new GridRunScriptContext(aGrid);
+            NGApplication.Application.RunScript(aScript);
+        }   finally {
+
+            FCurrentRunScriptContext = null;
         }
     }
 
@@ -379,6 +412,30 @@ public class GridManager extends NGComponentManager {
 
     public Stage getPrimaryStage() {
         return FGrids.get(0).getStage();
+    }
+
+    public void ScriptLoadImageWithQC() {
+        loadGridFromImageWithQC(FCurrentRunScriptContext.getGrid());
+    }
+
+    public void ScriptShowMegaPixel() {
+        FCurrentRunScriptContext.getGrid().ShowMegaPixel();
+    }
+
+    public void ScriptHideMegaPixel() {
+        FCurrentRunScriptContext.getGrid().HideMegaPixel();
+    }
+
+    public void ScriptSetGridDistance(Integer aValue) {
+        FCurrentRunScriptContext.getGrid().setGridDistance(aValue);
+    }
+
+    public void ScriptShowGrid() {
+        FCurrentRunScriptContext.getGrid().ShowGrid();
+    }
+
+    public void ScriptHideGrid() {
+        FCurrentRunScriptContext.getGrid().HideGrid();
     }
 
 }

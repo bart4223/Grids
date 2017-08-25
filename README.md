@@ -1,14 +1,11 @@
-Grids
-=====
+# Grids
 
 Grids is a simple graphic tool to draw pixel graphics...
 
 
-Configuration
-=============
+# Configuration
 
 The configuration file must place under resources/config.gcf (grid config file).
-<br>Properties:
    -    GridCount
         -   numbers of initialized grid stages (1..10)
    -    GridMaxDistance
@@ -26,8 +23,7 @@ The configuration file must place under resources/config.gcf (grid config file).
    -    ColorQuantizeFactor
         -   Colors to quantize the image          
 
-Save/Load
-=========
+# Save/Load
 
 -   To store and load raw data use "save as gdf" (grid data file) function.
 -   To store geometry object data use "save as gof" (grid object file) function.
@@ -36,10 +32,25 @@ Save/Load
 -   To load from png file use "load from png" function.
 -   To load from png file with color quantization use "load from png with CQ" function.
 
-History
-=======
+# Script
+
+-   Grid.ShowGrid
+    -   Show the grid
+-   Grid.HideGrid
+    -   Hide the grid
+-   Grid.SetGridDistance
+    -   Set the grid distance    
+-   Grid.LoadImageWithCQ
+    -   Load a image from file with the color quantization dialog
+-   Grid.ShowMegaPixel
+    -   Show the mega pixel grid     
+-   GridHideMegaPixel
+    -   Hide the mega pixel grid     
+
+# History
 
     25.05.2015  Select all and move all selected points via ALT
     26.07.2017  Octree color quantization support
-    30.07.2017  Color quantization dialog  
+    30.07.2017  Color quantization dialog
+    25.08.2017  Application script support implemented  
 

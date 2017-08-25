@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.7.0_25" class="java.beans.XMLDecoder">
+ <object class="Uniwork.Appl.NGApplicationDefinition">
+  <void property="scripts">
+   <object class="java.util.concurrent.CopyOnWriteArrayList">
+    <void method="add">
+     <object class="Uniwork.Appl.NGApplicationScriptItemDefinition">
+      <void property="Name">
+       <string>Image Import with CQ</string>
+      </void>
+      <void property="Filename">
+       <string>resources/scripts/ImageImportWithCQ.asf</string>
+      </void>
+      <void property="Description">
+       <string>Image Import with Color Quantization.</string>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

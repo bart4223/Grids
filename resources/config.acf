@@ -6,3 +6,4 @@ ImageFileSizeX=800
 ImageFileSizeY=800
 MegaGridPixelSize=20
 ColorQuantizeFactor=42
+DefinitionFilename=resources/runtime/definition.adf
