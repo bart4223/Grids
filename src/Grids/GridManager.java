@@ -101,10 +101,20 @@ public class GridManager extends NGComponentManager {
         orm.addParam("Value", NGObjectRequestParameter.ParamKind.Integer);
         registerObjectRequest("ShowGrid", "ScriptShowGrid", "\"Show the grid.\"");
         registerObjectRequest("HideGrid", "ScriptHideGrid", "\"Hide the grid.\"");
+        orm = registerObjectRequest("SetCurrentGrid", "ScriptSetCurrentGrid", "\"Set the current grid for scripting.\"");
+        orm.addParam("Index", NGObjectRequestParameter.ParamKind.Integer);
     }
 
     protected NGObjectRequestMethod registerObjectRequest(String aMethod, String aObjectMethod, String aDescription) {
         return NGApplication.Application.registerObjectRequest("Grid", this, aMethod, aObjectMethod, aDescription);
+    }
+
+    protected Grid getGridForScriptTarget() {
+        if (FCurrentRunScriptContext != null) {
+            return FCurrentRunScriptContext.getGrid();
+        }
+        writeError("No current grid as script target available.");
+        return null;
     }
 
     @Override
@@ -415,27 +425,53 @@ public class GridManager extends NGComponentManager {
     }
 
     public void ScriptLoadImageWithQC() {
-        loadGridFromImageWithQC(FCurrentRunScriptContext.getGrid());
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            loadGridFromImageWithQC(grid);
+        }
     }
 
     public void ScriptShowMegaPixel() {
-        FCurrentRunScriptContext.getGrid().ShowMegaPixel();
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            grid.ShowMegaPixel();
+        }
     }
 
     public void ScriptHideMegaPixel() {
-        FCurrentRunScriptContext.getGrid().HideMegaPixel();
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            grid.HideMegaPixel();
+        }
     }
 
     public void ScriptSetGridDistance(Integer aValue) {
-        FCurrentRunScriptContext.getGrid().setGridDistance(aValue);
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            grid.setGridDistance(aValue);
+        }
     }
 
     public void ScriptShowGrid() {
-        FCurrentRunScriptContext.getGrid().ShowGrid();
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            grid.ShowGrid();
+        }
     }
 
     public void ScriptHideGrid() {
-        FCurrentRunScriptContext.getGrid().HideGrid();
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            grid.HideGrid();
+        }
+    }
+
+    public void ScriptSetCurrentGrid(Integer aIndex) {
+        if (aIndex >= 0 && aIndex < FGrids.size()) {
+            FCurrentRunScriptContext = new GridRunScriptContext(FGrids.get(aIndex));
+        } else {
+            writeError("Invalid grid index.");
+        }
     }
 
 }
