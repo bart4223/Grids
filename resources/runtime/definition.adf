@@ -11,6 +11,9 @@
       <void property="configurationFilename">
        <string>resources/runtime/console/config.amcf</string>
       </void>
+      <void property="description">
+       <string>Console</string>
+      </void>
      </object>
     </void>
    </object>
