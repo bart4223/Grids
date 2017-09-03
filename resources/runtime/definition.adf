@@ -4,7 +4,7 @@
   <void property="modules">
    <object class="java.util.concurrent.CopyOnWriteArrayList">
     <void method="add">
-     <object class="Uniwork.Appl.NGApplicationModuleItemDefinition">
+     <object class="Uniwork.Appl.NGVisualApplicationModuleItemDefinition">
       <void property="className">
        <string>Uniwork.Appl.NGConsoleApplicationModule</string>
       </void>
@@ -13,6 +13,9 @@
       </void>
       <void property="description">
        <string>Console</string>
+      </void>
+      <void property="ShowStagesAfterInitialize">
+       <boolean>false</boolean>
       </void>
      </object>
     </void>
