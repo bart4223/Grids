@@ -23,6 +23,19 @@
     <void method="add">
      <object class="Uniwork.Appl.NGApplicationScriptItemDefinition">
       <void property="Name">
+       <string>Show Console</string>
+      </void>
+      <void property="Filename">
+       <string>resources/scripts/ShowConsole.asf</string>
+      </void>
+      <void property="Description">
+       <string>Show Console.</string>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="Uniwork.Appl.NGApplicationScriptItemDefinition">
+      <void property="Name">
        <string>Image Import with CQ</string>
       </void>
       <void property="Filename">
