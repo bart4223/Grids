@@ -94,14 +94,14 @@ public class GridManager extends NGComponentManager {
 
     protected void registerObjectRequests() {
         NGObjectRequestMethod orm;
-        registerObjectRequest("LoadImageWithCQ", "ScriptLoadImageWithQC", "\"Load an image from file with color quantization.\"");
-        registerObjectRequest("ShowMegaPixel", "ScriptShowMegaPixel", "\"Show the mega pixel grid.\"");
-        registerObjectRequest("HideMegaPixel", "ScriptHideMegaPixel", "\"Show the mega pixel grid.\"");
-        orm = registerObjectRequest("SetGridDistance", "ScriptSetGridDistance", "\"Set the grid distance.\"");
+        registerObjectRequest("LoadImageWithCQ", "ScriptLoadImageWithQC", "Load an image from file with color quantization.");
+        registerObjectRequest("ShowMegaPixel", "ScriptShowMegaPixel", "Show the mega pixel grid.");
+        registerObjectRequest("HideMegaPixel", "ScriptHideMegaPixel", "Show the mega pixel grid.");
+        orm = registerObjectRequest("SetGridDistance", "ScriptSetGridDistance", "Set the grid distance.");
         orm.addParam("Value", NGObjectRequestParameter.ParamKind.Integer);
-        registerObjectRequest("ShowGrid", "ScriptShowGrid", "\"Show the grid.\"");
-        registerObjectRequest("HideGrid", "ScriptHideGrid", "\"Hide the grid.\"");
-        orm = registerObjectRequest("SetCurrentGrid", "ScriptSetCurrentGrid", "\"Set the current grid for scripting.\"");
+        registerObjectRequest("ShowGrid", "ScriptShowGrid", "Show the grid.");
+        registerObjectRequest("HideGrid", "ScriptHideGrid", "Hide the grid.");
+        orm = registerObjectRequest("SetCurrentGrid", "ScriptSetCurrentGrid", "Set the current grid for scripting.");
         orm.addParam("Index", NGObjectRequestParameter.ParamKind.Integer);
     }
 
