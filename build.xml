@@ -32,13 +32,13 @@
     <exclude name="**/vssver2.scc/**"/>
   </patternset>
   <patternset id="library.patterns">
-    <include name="*.war"/>
-    <include name="*.swc"/>
-    <include name="*.ane"/>
-    <include name="*.zip"/>
     <include name="*.egg"/>
     <include name="*.jar"/>
+    <include name="*.ane"/>
     <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.zip"/>
   </patternset>
   <patternset id="compiler.resources">
     <exclude name="**/?*.java"/>
@@ -94,8 +94,12 @@
   
   <!-- Project Libraries -->
   
+  <path id="library.gson-2.5.classpath">
+    <pathelement location="${basedir}/../libs/gson-2.5.jar"/>
+  </path>
+  
   <path id="library.junit-4.12.classpath">
-    <pathelement location="${idea.home}/lib/junit-4.12.jar"/>
+    <pathelement location="${basedir}/../libs/junit-4.12.jar"/>
   </path>
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
@@ -133,23 +137,27 @@
   
   <path id="uniwork.module.production.classpath">
     <path refid="${module.jdk.classpath.uniwork}"/>
+    <path refid="library.gson-2.5.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
   </path>
   
   <path id="uniwork.runtime.production.module.classpath">
     <pathelement location="${uniwork.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
   </path>
   
   <path id="uniwork.module.classpath">
     <path refid="${module.jdk.classpath.uniwork}"/>
     <pathelement location="${uniwork.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
   </path>
   
   <path id="uniwork.runtime.module.classpath">
     <pathelement location="${uniwork.testoutput.dir}"/>
     <pathelement location="${uniwork.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
     <path refid="library.junit-4.12.classpath"/>
   </path>
   
@@ -218,11 +226,13 @@
   <path id="grids.module.production.classpath">
     <path refid="${module.jdk.classpath.grids}"/>
     <pathelement location="${uniwork.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
   </path>
   
   <path id="grids.runtime.production.module.classpath">
     <path refid="uniwork.runtime.production.module.classpath"/>
     <pathelement location="${grids.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
   </path>
   
   <path id="grids.module.classpath">
@@ -230,12 +240,14 @@
     <pathelement location="${uniwork.testoutput.dir}"/>
     <pathelement location="${uniwork.output.dir}"/>
     <pathelement location="${grids.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
   </path>
   
   <path id="grids.runtime.module.classpath">
     <path refid="uniwork.runtime.module.classpath"/>
     <pathelement location="${grids.testoutput.dir}"/>
     <pathelement location="${grids.output.dir}"/>
+    <path refid="library.gson-2.5.classpath"/>
   </path>
   
   
@@ -314,6 +326,8 @@
     <copy todir="${artifact.temp.output.Grids}/resources">
       <fileset dir="${basedir}/resources"/>
     </copy>
+    <mkdir dir="${artifact.temp.output.Grids}/libs"/>
+    <copy file="${basedir}/../libs/gson-2.5.jar" tofile="${artifact.temp.output.Grids}/libs/gson-2.5.jar"/>
     <fx:fileset id="all_but_Grids" dir="${artifact.temp.output.Grids}" includes="**/*.jar">
       <exclude name="Grids.jar"/>
     </fx:fileset>

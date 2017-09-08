@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="Uniwork" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="gson-2.5" level="project" />
   </component>
 </module>
-
