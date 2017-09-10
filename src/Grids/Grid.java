@@ -7,7 +7,6 @@ import Uniwork.Misc.NGImageList;
 import Uniwork.Misc.NGLogEvent;
 import Uniwork.Misc.NGLogEventListener;
 import Uniwork.Misc.NGLogManager;
-import Uniwork.Base.NGObject;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
