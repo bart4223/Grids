@@ -297,7 +297,6 @@ public class GridManager extends NGComponentManager {
                 dialogIM.setLogManager(aGrid.getLogManager());
                 dialogIM.setCQColorCount(getColorQuantizeFactor());
                 if (dialogIM.ShowModal() == NGCustomStageItem.NGDialogResult.OK) {
-                    ;
                     NGColorOctree ot = new NGColorOctree();
                     aGrid.New(false);
                     BufferedImage bufferedImage = ImageIO.read(chosenFile);
