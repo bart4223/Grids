@@ -44,13 +44,16 @@ The configuration file must place under resources/config.gcf (grid config file).
     -   Load a image from file with the color quantization dialog
 -   Grid.ShowMegaPixel
     -   Show the mega pixel grid     
--   GridHideMegaPixel
-    -   Hide the mega pixel grid     
+-   Grid.HideMegaPixel
+    -   Hide the mega pixel grid
+-   Grid.Analyze
+    -   Analyze Grid         
 
 # History
 
     25.05.2015  Select all and move all selected points via ALT
     26.07.2017  Octree color quantization support
     30.07.2017  Color quantization dialog
-    25.08.2017  Application script support implemented  
+    25.08.2017  Application script support implemented
+    12.10.2017  Grid Analyzer  
 
