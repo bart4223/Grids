@@ -1,11 +1,14 @@
 package Grids;
 
 import Uniwork.Appl.NGApplication;
+import Uniwork.Appl.NGApplicationProtocol;
 import Uniwork.Appl.NGCustomStageItem;
 import Uniwork.Appl.NGToolboxManager;
 import Uniwork.Base.*;
 import Uniwork.Graphics.NGColorOctree;
 import Uniwork.Graphics.NGSerializeGeometryObjectList;
+import Uniwork.UI.NGUIApplicationProtocolContext;
+import Uniwork.UI.NGUIApplicationProtocolItem;
 import Uniwork.UI.NGUIImageModificationToolboxContext;
 import Uniwork.UI.NGUIImageModificationToolboxItem;
 import Uniwork.Visuals.NGCommonDialogs;
@@ -103,6 +106,7 @@ public class GridManager extends NGComponentManager {
         registerObjectRequest("HideGrid", "ScriptHideGrid", "Hide the grid.");
         orm = registerObjectRequest("SetCurrentGrid", "ScriptSetCurrentGrid", "Set the current grid for scripting.");
         orm.addParam("Index", NGObjectRequestParameter.ParamKind.Integer);
+        registerObjectRequest("AnalyzeGrid", "ScriptAnalyzeGrid", "Analyze the current grid.");
     }
 
     protected NGObjectRequestMethod registerObjectRequest(String aMethod, String aObjectMethod, String aDescription) {
@@ -142,6 +146,7 @@ public class GridManager extends NGComponentManager {
         FMegaGridPixelSize = 10;
         FColorQuantizeFactor = 10;
         FToolboxManager.registerItemClass("Image.Manipulation", "Uniwork.UI.NGUIImageModificationToolboxItem");
+        FToolboxManager.registerItemClass("Application.Protocol", "Uniwork.UI.NGUIApplicationProtocolItem");
     }
 
     public void Shutdown() {
@@ -470,6 +475,15 @@ public class GridManager extends NGComponentManager {
             FCurrentRunScriptContext = new GridRunScriptContext(FGrids.get(aIndex));
         } else {
             writeError("Invalid grid index.");
+        }
+    }
+
+    public void ScriptAnalyzeGrid() {
+        Grid grid = getGridForScriptTarget();
+        if (grid != null) {
+            NGApplicationProtocol ap = grid.Analyze();
+            NGUIApplicationProtocolItem toolboxAP = (NGUIApplicationProtocolItem)FToolboxManager.CreateToolbox("Application.Protocol", "Protocol.Analyze", new NGUIApplicationProtocolContext(ap));
+            toolboxAP.Show();
         }
     }
 

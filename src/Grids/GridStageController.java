@@ -243,10 +243,10 @@ public class GridStageController implements Initializable {
             double y = 0 - FLGDC.getViewPositionY();
             Integer indexX;
             Integer indexY = 0;
-            for(double yy = y; yy < y + Layer0.getHeight(); yy = yy + Grid.getMegaGridPixleSize()) {
+            for(double yy = y; yy < y + Layer0.getHeight(); yy = yy + Grid.getMegaGridPixelSize()) {
                 indexX = 0;
-                for(double xx = x; xx <= x + Layer0.getWidth(); xx = xx + Grid.getMegaGridPixleSize()) {
-                    NGRegion2D region = new NGRegion2D(xx, yy, xx + Grid.getMegaGridPixleSize(), yy + Grid.getMegaGridPixleSize());
+                for(double xx = x; xx <= x + Layer0.getWidth(); xx = xx + Grid.getMegaGridPixelSize()) {
+                    NGRegion2D region = new NGRegion2D(xx, yy, xx + Grid.getMegaGridPixelSize(), yy + Grid.getMegaGridPixelSize());
                     GridLayer MaxLayer = Grid.getLayerWithMaxPoints(region);
                     if (MaxLayer != null) {
                         FLGDC.addLabel(String.format("%d.%d", indexY, indexX), String.format("%d%s", MaxLayer.getID(), MaxLayer.getObjectColor().invert().toString()));
@@ -264,7 +264,7 @@ public class GridStageController implements Initializable {
         FGDC.DrawGrid = Grid.getDrawGrid();
         FGDC.Render();
         FLGDC.GridColor = Grid.getGridColor().darker().darker().darker();
-        FLGDC.GridDistance = Grid.getGridDistance() * Grid.getMegaGridPixleSize();
+        FLGDC.GridDistance = Grid.getGridDistance() * Grid.getMegaGridPixelSize();
         FLGDC.DrawGrid = FShowMegaPixel;
         FLGDC.Render();
     }
@@ -891,6 +891,18 @@ public class GridStageController implements Initializable {
     public void HideMegaPixel() {
         FShowMegaPixel = false;
         RenderScene(true);
+    }
+
+    public Boolean IsShowMegaPixel() {
+        return FShowMegaPixel;
+    }
+
+    public Double getLayerHeight() {
+        return Layer0.getHeight();
+    }
+
+    public Double getLayerWidth() {
+        return Layer0.getWidth();
     }
 
 }

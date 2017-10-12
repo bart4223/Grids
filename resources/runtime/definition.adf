@@ -39,6 +39,19 @@
     <void method="add">
      <object class="Uniwork.Appl.NGApplicationScriptItemDefinition">
       <void property="Name">
+       <string>Analyze</string>
+      </void>
+      <void property="Filename">
+       <string>resources/scripts/AnalyzeGrid.asf</string>
+      </void>
+      <void property="Description">
+       <string>Analyze Grid.</string>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="Uniwork.Appl.NGApplicationScriptItemDefinition">
+      <void property="Name">
        <string>Image Import with CQ</string>
       </void>
       <void property="Filename">

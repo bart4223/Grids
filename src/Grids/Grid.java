@@ -1,5 +1,6 @@
 package Grids;
 
+import Uniwork.Appl.NGApplicationProtocol;
 import Uniwork.Base.NGComponent;
 import Uniwork.Base.NGSerializePropertyItem;
 import Uniwork.Graphics.*;
@@ -15,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,6 +32,7 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
     protected GridLayer FCurrentLayer;
     protected Random FGenerator;
     protected GridManager FGridManager;
+    protected GridAnalyzer FGridAnalyzer;
 
     protected void UpdateStage(Boolean aUpdateControls, String aLayerName) {
         if (InUpdate()) return;
@@ -224,6 +227,7 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
         FGridManager = aGridManager;
         FLogManager = new NGLogManager();
         FUpdateCount = 0;
+        FGridAnalyzer = new GridAnalyzer(this);
     }
 
     public void Shutdown() {
@@ -252,7 +256,7 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
         return FGridDistance;
     }
 
-    public Integer getMegaGridPixleSize() {
+    public Integer getMegaGridPixelSize() {
         return FGridManager.getMegaGridPixelSize();
     }
 
@@ -387,6 +391,10 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
 
     public CopyOnWriteArrayList<GridLayer> getLayers() {
         return FLayers;
+    }
+
+    public Iterator<GridLayer> getLayerIterator() {
+        return FLayers.iterator();
     }
 
     public GridLayer getCurrentLayer() {
@@ -559,6 +567,10 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
 
     public void HideGrid() {
         setDrawGrid(false);
+    }
+
+    public NGApplicationProtocol Analyze() {
+        return FGridAnalyzer.Analyze();
     }
 
 }
