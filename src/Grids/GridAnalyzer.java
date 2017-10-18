@@ -5,6 +5,8 @@ import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGRegion2D;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class GridAnalyzer extends NGObject {
@@ -13,10 +15,16 @@ public class GridAnalyzer extends NGObject {
 
         protected GridLayer FGridLayer;
         protected Integer FCount;
+        protected Double FBrightness;
+        protected Double FSaturation;
+        protected Double FHue;
 
         public LayerAnalyzeItem(GridLayer aGridLayer) {
             FGridLayer = aGridLayer;
             FCount = 0;
+            FHue = aGridLayer.getObjectColor().getHue();
+            FSaturation = aGridLayer.getObjectColor().getSaturation();
+            FBrightness = aGridLayer.getObjectColor().getBrightness();
         }
 
         public void addCount() {
@@ -31,6 +39,18 @@ public class GridAnalyzer extends NGObject {
             return FGridLayer;
         }
 
+        public Double getBrightness() {
+            return FBrightness;
+        }
+
+        public Double getSaturation() {
+            return FSaturation;
+        }
+
+        public Double getHue() {
+            return FHue;
+        }
+
     }
 
     protected Grid FGrid;
@@ -43,6 +63,20 @@ public class GridAnalyzer extends NGObject {
             GridLayer layer = itr.next();
             FLayers.add(new LayerAnalyzeItem(layer));
         }
+        Collections.sort(FLayers, new Comparator<LayerAnalyzeItem>() {
+            @Override
+            public int compare(LayerAnalyzeItem s1, LayerAnalyzeItem s2) {
+                Double v1 = s1.getBrightness();
+                Double v2 = s2.getBrightness();
+                if (v1 < v2) {
+                    return 1;
+                } if (v1 > v2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         for(double y = 0; y <= getGrid().getStageController().getLayerHeight(); y = y + FGrid.getMegaGridPixelSize()) {
             for(double x = 0; x <= getGrid().getStageController().getLayerWidth(); x = x + FGrid.getMegaGridPixelSize()) {
                 NGRegion2D region = new NGRegion2D(x, y, x + FGrid.getMegaGridPixelSize(), y + FGrid.getMegaGridPixelSize());
