@@ -3,11 +3,9 @@ package Grids;
 import Uniwork.Appl.NGApplicationProtocol;
 import Uniwork.Base.NGObject;
 import Uniwork.Graphics.NGRegion2D;
+import Uniwork.Misc.NGStrings;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 public class GridAnalyzer extends NGObject {
 
@@ -18,6 +16,7 @@ public class GridAnalyzer extends NGObject {
         protected Double FBrightness;
         protected Double FSaturation;
         protected Double FHue;
+        protected String FCoords;
 
         public LayerAnalyzeItem(GridLayer aGridLayer) {
             FGridLayer = aGridLayer;
@@ -25,6 +24,7 @@ public class GridAnalyzer extends NGObject {
             FHue = aGridLayer.getObjectColor().getHue();
             FSaturation = aGridLayer.getObjectColor().getSaturation();
             FBrightness = aGridLayer.getObjectColor().getBrightness();
+            FCoords = "";
         }
 
         public void addCount() {
@@ -49,6 +49,14 @@ public class GridAnalyzer extends NGObject {
 
         public Double getHue() {
             return FHue;
+        }
+
+        public String getCoords() {
+            return FCoords;
+        }
+
+        public void addCoord(Integer aX, Integer aY) {
+            FCoords = NGStrings.addString(FCoords,String.format("%d/%d", aX, aY), ";");
         }
 
     }
@@ -77,13 +85,18 @@ public class GridAnalyzer extends NGObject {
                 }
             }
         });
+        Integer yy = 0;
         for(double y = 0; y <= getGrid().getStageController().getLayerHeight(); y = y + FGrid.getMegaGridPixelSize()) {
+            yy++;
+            Integer xx = 0;
             for(double x = 0; x <= getGrid().getStageController().getLayerWidth(); x = x + FGrid.getMegaGridPixelSize()) {
+                xx++;
                 NGRegion2D region = new NGRegion2D(x, y, x + FGrid.getMegaGridPixelSize(), y + FGrid.getMegaGridPixelSize());
                 GridLayer MaxLayer = FGrid.getLayerWithMaxPoints(region);
                 for (LayerAnalyzeItem item: FLayers) {
                     if (item.getLayer().equals(MaxLayer)) {
                         item.addCount();
+                        item.addCoord(xx, yy);
                         break;
                     }
                 }
@@ -110,6 +123,7 @@ public class GridAnalyzer extends NGObject {
             for (LayerAnalyzeItem item: FLayers) {
                 res.writeInfo(String.format("Layer %s", item.getLayer().getName()));
                 res.writeInfo(String.format("Count=%d", item.getCount()));
+                res.writeInfo(String.format("Coords=%s", item.getCoords()));
                 TotalCount = TotalCount + item.getCount();
             }
             res.writeInfo(String.format("TotalCount=%d", TotalCount));
