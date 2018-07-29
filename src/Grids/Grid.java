@@ -16,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -167,13 +168,13 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
     protected void DoAssignTo(Object aObject) {
         if (aObject instanceof XMLGrid) {
             XMLLayer XMLLayer;
-            CopyOnWriteArrayList<XMLLayer> XMLLayers;
-            CopyOnWriteArrayList<NGGeometryObject2D> XMLGeoObjects;
+            ArrayList<XMLLayer> XMLLayers;
+            ArrayList<NGGeometryObject2D> XMLGeoObjects;
             XMLGrid XMLGrid = (XMLGrid)aObject;
             XMLGrid.setGridDistance(getGridDistance());
             XMLGrid.setGridColor(getGridColor().toString());
             XMLGrid.setCurrentLayer(getCurrentLayer().getName());
-            XMLLayers = new CopyOnWriteArrayList<XMLLayer>();
+            XMLLayers = new ArrayList<XMLLayer>();
             XMLGrid.setLayers(XMLLayers);
             for (GridLayer layer : getLayers()) {
                 XMLLayer = new XMLLayer();
@@ -182,7 +183,7 @@ public class Grid extends NGComponent implements GridLayerEventListener, NGLogEv
                 XMLLayer.setDescription(layer.getDescription());
                 XMLLayer.setObjectColor(layer.getObjectColor().toString());
                 XMLLayer.setZOrder(layer.getZOrder());
-                XMLGeoObjects = new CopyOnWriteArrayList<NGGeometryObject2D>();
+                XMLGeoObjects = new ArrayList<NGGeometryObject2D>();
                 XMLLayer.setGeometryObjects(XMLGeoObjects);
                 XMLLayer.setImagename(layer.getImageName());
                 for (NGGeometryObject2D GeoObject : layer.getObjects()) {
