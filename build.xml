@@ -32,13 +32,14 @@
     <exclude name="**/vssver2.scc/**"/>
   </patternset>
   <patternset id="library.patterns">
-    <include name="*.egg"/>
-    <include name="*.jar"/>
-    <include name="*.ane"/>
-    <include name="*.ear"/>
-    <include name="*.swc"/>
     <include name="*.war"/>
+    <include name="*.swc"/>
     <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.klib"/>
   </patternset>
   <patternset id="compiler.resources">
     <exclude name="**/?*.java"/>
@@ -104,10 +105,12 @@
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
-    <pathelement location="${javac2.home}/javac2.jar"/>
-    <pathelement location="${javac2.home}/jdom.jar"/>
-    <pathelement location="${javac2.home}/asm-all.jar"/>
-    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="forms-*.jar"/>
+    </fileset>
   </path>
   <target name="register.custom.compilers">
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
@@ -126,7 +129,7 @@
   <property name="module.jdk.bin.uniwork" value="${jdk.bin.1.8}"/>
   <property name="module.jdk.classpath.uniwork" value="jdk.classpath.1.8"/>
   
-  <property name="compiler.args.uniwork" value="-encoding UTF-8 -source 1.6 -target 1.6 ${compiler.args}"/>
+  <property name="compiler.args.uniwork" value="-encoding UTF-8 -source 6 -target 6 ${compiler.args}"/>
   
   <property name="uniwork.output.dir" value="${module.uniwork.basedir}/out/production/Uniwork"/>
   <property name="uniwork.testoutput.dir" value="${module.uniwork.basedir}/out/test/Uniwork"/>
@@ -214,7 +217,7 @@
   <property name="module.jdk.bin.grids" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.grids" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.grids" value="-encoding UTF-8 -source 1.6 -target 1.6 ${compiler.args}"/>
+  <property name="compiler.args.grids" value="-encoding UTF-8 -source 6 -target 6 ${compiler.args}"/>
   
   <property name="grids.output.dir" value="${module.grids.basedir}/out/production/Grids"/>
   <property name="grids.testoutput.dir" value="${module.grids.basedir}/out/test/Grids"/>
